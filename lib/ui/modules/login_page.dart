@@ -50,6 +50,7 @@ class _LoginPageState extends State<LoginPage>
   Color right = Colors.white;
 
   Map data;
+  Map info;
 
   Future<void> _handleClickMe(message) async {
     return showDialog<void>(
@@ -84,9 +85,25 @@ class _LoginPageState extends State<LoginPage>
       if (data['response'] == true) {
         var box = await Hive.openBox('app_data');
         box.put('token', data['token']);
+        /**/
+        getUser();
+        /**/
       }
       return data['response'];
     }
+  }
+
+  Future getUser() async {
+    var box = await Hive.openBox('app_data');
+    http.Response response = await http.get(
+      'https://qqv.oex.mybluehost.me/api/user',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${box.get('token')}'
+      },
+    );
+    info = json.decode(response.body);
+    box.put('user_data', info['data']);
   }
 
   @override
@@ -348,7 +365,6 @@ class _LoginPageState extends State<LoginPage>
                         auth(loginEmailController.text,
                                 loginPasswordController.text)
                             .then((response) {
-                          print(response);
                           if (response == true) {
                             Navigator.pushNamed(context, '/loading');
                             Timer(Duration(seconds: 3),
