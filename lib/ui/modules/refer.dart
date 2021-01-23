@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import '../../utils/functions.dart' as tool;
+import '../../style/theme.dart' as Theme;
 
 class ReferPage extends StatefulWidget {
   ReferPage({Key key}) : super(key: key);
@@ -15,12 +16,14 @@ class ReferPage extends StatefulWidget {
 class _ReferPageState extends State<ReferPage>
   with SingleTickerProviderStateMixin {
   Map data;
+  String submit = 'SUBMIT';
+  Color buttonColor = Theme.Colors.loginGradientButton;
+  String userName;
   TextEditingController emailController = new TextEditingController();
   TextEditingController _recipientController = new TextEditingController();
 
   Future submitForm(String name, String mail) async {
     if (tool.Functions.validateEmail(mail)) {
-      //Navigator.pushNamed(context, '/loading');
       var box = await Hive.openBox('app_data');
       var user = box.get('user_data');
       Map datos = {
@@ -28,7 +31,6 @@ class _ReferPageState extends State<ReferPage>
         'from':user['id'],
         'phone_or_email':mail
       };
-      //encode Map to JSON
       var body = json.encode(datos);
       http.Response response = await http.post(
           'https://qqv.oex.mybluehost.me/api/refers',
@@ -42,7 +44,7 @@ class _ReferPageState extends State<ReferPage>
       if( data['code'] == 200 ){
         return showDialog<void>(
           context: context,
-          barrierDismissible: false, // user must tap button!
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return CupertinoAlertDialog(
               title: Text('Refer message send success.'),
@@ -52,7 +54,14 @@ class _ReferPageState extends State<ReferPage>
                   child: Text('Close'),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    //Navigator.pushNamed(context, '/refer');
+                    _recipientController.clear();
+                    emailController.clear();
+                    this.setState(
+                          () {
+                        submit = 'SUBMIT';
+                        buttonColor = Theme.Colors.loginGradientButton;
+                      },
+                    );
                   },
                 ),
               ],
@@ -60,7 +69,6 @@ class _ReferPageState extends State<ReferPage>
           },
         );
       }
-      //return data['response'];
     }
   }
 
@@ -84,6 +92,23 @@ class _ReferPageState extends State<ReferPage>
       },
     );
   }
+  Future getHive() async {
+    var box = await Hive.openBox('app_data');
+    var user = box.get('user_data');
+    return user;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getHive().then((response) {
+      this.setState((){
+        userName = response['name'];
+        },
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -130,7 +155,7 @@ class _ReferPageState extends State<ReferPage>
                               readOnly: true,
                               decoration: InputDecoration(
                                 hintText:
-                                    "Diego has introduced you to Motion Law.\nA Team member will be in touch with you soon - please reply to this email to book your initial free consultation right now or call (202) 918-1799",
+                                    "${userName} has introduced you to Motion Law.\nA Team member will be in touch with you soon - please reply to this email to book your initial free consultation right now or call (202) 918-1799",
                                 border: OutlineInputBorder(),
                                 //labelText: 'has introduced you to Motion Law... A Team member will be in touch with you soon - please reply to this email to book your initial free consultation right now or call (202) 918-1799',
                               ),
@@ -141,15 +166,14 @@ class _ReferPageState extends State<ReferPage>
                                   top: 10.0, left: 8.0, right: 8.0),
                               width: double.infinity,
                               decoration: new BoxDecoration(
-                                color: Colors.grey,
+                                color: buttonColor,
                                 borderRadius: BorderRadius.circular(5.0),
                               ),
                               child: CupertinoButton(
-                                  child: Text('SUBMIT',
+                                  child: Text(submit,
                                       style: new TextStyle(
                                           color: Colors.white, fontSize: 15)),
                                   onPressed: (){
-                                    //print('Button pressed');
                                     if (_recipientController.text == "") {
                                       _handleClickMe(
                                           'Before continue, you must fill the required fields');
@@ -160,6 +184,12 @@ class _ReferPageState extends State<ReferPage>
                                           'Before continue, you must fill the required fields');
                                       return false;
                                     }
+                                    this.setState(
+                                          () {
+                                        submit = 'LOADING...';
+                                        buttonColor = Colors.black12;
+                                      },
+                                    );
                                     submitForm(_recipientController.text, emailController.text);
                                   }))
                         ])))));

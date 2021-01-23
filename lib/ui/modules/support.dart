@@ -1,8 +1,94 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'dart:convert';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+import '../../style/theme.dart' as Theme;
 
-class SupportPage extends StatelessWidget {
+class SupportPage extends StatefulWidget {
+  SupportPage({Key key}) : super(key: key);
+  @override
+  _SupportPageState createState() => new _SupportPageState();
+}
+
+class _SupportPageState extends State<SupportPage>
+  with SingleTickerProviderStateMixin {
+  Map data;
+  Color buttonColor = Theme.Colors.loginGradientButton;
+  String submit = 'SUBMIT';
+  TextEditingController _subjectController = new TextEditingController();
+  TextEditingController _messageController = new TextEditingController();
+
+  Future<void> _handleClickMe(message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('Required Fields!'),
+          content: Text(message),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future submitForm(String subject, String message) async {
+    var box = await Hive.openBox('app_data');
+    var user = box.get('user_data');
+    Map datos = {
+      'message': subject + ' : ' + message,
+      'from':user['id'],
+      'device': 'mobile'
+    };
+    var body = json.encode(datos);
+    http.Response response = await http.post(
+        'https://qqv.oex.mybluehost.me/api/support',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${box.get('token')}'
+        },
+        body: body
+    );
+    data = json.decode(response.body);
+    if( data['code'] == 200 ){
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text('Support message sent successfully.'),
+            content: Text('Our team will reply as soon as possible!'),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                child: Text('Close'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _subjectController.clear();
+                  _messageController.clear();
+                  this.setState(
+                        () {
+                      submit = 'SUBMIT';
+                      buttonColor = Theme.Colors.loginGradientButton;
+                    },
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -24,27 +110,7 @@ class SupportPage extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: TextField(
-                            //controller: _recipientController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Full Name',
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: TextField(
-                            //controller: _subjectController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Email Address',
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: TextField(
-                            //controller: _recipientController,
+                            controller: _subjectController,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Subject',
@@ -54,7 +120,7 @@ class SupportPage extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: TextField(
-                            //controller: _subjectController,
+                            controller: _messageController,
                             maxLines: 8,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
@@ -67,24 +133,33 @@ class SupportPage extends StatelessWidget {
                                 top: 10.0, left: 8.0, right: 8.0),
                             width: double.infinity,
                             decoration: new BoxDecoration(
-                              color: Colors.grey,
+                              color: buttonColor,
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             child: CupertinoButton(
-                                child: Text('SUBMIT',
+                                child: Text(submit,
                                     style: new TextStyle(
                                         color: Colors.white, fontSize: 15)),
                                 onPressed: () {
-                                  print('Button pressed');
+                                  if (_subjectController.text == "") {
+                                    _handleClickMe(
+                                        'Before continue, you must fill the required fields');
+                                    return false;
+                                  }
+                                  if (_messageController.text == "") {
+                                    _handleClickMe(
+                                        'Before continue, you must fill the required fields');
+                                    return false;
+                                  }
+                                  this.setState(
+                                        () {
+                                      submit = 'LOADING...';
+                                      buttonColor = Colors.black12;
+                                    },
+                                  );
+                                  submitForm(_subjectController.text, _messageController.text);
                                 }))
                       ])
-                  /*child: TextField(
-              //controller: _recipientController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Full Name',
-              ),
-            ),*/
                   )),
         ));
   }

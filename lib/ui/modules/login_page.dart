@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage>
   TextEditingController loginEmailController = new TextEditingController();
   TextEditingController loginPasswordController = new TextEditingController();
 
-  bool submit = false;
+  String submit = 'LOGIN';
   bool _obscureTextLogin = true;
 
   PageController _pageController;
@@ -328,27 +328,16 @@ class _LoginPageState extends State<LoginPage>
                 ),
               ),
               Container(
-                  margin: EdgeInsets.only(top: 220.0),
+                  margin: EdgeInsets.only(top: 220.0, left: 65.0, right: 65.0),
+                  width: double.infinity,
                   decoration: new BoxDecoration(
                     color: Theme.Colors.loginGradientButton,
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: CupertinoButton(
-                      //highlightColor: Colors.transparent,
-                      padding: EdgeInsets.all(0),
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 0.0, horizontal: 128.0),
-                          child: Text(
-                            (submit == false) ? "LOGIN" : "LOADING...",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14.0,
-                                fontFamily: "WorkSansBold"),
-                          ),
-                        ),
-                      ),
+                      child: Text(submit,
+                          style: new TextStyle(
+                              color: Colors.white, fontSize: 15)),
                       onPressed: () {
                         if (loginEmailController.text == "") {
                           _handleClickMe(
@@ -360,7 +349,7 @@ class _LoginPageState extends State<LoginPage>
                           return false;
                         }
                         setState(() {
-                          submit = !submit;
+                          submit = 'LOADING...';
                         });
                         auth(loginEmailController.text,
                                 loginPasswordController.text)
@@ -372,7 +361,10 @@ class _LoginPageState extends State<LoginPage>
                           } else {
                             _handleClickMe(
                                 'The username or password you entered is incorrect!');
-                            submit = !submit;
+
+                            setState(() {
+                              submit = 'LOGIN';
+                            });
                           }
                         });
                       })),
