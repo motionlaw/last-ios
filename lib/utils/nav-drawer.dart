@@ -49,7 +49,7 @@ class NavDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(CupertinoIcons.mail_solid),
-            title: Text('Email Us'),
+            title: Text('Contact Us'),
             onTap: () => {Navigator.pushNamed(context, '/support')},
           ),
           ListTile(

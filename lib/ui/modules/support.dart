@@ -6,6 +6,35 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import '../../style/theme.dart' as Theme;
 
+const List<String> colors = const <String>[
+  'Red',
+  'Yellow',
+  'Amber',
+  'Blue',
+  'Black',
+  'Pink',
+  'Purple',
+  'White',
+  'Grey',
+  'Green',
+];
+
+List<dynamic> staff;
+
+Future<String> _asyncMethod() async {
+  var box = await Hive.openBox('app_data');
+  final _responseFuture = await http
+      .get('https://qqv.oex.mybluehost.me/api/staff', headers: <String, String>{
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Authorization': 'Bearer ${box.get('token')}'
+  });
+  if ( _responseFuture.statusCode == 200 ) {
+    staff = json.decode(_responseFuture.body);
+  } else {
+    throw Exception('Failed to load post');
+  }
+}
+
 class SupportPage extends StatefulWidget {
   SupportPage({Key key}) : super(key: key);
   @override
@@ -15,8 +44,10 @@ class SupportPage extends StatefulWidget {
 class _SupportPageState extends State<SupportPage>
   with SingleTickerProviderStateMixin {
   Map data;
+  int _selectedIndex = 0;
   Color buttonColor = Theme.Colors.loginGradientButton;
   String submit = 'SUBMIT';
+  TextEditingController _staffController = new TextEditingController();
   TextEditingController _subjectController = new TextEditingController();
   TextEditingController _messageController = new TextEditingController();
 
@@ -41,12 +72,13 @@ class _SupportPageState extends State<SupportPage>
     );
   }
 
-  Future submitForm(String subject, String message) async {
+  Future submitForm(String staff, String subject, String message) async {
     var box = await Hive.openBox('app_data');
     var user = box.get('user_data');
     Map datos = {
       'message': subject + ' : ' + message,
-      'from':user['id'],
+      'staff': staff,
+      'from': user['id'],
       'device': 'mobile'
     };
     var body = json.encode(datos);
@@ -90,10 +122,16 @@ class _SupportPageState extends State<SupportPage>
   }
 
   @override
+  void initState() {
+    super.initState();
+    _asyncMethod();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text('Write Us'),
+          middle: Text('Contact Us'),
         ),
         child: Scaffold(
           body: SafeArea(
@@ -107,6 +145,38 @@ class _SupportPageState extends State<SupportPage>
                             padding: EdgeInsets.all(8.0),
                             child: Text(
                                 'Fill the form fields, then submit and our team will be with you as soon as possible!')),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: TextField(
+                            onTap: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      height: 250.0,
+                                      child: CupertinoPicker(
+                                          itemExtent: 32.0,
+                                          onSelectedItemChanged: (int index) {
+                                            setState(() {
+                                              _staffController.text = staff[index]['name'];
+                                            });
+                                          },
+                                        children: List.generate(staff.length, (index){
+                                          return Text(staff[index]['name'].toString());
+                                        }),
+                                      ),
+                                    );
+                                  });
+                            },
+                            controller: _staffController,
+                              showCursor: false,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Staff Member'
+                            ),
+                          ),
+                        ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: TextField(
@@ -141,6 +211,11 @@ class _SupportPageState extends State<SupportPage>
                                     style: new TextStyle(
                                         color: Colors.white, fontSize: 15)),
                                 onPressed: () {
+                                  if (_staffController.text == "") {
+                                    _handleClickMe(
+                                        'Before continue, you must fill the required fields');
+                                    return false;
+                                  }
                                   if (_subjectController.text == "") {
                                     _handleClickMe(
                                         'Before continue, you must fill the required fields');
@@ -157,7 +232,7 @@ class _SupportPageState extends State<SupportPage>
                                       buttonColor = Colors.black12;
                                     },
                                   );
-                                  submitForm(_subjectController.text, _messageController.text);
+                                  submitForm(_staffController.text, _subjectController.text, _messageController.text);
                                 }))
                       ])
                   )),

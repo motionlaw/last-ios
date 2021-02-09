@@ -55,9 +55,11 @@ class MyExpansionTileList extends StatelessWidget {
   List<Widget> _getChildren() {
     List<Widget> children = [];
     elementList.forEach((element) {
-      children.add(
-        new MyExpansionTile(element['id'], element['name']),
-      );
+      if ( children.length < 3 ){
+        children.add(
+          new MyExpansionTile(element['id'], element['name'], element['practice_area']),
+        );
+      }
     });
     return children;
   }
@@ -72,17 +74,19 @@ class MyExpansionTileList extends StatelessWidget {
 }
 
 class MyExpansionTile extends StatefulWidget {
-  final int id;
-  final String name;
-  MyExpansionTile(this.id, this.name);
+  String id;
+  String name;
+  String practice_area;
+  MyExpansionTile(this.id, this.name, this.practice_area);
   @override
-  State createState() => new MyExpansionTileState(this.id, this.name);
+  State createState() => new MyExpansionTileState(this.id, this.name, this.practice_area);
 }
 
 class MyExpansionTileState extends State<MyExpansionTile> {
-  final int id;
-  final String name;
-  MyExpansionTileState(this.id, this.name);
+  String id;
+  String name;
+  String practice_area;
+  MyExpansionTileState(this.id, this.name, this.practice_area);
 
   @override
   void initState() {
@@ -98,7 +102,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
         style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
       ),
       subtitle: Text(
-        'Deportation Immigration',
+        widget.practice_area,
         style: TextStyle(
           fontSize: 12.0,
         ),

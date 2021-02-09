@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../utils/nav-drawer.dart';
+import 'package:im_stepper/main.dart';
+import 'package:im_stepper/stepper.dart';
 
 Map data;
 
@@ -26,9 +28,8 @@ _asyncMethod(context) async {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentStep = 0;
-  StepperType stepperType = StepperType.horizontal;
-
+  int activeStep = 5; // Initial step set to 5.
+  int upperBound = 0;
   @override
   void initState() {
     super.initState();
@@ -43,46 +44,29 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SafeArea(
           child: Column(children: <Widget>[
-            SizedBox(
-            height: 150,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                Container(
-                  width: 160.0,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(CupertinoIcons.check_mark_circled_solid, size: 50.0, color: Theme.of(context).primaryColor),
-                      Text("Assign Case")
-                    ],
-                  ),
-                ),
-                Container(
-                  width: 160.0,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(CupertinoIcons.check_mark_circled_solid, size: 50.0, color: Theme.of(context).primaryColor),
-                      Text("Waiting for Introduction")
-                    ],
-                  ),
-                ),
-                Container(
-                  width: 160.0,
-                  color: Colors.green,
-                ),
-                Container(
-                  width: 160.0,
-                  color: Colors.yellow,
-                ),
-                Container(
-                  width: 160.0,
-                  color: Colors.orange,
-                ),
-              ],
+            Padding(
+              padding: EdgeInsets.only(top: 40.0, left:0.0, bottom: 40.0, right: 0.0),
+              child: NumberStepper(
+                numbers:[
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  11,
+                  12
+                ],
+                activeStep: activeStep,
+
+                upperBound: (bound) => upperBound = bound,
+              ),
             ),
-          ),
+            header(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -159,6 +143,75 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget header() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+      ),
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 10.0,
+              left: 40.0,
+              bottom: 10.0,
+              right: 20.0
+            ),
+            child: Text(
+              headerText(),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String headerText() {
+    switch (activeStep) {
+      case 1:
+        return 'Assign Case';
+
+      case 2:
+        return 'Waiting for Introduction';
+
+      case 3:
+        return 'Collecting Evidence';
+
+      case 4:
+        return 'Preparing Packet';
+
+      case 5:
+        return 'Attorney Review';
+
+      case 6:
+        return 'Review and Signatures';
+
+      case 7:
+        return 'Filed';
+
+      case 8:
+        return 'Pending';
+
+      case 9:
+        return 'On Hold';
+
+      case 10:
+        return 'Pending Payment';
+
+      case 11:
+        return 'Upcoming Hearing';
+
+      case 12:
+        return 'Upcoming Trial';
+
+      default:
+        return 'Assign Case';
+    }
+  }
 }
 /*
 Assign Case
