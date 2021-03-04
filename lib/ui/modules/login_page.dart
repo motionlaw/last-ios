@@ -341,7 +341,7 @@ class _LoginPageState extends State<LoginPage>
                       onPressed: () {
                         if (loginEmailController.text == "") {
                           _handleClickMe(
-                              'Before continue, you must fill the required fields');
+                              'Before continuing you must fill in the required fields!');
                           return false;
                         }
                         if (loginPasswordController.text == "") {

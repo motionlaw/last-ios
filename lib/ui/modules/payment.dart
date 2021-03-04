@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import '../../style/theme.dart' as Theme;
 
 Future<http.Response> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
@@ -21,7 +22,17 @@ Future<http.Response> _asyncMethod() async {
 class PaymentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacementNamed('/chat');
+          },
+          backgroundColor: Theme.Colors.loginGradientButton,
+          child: Icon(
+            CupertinoIcons.chat_bubble_2,
+          ),
+      ),
+      body : CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text('Payments'),
       ),
@@ -47,7 +58,7 @@ class PaymentPage extends StatelessWidget {
           ])
         )
       )
-    );
+    ));
   }
 }
 

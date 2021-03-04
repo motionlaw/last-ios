@@ -5,19 +5,43 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
-_logout(context) async {
-  Navigator.pushNamed(context, '/loading');
-  var box = await Hive.openBox('app_data');
-  await http.post("https://qqv.oex.mybluehost.me/api/logout",
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ${box.get('token')}'
-      });
-  await box.delete('token');
-  Timer(Duration(seconds: 2), () => {Navigator.pushNamed(context, '/login')});
+class NavDrawer extends StatefulWidget {
+  NavDrawer({Key key}) : super(key: key);
+  @override
+  _NavDrawerState createState() => new _NavDrawerState();
 }
 
-class NavDrawer extends StatelessWidget {
+class _NavDrawerState extends State<NavDrawer> {
+  String userName;
+  _logout(context) async {
+    Navigator.pushNamed(context, '/loading');
+    var box = await Hive.openBox('app_data');
+    await http.post("https://qqv.oex.mybluehost.me/api/logout",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${box.get('token')}'
+        });
+    await box.delete('token');
+    Timer(Duration(seconds: 2), () => {Navigator.pushNamed(context, '/login')});
+  }
+
+  Future getHive() async {
+    var box = await Hive.openBox('app_data');
+    var user = box.get('user_data');
+    return user;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getHive().then((response) {
+      this.setState((){
+        userName = response['name'];
+      },
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -25,16 +49,24 @@ class NavDrawer extends StatelessWidget {
         children: <Widget>[
           ListTile(
             title: Align(
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.center,
               child: SizedBox(
                   child: Image.asset('assets/img/Motionlaw-logogold.png',
-                      height: 110)),
+                      height: 120)),
             ),
           ),
           Divider(),
           ListTile(
+            leading: SizedBox(
+                child: Image.asset('assets/img/avatar.png',
+                    height: 60)),
+            title: Text(userName??''),
+            subtitle: Text('Manager')
+          ),
+          Divider(),
+          ListTile(
             leading: Icon(CupertinoIcons.chat_bubble_2),
-            title: Text('Communication'),
+            title: Text('Your Cases'),
             onTap: () => {Navigator.pushNamed(context, '/communication')},
           ),
           ListTile(

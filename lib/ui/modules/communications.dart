@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import '../../style/theme.dart' as Theme;
 
 Future<http.Response> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
@@ -20,7 +21,17 @@ Future<http.Response> _asyncMethod() async {
 class CommunicationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return Scaffold(
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed('/chat');
+            },
+            backgroundColor: Theme.Colors.loginGradientButton,
+            child: Icon(
+              CupertinoIcons.chat_bubble_2,
+            ),
+        ),
+        body : CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: Text('Communication'),
         ),
@@ -43,7 +54,7 @@ class CommunicationPage extends StatelessWidget {
                 List<dynamic> jsonList = json.decode(response.data.body);
                 return new MyExpansionTileList(jsonList);
               })
-        ]))));
+        ])))));
   }
 }
 
@@ -125,43 +136,6 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                     style: TextStyle(
                       fontSize: 13.0,
                     )),
-              ),
-            ],
-          ),
-        ),
-        ListTile(
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-          dense: true,
-          title: Row(
-            children: <Widget>[
-              SizedBox(
-                width: 55,
-              ),
-              Text('STATUS UPDATE:',
-                  style:
-                      TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
-        ListTile(
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-          dense: true,
-          title: Row(
-            children: <Widget>[
-              SizedBox(
-                width: 55,
-              ),
-              Padding(
-                padding: EdgeInsets.all(0.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.70,
-                  child: Text(
-                    "NJ sent email to ICE officer reg. Franklin's possible mental illness. Waiting on response. Franklin can be deported any day- he was ordered removed. He asked for deportation when he found out his hearing was going to be continued.",
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.justify,
-                    maxLines: 5,
-                  ),
-                ),
               ),
             ],
           ),

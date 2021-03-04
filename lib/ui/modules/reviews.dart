@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../../style/theme.dart' as Theme;
 
 class ReviewsPage extends StatefulWidget {
   ReviewsPage({Key key}) : super(key: key);
@@ -17,7 +18,17 @@ class _ReviewsPageState extends State<ReviewsPage>
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacementNamed('/chat');
+          },
+          backgroundColor: Theme.Colors.loginGradientButton,
+          child: Icon(
+            CupertinoIcons.chat_bubble_2,
+          ),
+        ),
+        body : CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: Text('Reviews'),
         ),
@@ -36,6 +47,6 @@ class _ReviewsPageState extends State<ReviewsPage>
                     isLoading ? Center( child: Text('Loading...'))
                         : Stack(),
                   ])
-            )));
+            ))));
   }
 }

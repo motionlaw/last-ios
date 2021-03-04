@@ -111,7 +111,17 @@ class _ReferPageState extends State<ReferPage>
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return Scaffold(
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed('/chat');
+            },
+            backgroundColor: Theme.Colors.loginGradientButton,
+            child: Icon(
+              CupertinoIcons.chat_bubble_2,
+            ),
+        ),
+        body : CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: Text('Refer a Friend'),
         ),
@@ -192,6 +202,6 @@ class _ReferPageState extends State<ReferPage>
                                     );
                                     submitForm(_recipientController.text, emailController.text);
                                   }))
-                        ])))));
+                        ]))))));
   }
 }
