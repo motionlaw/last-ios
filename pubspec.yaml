@@ -35,7 +35,6 @@ dependencies:
   path_provider: ^1.6.21
   http: ^0.12.2
   url_launcher: ^5.7.10
-  flutter_uploader: ^1.2.1
   timeline_tile: ^1.0.0
   google_fonts: ^1.1.0
   #firebase_messaging: ^7.0.3

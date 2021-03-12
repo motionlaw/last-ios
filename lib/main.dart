@@ -39,7 +39,9 @@ class MyApp extends StatelessWidget {
     ]);
     return MaterialApp(
         title: 'Motion Law.',
-        theme: new ThemeData(primaryColor: Theme.Colors.motionTmBlue),
+        theme: new ThemeData(
+            primaryColor: Theme.Colors.motionTmBlue,
+        ),
         home: defaultHome,
         routes: {
           '/home': (context) => HomePage(),

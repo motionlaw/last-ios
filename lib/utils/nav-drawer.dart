@@ -65,12 +65,12 @@ class _NavDrawerState extends State<NavDrawer> {
           ),
           Divider(),
           ListTile(
-            leading: Icon(CupertinoIcons.chat_bubble_2),
+            leading: Icon(CupertinoIcons.briefcase_fill),
             title: Text('Your Cases'),
             onTap: () => {Navigator.pushNamed(context, '/communication')},
           ),
           ListTile(
-            leading: Icon(CupertinoIcons.at),
+            leading: Icon(CupertinoIcons.chat_bubble_2),
             title: Text('Chat'),
             onTap: () => {Navigator.pushNamed(context, '/chat')},
           ),
@@ -91,7 +91,7 @@ class _NavDrawerState extends State<NavDrawer> {
           ),
           ListTile(
             leading: Icon(CupertinoIcons.device_phone_portrait),
-            title: Text('Reviews'),
+            title: Text('Leave a review'),
             onTap: () => {Navigator.pushNamed(context, '/reviews')},
           ),
           Divider(),

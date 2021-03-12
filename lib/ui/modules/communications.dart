@@ -33,7 +33,11 @@ class CommunicationPage extends StatelessWidget {
         ),
         body : CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text('Communication'),
+            middle: Text('Communication', style: TextStyle(
+              color: Colors.white,
+            ),),
+            backgroundColor: Theme.Colors.loginGradientButton,
+            previousPageTitle: 'Back'
         ),
         child: Scaffold(
             body: SafeArea(

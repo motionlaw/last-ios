@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import '../../style/theme.dart' as Theme;
 
 class SettingsPage extends StatefulWidget {
   SettingSubPage createState() => SettingSubPage();
@@ -13,7 +14,11 @@ class SettingSubPage extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text('Settings'),
+            middle: Text('Settings', style: TextStyle(
+              color: Colors.white,
+            ),),
+            backgroundColor: Theme.Colors.loginGradientButton,
+            previousPageTitle: 'Back'
         ),
         child: Scaffold(
           body: SafeArea(

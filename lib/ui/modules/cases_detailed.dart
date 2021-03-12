@@ -4,45 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_uploader/flutter_uploader.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import '../../style/theme.dart' as Theme;
 
 Map data;
-final documents = <Widget>[];
-const String title = "FileUpload Sample app";
-const String uploadURL = "https://us-central1-flutteruploader.cloudfunctions.net/upload";
-
-class UploadItem {
-  final String id;
-  final String tag;
-  final MediaType type;
-  final int progress;
-  final UploadTaskStatus status;
-
-  UploadItem({
-    this.id,
-    this.tag,
-    this.type,
-    this.progress = 0,
-    this.status = UploadTaskStatus.undefined,
-  });
-
-  UploadItem copyWith({UploadTaskStatus status, int progress}) => UploadItem(
-      id: this.id,
-      tag: this.tag,
-      type: this.type,
-      status: status ?? this.status,
-      progress: progress ?? this.progress);
-
-  bool isCompleted() =>
-      this.status == UploadTaskStatus.canceled ||
-          this.status == UploadTaskStatus.complete ||
-          this.status == UploadTaskStatus.failed;
-}
-
-enum MediaType { Image, Video }
 
 class CasesDetailed extends StatefulWidget {
   CasesDetailed({Key key}) : super(key: key);
@@ -51,12 +17,7 @@ class CasesDetailed extends StatefulWidget {
 }
 
 class _CasesDetailedState extends State<CasesDetailed> {
-  //final Cases cases;
   final _formKey = GlobalKey();
-  FlutterUploader uploader = FlutterUploader();
-  StreamSubscription _progressSubscription;
-  StreamSubscription _resultSubscription;
-  Map<String, UploadItem> _tasks = {};
 
   Future<http.Response> _asyncMethod() async {
     var box = await Hive.openBox('app_data');
@@ -65,12 +26,24 @@ class _CasesDetailedState extends State<CasesDetailed> {
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${box.get('token')}'
     });
-    data = json.decode(_responseFuture.body);
-    print(data['error']);
-    if( data['error'] != true ){
-      data = data['data'];
-    } else {
-      data = null;
+
+    try {
+      data = json.decode(_responseFuture.body);
+      if( data['error'] != true ){
+        setState(() {
+          data = data['data'];
+        });
+
+
+      } else {
+        setState(() {
+          data = null;
+        });
+      }
+    } on FormatException catch (e) {
+      setState(() {
+        data = null;
+      });
     }
   }
 
@@ -91,7 +64,11 @@ class _CasesDetailedState extends State<CasesDetailed> {
       ),
       body : CupertinoPageScaffold(
           navigationBar: CupertinoNavigationBar(
-            middle: Text('Your Cases'),
+              middle: Text('Your Cases', style: TextStyle(
+                color: Colors.white,
+              ),),
+              backgroundColor: Theme.Colors.loginGradientButton,
+              previousPageTitle: 'Back'
           ),
           child: Scaffold(
               body: SafeArea(
@@ -229,13 +206,13 @@ class _CasesDetailedState extends State<CasesDetailed> {
                         title: Row(
                           children: <Widget>[
                             SizedBox(
-                              width: 50,
+                              width: 30,
                             ),
                             Padding(
                               padding: EdgeInsets.all(0.0),
                               child: Container(
                                 alignment: Alignment.centerLeft,
-                                width: MediaQuery.of(context).size.width * 0.70,
+                                width: MediaQuery.of(context).size.width * 0.80,
                                 child: DataTable(
                                   columns: [
                                     DataColumn(label: Text('Number')),
@@ -287,27 +264,36 @@ class _CasesDetailedState extends State<CasesDetailed> {
                         title: Row(
                             children: [
                               SizedBox(
-                                width: 50,
+                                width: 30,
                               ),
                               Padding(
                                 padding: EdgeInsets.all(0.0),
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  width: MediaQuery.of(context).size.width * 0.70,
+                                  width: MediaQuery.of(context).size.width * 0.80,
                                   child: DataTable(
                                     columns: [
                                       DataColumn(label: Text('Name')),
                                     ],
                                     rows: [
-                                      for( var x in data['files'] )
-                                      DataRow(cells: [
-                                        DataCell(
-                                          new InkWell(
-                                              child: new Text(x['name']),
-                                              onTap: () => launch(x['url'])
+                                      if ( data != null)
+
+                                        for( var x in data['files'] )
+                                        DataRow(cells: [
+                                          DataCell(
+                                            new InkWell(
+                                                child: new Text(x['name']),
+                                                onTap: () => launch(x['url'])
+                                            ),
                                           ),
-                                        ),
-                                      ]),
+                                        ])
+
+                                      else
+                                        DataRow(cells: [
+                                          DataCell(
+                                            Text('The folder of this case is empty.')
+                                          )
+                                        ]),
                                     ],
                                   ),
                                 ),

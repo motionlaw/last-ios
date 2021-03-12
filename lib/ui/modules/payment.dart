@@ -34,7 +34,11 @@ class PaymentPage extends StatelessWidget {
       ),
       body : CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('Payments'),
+        middle: Text('Make a payment', style: TextStyle(
+          color: Colors.white,
+        ),),
+        backgroundColor: Theme.Colors.loginGradientButton,
+        previousPageTitle: 'Back'
       ),
       child: Scaffold(
         body: SafeArea(
@@ -132,7 +136,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
               SizedBox(
                 width: 55,
               ),
-              Text('CASE BILLING INFORMATION:',
+              Text('CASE BILLING INFORMATION',
                   style: TextStyle(
                       color: Colors.blue,
                       fontSize: 12.0,
@@ -144,36 +148,77 @@ class MyExpansionTileState extends State<MyExpansionTile> {
           visualDensity: VisualDensity(horizontal: 0, vertical: -4),
           dense: true,
           title: Row(
+          children: <Widget>[
+            SizedBox(
+              width: 55,
+            ),
+            Text('Select an Invoice to Pay:',
+                style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 13.0,
+                    fontWeight: FontWeight.bold)),
+          ])
+        ),
+        ListTile(
+          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+          dense: true,
+          title: Row(
             children: <Widget>[
               SizedBox(
-                width: 50,
+                width: 30,
               ),
               Padding(
                 padding: EdgeInsets.all(0.0),
                 child: Container(
                   alignment: Alignment.centerLeft,
-                  width: MediaQuery.of(context).size.width * 0.70,
+                  width: MediaQuery.of(context).size.width * 0.80,
                   child: DataTable(
                     columns: [
                       DataColumn(label: Text('Number')),
-                      DataColumn(label: Text('Total')),
-                      DataColumn(label: Text('Status'))
+                      DataColumn(
+                          label: Expanded(
+                            child: Text(
+                              'Total',
+                              textAlign: TextAlign.center,
+                            )
+                          )
+                      ),
+                      DataColumn(
+                        label: Expanded(
+                        child: Text(
+                          'Status',
+                          textAlign: TextAlign.center,
+                        ))
+                      )
                     ],
                     rows: [
                       DataRow(cells: [
                         DataCell(Text('00252')),
                         DataCell(Text('\$2.000,00')),
-                        DataCell(Icon(CupertinoIcons.checkmark_square,
-                            color: Colors.green))
+                        DataCell(
+                          Container(
+                            width: 60,
+                            height:40,
+                            child: Icon(CupertinoIcons.checkmark_square,
+                                color: Colors.green)
+                          )
+                        )
                       ]),
                       DataRow(cells: [
                         DataCell(Text('00113')),
                         DataCell(Text('\$3.000,00')),
                         DataCell(
-                            Icon(CupertinoIcons.creditcard,
-                                color: Colors.blue), onTap: () {
-                          _launchURL();
-                        })
+                          new GestureDetector(
+                            onTap: (){
+                              _launchURL();
+                            },
+                          child: Container(
+                              width: 60,
+                              height:40,
+                              child: Icon(CupertinoIcons.creditcard,
+                                  color: Colors.red)
+                          ))
+                        )
                       ]),
                     ],
                   ),

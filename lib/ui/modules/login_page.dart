@@ -110,95 +110,100 @@ class _LoginPageState extends State<LoginPage>
   Widget build(BuildContext context) {
     return new Scaffold(
       key: _scaffoldKey,
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height >= 775.0
-            ? MediaQuery.of(context).size.height
-            : 775.0,
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 0,
-                top: 0,
-                right: 0,
-                bottom: 0,
-              ),
-              child: Flex(
-                direction: Axis.horizontal,
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height >= 775.0
+                  ? MediaQuery.of(context).size.height
+                  : 775.0,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  Container(
-                      width: MediaQuery.of(context).size.width * 1,
-                      color: Colors.black12,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 100,
-                          top: 50,
-                          right: 100,
-                          bottom: 30,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 0,
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                    ),
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      children: <Widget>[
+                        Container(
+                            width: MediaQuery.of(context).size.width * 1,
+                            color: Colors.black12,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 100,
+                                top: 50,
+                                right: 100,
+                                bottom: 30,
+                              ),
+                              child: Image.asset(
+                                "assets/img/Motionlaw-logogold-cr.png",
+                              ),
+                            ))
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 0,
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                    ),
+                    child: Image.asset(
+                      "assets/img/DC-Immigration-Law-Firm.png",
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 0,
+                      top: 20,
+                      right: 0,
+                      bottom: 0,
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: IconButton(
+                        color: Theme.Colors.loginGradientButton,
+                        icon: FaIcon(FontAwesomeIcons.userFriends),
+                        iconSize: 40,
+                        onPressed: () {},
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (i) {
+                        if (i == 0) {
+                          setState(() {
+                            right = Colors.white;
+                            left = Colors.black;
+                          });
+                        } else if (i == 1) {
+                          setState(() {
+                            right = Colors.black;
+                            left = Colors.white;
+                          });
+                        }
+                      },
+                      children: <Widget>[
+                        new ConstrainedBox(
+                          constraints: const BoxConstraints.expand(),
+                          child: _buildSignIn(context),
                         ),
-                        child: Image.asset(
-                          "assets/img/Motionlaw-logogold-cr.png",
-                        ),
-                      ))
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 0,
-                top: 0,
-                right: 0,
-                bottom: 0,
-              ),
-              child: Image.asset(
-                "assets/img/DC-Immigration-Law-Firm.png",
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 0,
-                top: 20,
-                right: 0,
-                bottom: 0,
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: IconButton(
-                  color: Theme.Colors.loginGradientButton,
-                  icon: FaIcon(FontAwesomeIcons.userFriends),
-                  iconSize: 40,
-                  onPressed: () {},
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (i) {
-                  if (i == 0) {
-                    setState(() {
-                      right = Colors.white;
-                      left = Colors.black;
-                    });
-                  } else if (i == 1) {
-                    setState(() {
-                      right = Colors.black;
-                      left = Colors.white;
-                    });
-                  }
-                },
-                children: <Widget>[
-                  new ConstrainedBox(
-                    constraints: const BoxConstraints.expand(),
-                    child: _buildSignIn(context),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
+            )],
         ),
       ),
     );
@@ -245,131 +250,125 @@ class _LoginPageState extends State<LoginPage>
       padding: EdgeInsets.only(top: 23.0),
       child: Column(
         children: <Widget>[
-          Stack(
-            alignment: Alignment.topCenter,
-            overflow: Overflow.visible,
-            children: <Widget>[
-              Card(
-                elevation: 2.0,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Container(
-                  width: 300.0,
-                  height: 190.0,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextFormField(
-                          focusNode: myFocusNodeEmailLogin,
-                          controller: loginEmailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(
-                              fontFamily: "WorkSansSemiBold",
-                              fontSize: 16.0,
-                              color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              FontAwesomeIcons.envelope,
-                              color: Colors.black,
-                              size: 14.0,
-                            ),
-                            hintText: "EMAIL ADDRESS",
-                            hintStyle: TextStyle(
-                                fontFamily: "WorkSansSemiBold", fontSize: 14.0),
-                          ),
+          Card(
+            elevation: 2.0,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Container(
+              width: 300.0,
+              height: 190.0,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                    child: TextFormField(
+                      focusNode: myFocusNodeEmailLogin,
+                      controller: loginEmailController,
+                      keyboardType: TextInputType.emailAddress,
+                      style: TextStyle(
+                          fontFamily: "WorkSansSemiBold",
+                          fontSize: 16.0,
+                          color: Colors.black),
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        icon: Icon(
+                          FontAwesomeIcons.envelope,
+                          color: Colors.black,
+                          size: 14.0,
                         ),
+                        hintText: "EMAIL ADDRESS",
+                        hintStyle: TextStyle(
+                            fontFamily: "WorkSansSemiBold", fontSize: 14.0),
                       ),
-                      Container(
-                        width: 250.0,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          focusNode: myFocusNodePasswordLogin,
-                          controller: loginPasswordController,
-                          obscureText: _obscureTextLogin,
-                          style: TextStyle(
-                              fontFamily: "WorkSansSemiBold",
-                              fontSize: 16.0,
-                              color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              FontAwesomeIcons.lock,
-                              size: 14.0,
-                              color: Colors.black,
-                            ),
-                            hintText: "PASSWORD",
-                            hintStyle: TextStyle(
-                                fontFamily: "WorkSansSemiBold", fontSize: 14.0),
-                            suffixIcon: GestureDetector(
-                              onTap: _toggleLogin,
-                              child: Icon(
-                                _obscureTextLogin
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
-                                size: 14.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  Container(
+                    width: 250.0,
+                    height: 1.0,
+                    color: Colors.grey[400],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                    child: TextField(
+                      focusNode: myFocusNodePasswordLogin,
+                      controller: loginPasswordController,
+                      obscureText: _obscureTextLogin,
+                      style: TextStyle(
+                          fontFamily: "WorkSansSemiBold",
+                          fontSize: 16.0,
+                          color: Colors.black),
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        icon: Icon(
+                          FontAwesomeIcons.lock,
+                          size: 14.0,
+                          color: Colors.black,
+                        ),
+                        hintText: "PASSWORD",
+                        hintStyle: TextStyle(
+                            fontFamily: "WorkSansSemiBold", fontSize: 14.0),
+                        suffixIcon: GestureDetector(
+                          onTap: _toggleLogin,
+                          child: Icon(
+                            _obscureTextLogin
+                                ? FontAwesomeIcons.eye
+                                : FontAwesomeIcons.eyeSlash,
+                            size: 14.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Container(
-                  margin: EdgeInsets.only(top: 220.0, left: 65.0, right: 65.0),
-                  width: double.infinity,
-                  decoration: new BoxDecoration(
-                    color: Theme.Colors.loginGradientButton,
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: CupertinoButton(
-                      child: Text(submit,
-                          style: new TextStyle(
-                              color: Colors.white, fontSize: 15)),
-                      onPressed: () {
-                        if (loginEmailController.text == "") {
-                          _handleClickMe(
-                              'Before continuing you must fill in the required fields!');
-                          return false;
-                        }
-                        if (loginPasswordController.text == "") {
-                          _handleClickMe('Password field is required!');
-                          return false;
-                        }
-                        setState(() {
-                          submit = 'LOADING...';
-                        });
-                        auth(loginEmailController.text,
-                                loginPasswordController.text)
-                            .then((response) {
-                          if (response == true) {
-                            Navigator.pushNamed(context, '/loading');
-                            Timer(Duration(seconds: 3),
-                                () => Navigator.pushNamed(context, '/home'));
-                          } else {
-                            _handleClickMe(
-                                'The username or password you entered is incorrect!');
-
-                            setState(() {
-                              submit = 'LOGIN';
-                            });
-                          }
-                        });
-                      })),
-            ],
+            ),
           ),
+          Container(
+              margin: EdgeInsets.only(top: 20.0, left: 65.0, right: 65.0),
+              width: double.infinity,
+              decoration: new BoxDecoration(
+                color: Theme.Colors.loginGradientButton,
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: CupertinoButton(
+                  child: Text(submit,
+                      style: new TextStyle(
+                          color: Colors.white, fontSize: 15)),
+                  onPressed: () {
+                    if (loginEmailController.text == "") {
+                      _handleClickMe(
+                          'Before continuing you must fill in the required fields!');
+                      return false;
+                    }
+                    if (loginPasswordController.text == "") {
+                      _handleClickMe('Password field is required!');
+                      return false;
+                    }
+                    setState(() {
+                      submit = 'LOADING...';
+                    });
+                    auth(loginEmailController.text,
+                        loginPasswordController.text)
+                        .then((response) {
+                      if (response == true) {
+                        Navigator.pushNamed(context, '/loading');
+                        Timer(Duration(seconds: 3),
+                                () => Navigator.pushNamed(context, '/home'));
+                      } else {
+                        _handleClickMe(
+                            'The username or password you entered is incorrect!');
+
+                        setState(() {
+                          submit = 'LOGIN';
+                        });
+                      }
+                    });
+                  })),
           Padding(
             padding: EdgeInsets.only(top: 10.0),
             child: FlatButton(

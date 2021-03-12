@@ -19,6 +19,7 @@ class _ReferPageState extends State<ReferPage>
   String submit = 'SUBMIT';
   Color buttonColor = Theme.Colors.loginGradientButton;
   String userName;
+  TextEditingController phoneController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController _recipientController = new TextEditingController();
 
@@ -48,7 +49,7 @@ class _ReferPageState extends State<ReferPage>
           builder: (BuildContext context) {
             return CupertinoAlertDialog(
               title: Text('Refer message send success.'),
-              content: Text('Your referal message was sent succesfully!'),
+              content: Text('${userName} - Thank you for your referral to Motion Law.  We will reach out to them shortly!'),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text('Close'),
@@ -123,7 +124,11 @@ class _ReferPageState extends State<ReferPage>
         ),
         body : CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text('Refer a Friend'),
+            middle: Text('Refer a Friend or Relative', style: TextStyle(
+              color: Colors.white,
+            ),),
+            backgroundColor: Theme.Colors.loginGradientButton,
+            previousPageTitle: 'Back'
         ),
         child: Scaffold(
             body: SafeArea(
@@ -136,14 +141,27 @@ class _ReferPageState extends State<ReferPage>
                           Padding(
                               padding: EdgeInsets.all(8.0),
                               child: Text(
-                                  'Type the phone number or email address of friend you want to introduce to Motion Law.')),
+                                  'Type the full Name and Phone number / email address of the person you would like to introduce to Motion Law.')),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextField(
                               controller: _recipientController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'Full Name Refered',
+                                labelText: 'Full Name of Friend or Relative',
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(7.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                child: Text(
+                                  "Provide at least one phone number or email address",
+                                  style: new TextStyle(
+                                      color: Colors.black45, fontSize: 14)
+                                ),
                               ),
                             ),
                           ),
@@ -153,7 +171,17 @@ class _ReferPageState extends State<ReferPage>
                               controller: emailController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: '# Phone / Email Address',
+                                labelText: 'Email Address',
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: phoneController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: '# Phone',
                               ),
                             ),
                           ),
@@ -186,12 +214,12 @@ class _ReferPageState extends State<ReferPage>
                                   onPressed: (){
                                     if (_recipientController.text == "") {
                                       _handleClickMe(
-                                          'Before continue, you must fill the required fields');
+                                          'Please provide either a phone number or an email address!');
                                       return false;
                                     }
                                     if (emailController.text == "") {
                                       _handleClickMe(
-                                          'Before continue, you must fill the required fields');
+                                          'Please provide either a phone number or an email address!');
                                       return false;
                                     }
                                     this.setState(

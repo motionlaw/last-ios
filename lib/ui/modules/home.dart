@@ -4,23 +4,6 @@ import '../../utils/nav-drawer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
-Map data;
-
-_asyncMethod(context) async {
-  /*var box = await Hive.openBox('app_data');
-  print('Name: ${box.get('token')}');
-  if( box.get('token') ){
-    http.Response response = await http.post('http://qqv.oex.mybluehost.me/api/user',
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer ${box.get('token')}'
-        }
-    );
-    data = json.decode(response.body);
-    print(data);
-  }*/
-}
-
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
   @override
@@ -29,11 +12,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
-  void initState() {
-    super.initState();
-    _asyncMethod(context);
-  }
-
   Widget build(BuildContext context) {
     return new Scaffold(
         drawer: NavDrawer(),
@@ -49,8 +27,19 @@ class Example8 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.only(
+          left: 0,
+          top: 0,
+          right: 0,
+          bottom: 0,
+        ),
+        child: Image.asset(
+          "assets/img/DC-Immigration-Law-Firm.png",
+        ),
+      ),
       Container(
-        constraints: const BoxConstraints(maxHeight: 180),
+        constraints: const BoxConstraints(maxHeight: 150),
         color: Colors.white,
         child: ListView(
           scrollDirection: Axis.horizontal,
@@ -79,7 +68,7 @@ class Example8 extends StatelessWidget {
                   ),
                   child: const Center(
                       child:
-                          Icon(CupertinoIcons.check_mark, color: Colors.white)),
+                          Icon(CupertinoIcons.check_mark, color: Colors.white, size: 20)),
                 ),
               ),
               startChild: const _Child(
@@ -110,7 +99,7 @@ class Example8 extends StatelessWidget {
                   ),
                   child: const Center(
                       child:
-                          Icon(CupertinoIcons.check_mark, color: Colors.white)),
+                          Icon(CupertinoIcons.check_mark, color: Colors.white, size: 20)),
                 ),
               ),
               startChild: const _Child(
@@ -138,7 +127,7 @@ class Example8 extends StatelessWidget {
                       '3',
                       style: TextStyle(
                         color: Color(0XFF141035),
-                        fontSize: 30,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -169,7 +158,7 @@ class Example8 extends StatelessWidget {
                       '4',
                       style: TextStyle(
                         color: Color(0XFF141035),
-                        fontSize: 30,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -200,7 +189,7 @@ class Example8 extends StatelessWidget {
                       '5',
                       style: TextStyle(
                         color: Color(0XFF141035),
-                        fontSize: 30,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -231,7 +220,7 @@ class Example8 extends StatelessWidget {
                       '6',
                       style: TextStyle(
                         color: Color(0XFF141035),
-                        fontSize: 30,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -262,7 +251,7 @@ class Example8 extends StatelessWidget {
                       '7',
                       style: TextStyle(
                         color: Color(0XFF141035),
-                        fontSize: 30,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -293,7 +282,7 @@ class Example8 extends StatelessWidget {
                       '8',
                       style: TextStyle(
                         color: Color(0XFF141035),
-                        fontSize: 30,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -324,7 +313,7 @@ class Example8 extends StatelessWidget {
                       '9',
                       style: TextStyle(
                         color: Color(0XFF141035),
-                        fontSize: 30,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -355,7 +344,7 @@ class Example8 extends StatelessWidget {
                       '10',
                       style: TextStyle(
                         color: Color(0XFF141035),
-                        fontSize: 30,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -386,7 +375,7 @@ class Example8 extends StatelessWidget {
                       '11',
                       style: TextStyle(
                         color: Color(0XFF141035),
-                        fontSize: 30,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -418,7 +407,7 @@ class Example8 extends StatelessWidget {
                       '12',
                       style: TextStyle(
                         color: Color(0XFF141035),
-                        fontSize: 30,
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -435,8 +424,10 @@ class Example8 extends StatelessWidget {
         Padding(
             padding: EdgeInsets.all(20.0),
             child: CupertinoButton(
-              onPressed: () => {},
-              color: Colors.orange,
+              onPressed: () => {
+                Navigator.pushNamed(context, '/casesDetailed')
+              },
+              color: Color(0xff9e7e46),
               //borderRadius: new BorderRadius.circular(30.0),
               child: new Text(
                 "Case Detail",

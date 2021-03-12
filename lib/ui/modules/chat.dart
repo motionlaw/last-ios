@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tawk/flutter_tawk.dart';
+import '../../style/theme.dart' as Theme;
 import 'package:hive/hive.dart';
 import 'dart:async';
 
@@ -41,13 +42,17 @@ class _ChatPageState extends State<ChatPage>
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text('Chat'),
+          middle: Text('Chat', style: TextStyle(
+            color: Colors.white,
+          ),),
+          backgroundColor: Theme.Colors.loginGradientButton,
+          previousPageTitle: 'Back',
           trailing: new GestureDetector(
             onTap: () {
               showAlertDialog(context);
             },
             child: new Text(exitLabel??'', style: TextStyle(
-                color: Colors.grey[800],
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 15))
           )

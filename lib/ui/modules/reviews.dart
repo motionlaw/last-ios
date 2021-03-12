@@ -30,7 +30,11 @@ class _ReviewsPageState extends State<ReviewsPage>
         ),
         body : CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text('Reviews'),
+            middle: Text('Reviews', style: TextStyle(
+              color: Colors.white,
+            ),),
+            backgroundColor: Theme.Colors.loginGradientButton,
+            previousPageTitle: 'Back'
         ),
         child: Scaffold(
             body: SafeArea(
@@ -38,6 +42,7 @@ class _ReviewsPageState extends State<ReviewsPage>
                   children: <Widget>[
                     WebView(
                       initialUrl: 'https://www.grade.us/motionlaw',
+                      javascriptMode: JavascriptMode.unrestricted,
                       onPageFinished: (finish) {
                         setState(() {
                           isLoading = false;

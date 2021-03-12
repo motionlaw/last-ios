@@ -131,7 +131,11 @@ class _SupportPageState extends State<SupportPage>
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text('Contact Us'),
+            middle: Text('Contact Us', style: TextStyle(
+              color: Colors.white,
+            ),),
+            backgroundColor: Theme.Colors.loginGradientButton,
+            previousPageTitle: 'Back'
         ),
         child: Scaffold(
           body: SafeArea(
