@@ -89,7 +89,7 @@ void showAlertDialog(BuildContext context) {
 
   showDialog(
       context: context,
-      child:  CupertinoAlertDialog(
+      builder: (_) =>  CupertinoAlertDialog(
         title: Text("Close Conversation?"),
         content: Text( "Are you sure you want to close the current conversation with motion law staff?"),
         actions: <Widget>[

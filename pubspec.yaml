@@ -34,9 +34,13 @@ dependencies:
   font_awesome_flutter: ^8.0.1
   path_provider: ^1.6.21
   http: ^0.12.2
-  url_launcher: ^5.7.10
+  url_launcher: ^6.0.2
   timeline_tile: ^1.0.0
   google_fonts: ^1.1.0
+  file_picker: ^2.1.4
+  dio: ^3.0.9
+  path: ^1.8.0
+  flutter_html: ^1.3.0
   #firebase_messaging: ^7.0.3
 
 dev_dependencies:

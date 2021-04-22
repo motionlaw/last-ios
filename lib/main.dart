@@ -15,6 +15,7 @@ import 'ui/modules/refer.dart';
 import 'ui/modules/reviews.dart';
 import 'ui/modules/settings.dart';
 import 'ui/modules/support.dart';
+import 'ui/modules/blog.dart';
 
 LoginPage appAuth = new LoginPage();
 Widget defaultHome = new LoginPage();
@@ -54,7 +55,8 @@ class MyApp extends StatelessWidget {
           '/settings': (context) => SettingsPage(),
           '/support': (context) => SupportPage(),
           '/refer': (context) => ReferPage(),
-          '/reviews': (context) => ReviewsPage()
+          '/reviews': (context) => ReviewsPage(),
+          '/blog': (context) => BlogPage()
         });
   }
 }

@@ -94,6 +94,11 @@ class _NavDrawerState extends State<NavDrawer> {
             title: Text('Leave a review'),
             onTap: () => {Navigator.pushNamed(context, '/reviews')},
           ),
+          ListTile(
+            leading: Icon(CupertinoIcons.book),
+            title: Text('Blog'),
+            onTap: () => {Navigator.pushNamed(context, '/blog')},
+          ),
           Divider(),
           ListTile(
             leading: Icon(CupertinoIcons.gear_solid),

@@ -12,9 +12,10 @@ Future<http.Response> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
       .get('https://qqv.oex.mybluehost.me/api/cases', headers: <String, String>{
-    'Content-Type': 'application/json; charset=UTF-8',
+    'Accept': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
+  print('Resultadoo :: ${_responseFuture.body}');
   return _responseFuture;
 }
 
@@ -33,7 +34,7 @@ class CommunicationPage extends StatelessWidget {
         ),
         body : CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-            middle: Text('Communication', style: TextStyle(
+            middle: Text('Your Cases', style: TextStyle(
               color: Colors.white,
             ),),
             backgroundColor: Theme.Colors.loginGradientButton,
@@ -49,7 +50,7 @@ class CommunicationPage extends StatelessWidget {
                   return Align(
                       alignment: Alignment.bottomLeft,
                       child: new Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
+                        height: MediaQuery.of(context).size.height * 0.6,
                         child: new Center(
                           child: new CupertinoActivityIndicator(),
                         ),
@@ -72,7 +73,7 @@ class MyExpansionTileList extends StatelessWidget {
     elementList.forEach((element) {
       if ( children.length < 3 ){
         children.add(
-          new MyExpansionTile(element['id'], element['name'], element['practice_area']),
+          new MyExpansionTile(element['id'], element['name'], element['practice_area'], element['created_at'], element['attorney']),
         );
       }
     });
@@ -92,16 +93,20 @@ class MyExpansionTile extends StatefulWidget {
   String id;
   String name;
   String practice_area;
-  MyExpansionTile(this.id, this.name, this.practice_area);
+  String created_at;
+  String attorney;
+  MyExpansionTile(this.id, this.name, this.practice_area, this.created_at, this.attorney);
   @override
-  State createState() => new MyExpansionTileState(this.id, this.name, this.practice_area);
+  State createState() => new MyExpansionTileState(this.id, this.name, this.practice_area, this.created_at, this.attorney);
 }
 
 class MyExpansionTileState extends State<MyExpansionTile> {
   String id;
   String name;
   String practice_area;
-  MyExpansionTileState(this.id, this.name, this.practice_area);
+  String created_at;
+  String attorney;
+  MyExpansionTileState(this.id, this.name, this.practice_area, this.created_at, this.attorney);
 
   @override
   void initState() {
@@ -136,7 +141,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                       TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold)),
               Padding(
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Text('Dec 7,2019 by Claire Esquivel',
+                child: Text('${widget.created_at} by ${widget.attorney}',
                     style: TextStyle(
                       fontSize: 13.0,
                     )),
@@ -159,7 +164,13 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                     child: new GestureDetector(
                       onTap: () {
                         Navigator.pushNamed(context, '/casesDetailed',
-                            arguments: {'myData': 'Some String Data'});
+                            arguments: {
+                              'path': widget.name,
+                              'practice_area': widget.practice_area,
+                              'created_at': widget.created_at,
+                              'attorney': widget.attorney
+                          }
+                        );
                       },
                       child: new Text("See more",
                           style: TextStyle(

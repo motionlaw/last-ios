@@ -3,11 +3,24 @@ import 'package:flutter/material.dart';
 import '../../utils/nav-drawer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:hive/hive.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
   @override
   _HomePageState createState() => new _HomePageState();
+}
+
+Future<http.Response> _asyncMethod() async {
+  var box = await Hive.openBox('app_data');
+  final _responseFuture = await http
+      .get('https://qqv.oex.mybluehost.me/blog-list', headers: <String, String>{
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Authorization': 'Bearer ${box.get('token')}'
+  });
+  return _responseFuture;
 }
 
 class _HomePageState extends State<HomePage> {
@@ -25,6 +38,37 @@ class _HomePageState extends State<HomePage> {
 class Example8 extends StatelessWidget {
   const Example8({Key key}) : super(key: key);
   @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: NewWidget()
+    ));
+  }
+}
+
+class NewWidget extends StatefulWidget {
+  @override
+  _NewWidgetState createState() => _NewWidgetState();
+}
+
+class _NewWidgetState extends State<NewWidget> {
+  String url = '';
+  String title = 'Loading...';
+  String content = 'Loading...';
+
+  @override
+  void initState() {
+    _asyncMethod().then((snapshot) {
+      Map<String, dynamic> map = json.decode(snapshot.body);
+      print('Resultado :: ${map['data']['post_date']}');
+      setState(() {
+        url = map['data']['post_thumbnail'];
+        title = map['data']['post_title'];
+        content = map['data']['post_name'];
+      });
+    });
+  }
+
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
       Padding(
@@ -425,7 +469,7 @@ class Example8 extends StatelessWidget {
             padding: EdgeInsets.all(20.0),
             child: CupertinoButton(
               onPressed: () => {
-                Navigator.pushNamed(context, '/casesDetailed')
+                Navigator.pushNamed(context, '/communication')
               },
               color: Color(0xff9e7e46),
               //borderRadius: new BorderRadius.circular(30.0),
@@ -504,8 +548,50 @@ class Example8 extends StatelessWidget {
                     ),
                     onPressed: () => {Navigator.pushNamed(context, '/refer')},
                   ))),
-        ],
+        ]),
+      Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text('Latest News', style: TextStyle(fontSize:24))
+          ]
       ),
+      Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              margin: EdgeInsets.all(15),
+              elevation: 10,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Column(
+                    children: <Widget>[
+                      Image.network(
+                          url,
+                          fit: BoxFit.cover,
+                          height: MediaQuery.of(context).size.width * 0.4
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Text(title, style: TextStyle(fontSize:16, fontWeight: FontWeight.w600), textAlign: TextAlign.left),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: new GestureDetector(
+                          onTap: (){
+                            Navigator.pushNamed(context, '/blog');
+                          },
+                          child: Text('Read more', style: TextStyle(color:Theme.of(context).primaryColor, fontWeight: FontWeight.w600), textAlign: TextAlign.right),
+
+                      ),
+                      )]
+                  ),
+              )
+            )
+          ],
+      )
     ]);
   }
 }
