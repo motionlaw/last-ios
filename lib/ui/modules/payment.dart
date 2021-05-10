@@ -45,8 +45,8 @@ class PaymentPage extends StatelessWidget {
           child: Column(children: <Widget>[
             new FutureBuilder(
               future: _asyncMethod(),
-              builder: (BuildContext context, AsyncSnapshot response) {
-                if (!response.hasData) {
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if ( snapshot.connectionState == ConnectionState.waiting ) {
                   return Align(
                       alignment: Alignment.bottomLeft,
                       child: new Container(
@@ -55,9 +55,23 @@ class PaymentPage extends StatelessWidget {
                           child: new CupertinoActivityIndicator(),
                         ),
                       ));
+                } else if ( snapshot.hasError ) {
+                  return Text('Error');
+                } else {
+                  List<dynamic> jsonList = json.decode(snapshot.data.body);
+                  if ( jsonList.length > 0 ) {
+                    return new MyExpansionTileList(jsonList);
+                  } else {
+                    return ExpansionTile(
+                      leading: Icon(CupertinoIcons.drop_triangle),
+                      trailing: SizedBox.shrink(),
+                      title: Text(
+                        'There are not cases linked to your user',
+                        style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }
                 }
-                List<dynamic> jsonList = json.decode(response.data.body);
-                return new MyExpansionTileList(jsonList);
               })
           ])
         )

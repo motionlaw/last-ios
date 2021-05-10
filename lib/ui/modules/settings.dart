@@ -2,13 +2,49 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../style/theme.dart' as Theme;
+import 'package:http/http.dart' as http;
+import 'package:hive/hive.dart';
+import 'dart:convert';
 
 class SettingsPage extends StatefulWidget {
   SettingSubPage createState() => SettingSubPage();
 }
 
+Future<http.Response> _userMethod() async {
+  var box = await Hive.openBox('app_data');
+  final _responseFuture = await http
+      .get('https://qqv.oex.mybluehost.me/api/user', headers: <String, String>{
+    'Accept': 'application/json; charset=UTF-8',
+    'Authorization': 'Bearer ${box.get('token')}'
+  });
+  return _responseFuture;
+}
+
 class SettingSubPage extends State<SettingsPage> {
+
   bool showvalue = false;
+  TextEditingController _controller;
+  TextEditingController nameController;
+  TextEditingController last_nameController;
+  TextEditingController id_numberController;
+  TextEditingController phoneController;
+  TextEditingController emailController;
+  TextEditingController birthdayController;
+  TextEditingController pushController;
+
+  @override
+  void initState() {
+    _userMethod().then((snapshot) {
+      Map<String, dynamic> map = json.decode(snapshot.body);
+      nameController = new TextEditingController(text: "${map['data']['name']}");
+      last_nameController = new TextEditingController(text: "${map['data']['last_name']}");
+      id_numberController = new TextEditingController(text: "${map['data']['id_number']}");
+      phoneController = new TextEditingController(text: "${map['data']['phone_number']}");
+      emailController = new TextEditingController(text: "${map['data']['email']}");
+      birthdayController = new TextEditingController(text: "${map['data']['birthday']}");
+      pushController = new TextEditingController(text: "${map['data']['push_auth']}");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +74,16 @@ class SettingSubPage extends State<SettingsPage> {
                         new ListTile(
                           leading: const Icon(Icons.person),
                           title: new TextField(
+                            controller: nameController,
                             decoration: new InputDecoration(
-                              hintText: "Name",
+                              hintText: 'Name',
                             ),
                           ),
                         ),
                         new ListTile(
                           leading: const Icon(Icons.art_track_sharp),
                           title: new TextField(
+                            controller: last_nameController,
                             decoration: new InputDecoration(
                               hintText: "Lastname",
                             ),
@@ -54,6 +92,7 @@ class SettingSubPage extends State<SettingsPage> {
                         new ListTile(
                           leading: const Icon(Icons.account_box),
                           title: new TextField(
+                            controller: id_numberController,
                             decoration: new InputDecoration(
                               hintText: "ID Number",
                             ),
@@ -62,6 +101,7 @@ class SettingSubPage extends State<SettingsPage> {
                         new ListTile(
                           leading: const Icon(Icons.phone),
                           title: new TextField(
+                            controller: phoneController,
                             decoration: new InputDecoration(
                               hintText: "Phone Number",
                             ),
@@ -70,6 +110,7 @@ class SettingSubPage extends State<SettingsPage> {
                         new ListTile(
                           leading: const Icon(Icons.email_outlined),
                           title: new TextField(
+                            controller: emailController,
                             decoration: new InputDecoration(
                               hintText: "Email Address",
                             ),
@@ -78,6 +119,7 @@ class SettingSubPage extends State<SettingsPage> {
                         new ListTile(
                           leading: const Icon(Icons.card_giftcard),
                           title: new TextField(
+                            controller: birthdayController,
                             decoration: new InputDecoration(
                               hintText: "Birthday",
                             ),

@@ -50,14 +50,27 @@ class CommunicationPage extends StatelessWidget {
                   return Align(
                       alignment: Alignment.bottomLeft,
                       child: new Container(
-                        height: MediaQuery.of(context).size.height * 0.6,
+                        height: MediaQuery.of(context).size.height * 0.8,
                         child: new Center(
                           child: new CupertinoActivityIndicator(),
                         ),
                       ));
                 }
                 List<dynamic> jsonList = json.decode(response.data.body);
-                return new MyExpansionTileList(jsonList);
+                print('Numero :: ${jsonList.length}');
+                if (  jsonList.length > 0 ){
+                  return new MyExpansionTileList(jsonList);
+                } else {
+                  return ExpansionTile(
+                    leading: Icon(CupertinoIcons.drop_triangle),
+                    trailing: SizedBox.shrink(),
+                    title: Text(
+                      'There are not cases linked to your user',
+                      style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                    ),
+                  );
+                }
+
               })
         ])))));
   }

@@ -7,6 +7,22 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 
+List statusCase = [
+  //{'name': 'Assign Case', 'icon': Icon(CupertinoIcons.check_mark, color: Colors.white, size: 20)},
+  {'id':1, 'label':'Assign Case', 'name': 'Assign Case', 'icon': Text('1', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':2, 'label':'Waiting for\nIntroduction', 'name': 'Waiting for nIntroduction', 'icon': Text('2', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':3, 'label':'Collecting\nEvidence', 'name': 'Collecting Evidence', 'icon': Text('3', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':4, 'label':'Preparing\nPacket', 'name': 'Preparing Packet', 'icon': Text('4', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':5, 'label':'Attorney\nReview', 'name': 'Attorney Review', 'icon': Text('5', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':6, 'label':'Review and\nSignatures', 'name': 'Review and Signatures', 'icon': Text('6', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':7, 'label':'Filed', 'name': 'Filed', 'icon': Text('7', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':8, 'label':'Pending', 'name': 'Pending', 'icon': Text('8', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':9, 'label':'On Hold', 'name': 'On Hold', 'icon': Text('9', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':10, 'label':'Pending\nPayment', 'name': 'Pending Payment', 'icon': Text('10', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':11, 'label':'Upcoming\nHearing', 'name': 'Upcoming Hearing', 'icon': Text('11', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':12, 'label':'Upcoming\nTrial', 'name': 'Upcoming Trial', 'icon': Text('12', style: TextStyle(color: Colors.black45, fontSize: 20))},
+];
+
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
   @override
@@ -16,8 +32,18 @@ class HomePage extends StatefulWidget {
 Future<http.Response> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
-      .get('https://qqv.oex.mybluehost.me/blog-list', headers: <String, String>{
+      .get('https://qqv.oex.mybluehost.me/blog-list/1/en', headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',
+    'Authorization': 'Bearer ${box.get('token')}'
+  });
+  return _responseFuture;
+}
+
+Future<http.Response> _casesMethod() async {
+  var box = await Hive.openBox('app_data');
+  final _responseFuture = await http
+      .get('https://qqv.oex.mybluehost.me/api/cases', headers: <String, String>{
+    'Accept': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
   return _responseFuture;
@@ -52,19 +78,20 @@ class NewWidget extends StatefulWidget {
 }
 
 class _NewWidgetState extends State<NewWidget> {
-  String url = '';
+  String url = 'https://raw.githubusercontent.com/Codelessly/FlutterLoadingGIFs/master/packages/cupertino_activity_indicator.gif';
   String title = 'Loading...';
   String content = 'Loading...';
+  int id_blog;
 
   @override
   void initState() {
     _asyncMethod().then((snapshot) {
       Map<String, dynamic> map = json.decode(snapshot.body);
-      print('Resultado :: ${map['data']['post_date']}');
       setState(() {
-        url = map['data']['post_thumbnail'];
-        title = map['data']['post_title'];
-        content = map['data']['post_name'];
+        id_blog = map['data'][0]['post_id'];
+        url = map['data'][0]['post_thumbnail'];
+        title = map['data'][0]['post_title'];
+        content = map['data'][0]['post_name'];
       });
     });
   }
@@ -82,404 +109,7 @@ class _NewWidgetState extends State<NewWidget> {
           "assets/img/DC-Immigration-Law-Firm.png",
         ),
       ),
-      Container(
-        constraints: const BoxConstraints(maxHeight: 150),
-        color: Colors.white,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              isFirst: true,
-              afterLineStyle: const LineStyle(
-                color: Colors.green,
-                thickness: 7,
-              ),
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                      child:
-                          Icon(CupertinoIcons.check_mark, color: Colors.white, size: 20)),
-                ),
-              ),
-              startChild: const _Child(
-                text: "Assign Case",
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              beforeLineStyle: const LineStyle(
-                color: Colors.green,
-                thickness: 7,
-              ),
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                drawGap: true,
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                      child:
-                          Icon(CupertinoIcons.check_mark, color: Colors.white, size: 20)),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'Waiting for\nIntroduction',
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '3',
-                      style: TextStyle(
-                        color: Color(0XFF141035),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'Collecting\nEvidence',
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '4',
-                      style: TextStyle(
-                        color: Color(0XFF141035),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'Preparing\nPacket',
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '5',
-                      style: TextStyle(
-                        color: Color(0XFF141035),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'Attorney\nReview',
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '6',
-                      style: TextStyle(
-                        color: Color(0XFF141035),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'Review and\nSignatures',
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '7',
-                      style: TextStyle(
-                        color: Color(0XFF141035),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'Filed',
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '8',
-                      style: TextStyle(
-                        color: Color(0XFF141035),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'Pending',
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '9',
-                      style: TextStyle(
-                        color: Color(0XFF141035),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'On Hold',
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '10',
-                      style: TextStyle(
-                        color: Color(0XFF141035),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'Pending\nPayment',
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '11',
-                      style: TextStyle(
-                        color: Color(0XFF141035),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'Upcoming\nHearing',
-              ),
-            ),
-            TimelineTile(
-              axis: TimelineAxis.horizontal,
-              alignment: TimelineAlign.end,
-              isLast: true,
-              indicatorStyle: IndicatorStyle(
-                width: 40,
-                height: 60,
-                padding: const EdgeInsets.all(8),
-                indicator: Container(
-                  decoration: const BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '12',
-                      style: TextStyle(
-                        color: Color(0XFF141035),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              startChild: const _Child(
-                text: 'Upcoming\nTrial',
-              ),
-            ),
-          ],
-        ),
-      ),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        Padding(
-            padding: EdgeInsets.all(20.0),
-            child: CupertinoButton(
-              onPressed: () => {
-                Navigator.pushNamed(context, '/communication')
-              },
-              color: Color(0xff9e7e46),
-              //borderRadius: new BorderRadius.circular(30.0),
-              child: new Text(
-                "Case Detail",
-                textAlign: TextAlign.center,
-                style: new TextStyle(color: Colors.white),
-              ),
-            ))
-      ]),
+      caseArea(),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -567,9 +197,16 @@ class _NewWidgetState extends State<NewWidget> {
                   child: Column(
                     children: <Widget>[
                       Image.network(
-                          url,
-                          fit: BoxFit.cover,
-                          height: MediaQuery.of(context).size.width * 0.4
+                        url,
+                        fit: BoxFit.cover,
+                        height: MediaQuery.of(context).size.width * 0.4,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CupertinoActivityIndicator()
+                          );
+                        },
                       ),
                       Container(
                         padding: EdgeInsets.all(10),
@@ -581,7 +218,10 @@ class _NewWidgetState extends State<NewWidget> {
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: new GestureDetector(
                           onTap: (){
-                            Navigator.pushNamed(context, '/blog');
+                            Navigator.pushNamed(context, '/blog',
+                                arguments: {
+                                  'id_blog': id_blog
+                                });
                           },
                           child: Text('Read more', style: TextStyle(color:Theme.of(context).primaryColor, fontWeight: FontWeight.w600), textAlign: TextAlign.right),
 
@@ -593,6 +233,126 @@ class _NewWidgetState extends State<NewWidget> {
           ],
       )
     ]);
+  }
+}
+
+class caseArea extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+        child: FutureBuilder(
+          future: _casesMethod(),
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              if ( snapshot.connectionState == ConnectionState.waiting ) {
+                return Align(
+                    alignment: Alignment.bottomLeft,
+                    child: new Container(
+                      //height: MediaQuery.of(context).size.height,
+                      height: 100,
+                      child: new Center(
+                        child: new CupertinoActivityIndicator(),
+                      ),
+                    ));
+              } else if ( snapshot.hasError ) {
+                return Text('Error');
+              } else {
+                List<dynamic> data = json.decode(snapshot.data.body);
+                if ( data.length > 0 ) {
+                  return Column(children: <Widget>[
+                    statusCases(data:data),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: CupertinoButton(
+                            onPressed: () => {
+                              Navigator.pushNamed(context, '/communication')
+                            },
+                            color: Color(0xff9e7e46),
+                            child: new Text(
+                              "Case Detail",
+                              textAlign: TextAlign.center,
+                              style: new TextStyle(color: Colors.white),
+                            ),
+                          ))
+                    ])
+                  ]);
+                } else {
+                  return Container();
+                }
+              }
+            })
+          );
+      }
+}
+
+class statusCases extends StatefulWidget {
+  const statusCases({
+    Key key,
+    @required GlobalKey<State<StatefulWidget>> formKey,
+    @required this.data,
+  }) : _formKey = formKey, super(key: key);
+
+  final GlobalKey<State<StatefulWidget>> _formKey;
+  final List<dynamic> data;
+
+  @override
+  _statusCasesState createState() => _statusCasesState();
+}
+
+class _statusCasesState extends State<statusCases> {
+
+  @override
+  Widget build(BuildContext context) {
+    var query = statusCase.where((row) => (row["name"].contains(widget.data[0]['status'])));
+    var join = query.first;
+    return CupertinoPageScaffold(
+      child: Container(
+        constraints: const BoxConstraints(maxHeight: 150),
+        color: Colors.white,
+        child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: <Widget>[
+              for(var item in statusCase )
+                TimelineTile(
+                axis: TimelineAxis.horizontal,
+                alignment: TimelineAlign.end,
+                isFirst: (item['id'] == 1) ? true : false,
+                isLast: (item['id'] == 12) ? true : false,
+                afterLineStyle: LineStyle(
+                  color: ( join['id'] > item['id'] ) ? Colors.green : Colors.black45,
+                  thickness: ( join['id'] > item['id'] ) ? 7 : 2,
+                ),
+                beforeLineStyle: LineStyle(
+                  color: ( join['id'] > item['id'] ) ? Colors.green : Colors.black45,
+                  thickness: ( join['id'] > item['id'] ) ? 7 : 2,
+                ),
+                indicatorStyle: IndicatorStyle(
+                  width: 40,
+                  height: 60,
+                  padding: const EdgeInsets.all(8),
+                  indicator: Container(
+                    decoration: BoxDecoration(
+                      color: ( join['id'] > item['id'] ) ? Colors.green : Colors.black12,
+                      border: Border.fromBorderSide(
+                        BorderSide(
+                          color: ( join['id'] > item['id'] ) ? Colors.grey : Colors.black26,
+                        ),
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                        child:
+                        ( join['id'] > item['id'] ) ? Icon(CupertinoIcons.check_mark, color: Colors.white, size: 20) : item['icon']),
+                  ),
+                ),
+                startChild: _Child(
+                  text: item['label'],
+                ),
+              )
+          ]
+        )
+      )
+    );
   }
 }
 
