@@ -17,18 +17,18 @@ bool fbVisible = false;
 var allFiles = false;
 
 class CasesDetailed extends StatefulWidget {
-  CasesDetailed({Key key}) : super(key: key);
+  CasesDetailed({Key? key}) : super(key: key);
   @override
   _CasesDetailedState createState() => new _CasesDetailedState();
 }
 
 class _CasesDetailedState extends State<CasesDetailed> {
   final _formKey = GlobalKey();
-  Map arg;
-  Map arguments;
-  File selectedfile;
-  Response response;
-  String progress;
+  Map? arg;
+  Map? arguments;
+  File? selectedfile;
+  Response? response;
+  String? progress;
   String var_path = '';
   String practice_area = '';
   String created_at = '';
@@ -36,10 +36,10 @@ class _CasesDetailedState extends State<CasesDetailed> {
   Dio dio = new Dio();
 
   Future<http.Response> _asyncMethod(context) async {
-    arguments = await ModalRoute.of(context).settings.arguments as Map;
+    arguments = await ModalRoute.of(context)?.settings.arguments as Map;
     var box = await Hive.openBox('app_data');
     final _responseFuture = await http
-        .get('https://qqv.oex.mybluehost.me/api/cases/files/${arguments['path']}', headers: <String, String>{
+        .get(Uri.parse('https://qqv.oex.mybluehost.me/api/cases/files/${arguments?['path']}'), headers: <String, String>{
       'Accept': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${box.get('token')}'
     });
@@ -49,17 +49,17 @@ class _CasesDetailedState extends State<CasesDetailed> {
 
   void selectFile(context) async {
     var box = await Hive.openBox('app_data');
-    FilePickerResult result = await FilePicker.platform.pickFiles(type: FileType.media);
-    selectedfile = File(result.files.first.path);
+    FilePickerResult result = (await FilePicker.platform.pickFiles(type: FileType.media))!;
+    selectedfile = File(result.files.first.path!);
 
     Navigator.pushNamed(context, '/loading');
 
     FormData formdata = FormData.fromMap({
       "user_id": 2,
-      "path": arguments['path'],
+      "path": arguments?['path'],
       "file": await MultipartFile.fromFile(
-          selectedfile.path,
-          filename: basename(selectedfile.path)
+          selectedfile!.path,
+          filename: basename(selectedfile!.path)
       ),
     });
 
@@ -73,7 +73,7 @@ class _CasesDetailedState extends State<CasesDetailed> {
           progress = "$sent" + " Bytes of " "$total Bytes - " +  percentage + " % uploaded";
         });
       },);
-    if(response.statusCode == 200){
+    if(response!.statusCode == 200){
       //print(response.toString());
       Navigator.pushNamed(context, '/casesDetailed',
           arguments: {
@@ -99,12 +99,12 @@ class _CasesDetailedState extends State<CasesDetailed> {
   }
 
   void stateParams(context) async {
-    arguments = await ModalRoute.of(context).settings.arguments as Map;
+    arguments = await ModalRoute.of(context)?.settings.arguments as Map;
     setState(() {
-      var_path = arguments['path'];
-      practice_area = arguments['practice_area'];
-      created_at = arguments['created_at'];
-      attorney = arguments['attorney'];
+      var_path = arguments?['path'];
+      practice_area = arguments?['practice_area'];
+      created_at = arguments?['created_at'];
+      attorney = arguments?['attorney'];
     });
   }
 
@@ -163,15 +163,15 @@ class _CasesDetailedState extends State<CasesDetailed> {
 
 class expansionTile extends StatefulWidget {
   const expansionTile({
-    Key key,
+    Key? key,
     @required this.arguments,
-    @required GlobalKey<State<StatefulWidget>> formKey,
+    @required GlobalKey<State<StatefulWidget>>? formKey,
     @required this.map,
   }) : _formKey = formKey, super(key: key);
 
-  final Map arguments;
-  final GlobalKey<State<StatefulWidget>> _formKey;
-  final Map<String, dynamic> map;
+  final Map? arguments;
+  final GlobalKey<State<StatefulWidget>>? _formKey;
+  final Map<String, dynamic>? map;
 
   @override
   _expansionTileState createState() => _expansionTileState();
@@ -180,7 +180,7 @@ class expansionTile extends StatefulWidget {
 class _expansionTileState extends State<expansionTile> {
   @override
   void initState() {
-    if ( widget.map.length > 0 ) {
+    if ( widget.map!.length > 0 ) {
       setState(() {
         allFiles = true;
       });
@@ -196,11 +196,11 @@ class _expansionTileState extends State<expansionTile> {
         trailing: SizedBox.shrink(),
         leading: Icon(CupertinoIcons.archivebox_fill),
         title: Text(
-          widget.arguments['path'],
+          widget.arguments!['path'],
           style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
-          widget.arguments['practice_area'],
+          widget.arguments!['practice_area'],
           style: TextStyle(
             fontSize: 12.0,
           ),
@@ -221,7 +221,7 @@ class _expansionTileState extends State<expansionTile> {
                         fontWeight: FontWeight.bold)),
                 Padding(
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: Text('${widget.arguments['created_at']} by ${widget.arguments['attorney']}',
+                  child: Text('${widget.arguments!['created_at']} by ${widget.arguments!['attorney']}',
                       style: TextStyle(
                         fontSize: 13.0,
                       )),
@@ -274,9 +274,9 @@ class _expansionTileState extends State<expansionTile> {
                                                     .multiline,
                                                 placeholder: "Message",
                                                 onChanged: (value) {
-                                                  if (value.isEmpty) {
+                                                  /*if (value.isEmpty) {
                                                     return 'Please enter a valid message';
-                                                  }
+                                                  }*/
                                                 },
                                               ),
                                             ])),
@@ -507,18 +507,18 @@ class _expansionTileState extends State<expansionTile> {
                               DataColumn(label: Text('Action'))
                             ],
                             rows: [
-                              if ( widget.map.length > 1 )
+                              if ( widget.map!.length > 1 )
                                   for (int i = 0; i < 2; i++)
                                       DataRow(cells: [
                                         DataCell(
                                             Container(
                                                 width: 185,
-                                                child: new Text(widget.map['data']['files'][i]['name'])
+                                                child: new Text(widget.map!['data']['files'][i]['name'])
                                             )),
                                         DataCell(
                                             new GestureDetector(
                                                 onTap: (){
-                                                  launch(widget.map['data']['files'][i]['url']);
+                                                  launch(widget.map!['data']['files'][i]['url']);
                                                 },
                                                 child: Container(
                                                     width: 60,

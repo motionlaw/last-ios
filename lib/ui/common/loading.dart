@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 class LoadingPage extends StatefulWidget {
-  LoadingPage({Key key}) : super(key: key);
+  LoadingPage({Key? key}) : super(key: key);
 
   @override
   _LoadingPageState createState() => new _LoadingPageState();

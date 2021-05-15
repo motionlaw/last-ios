@@ -5,7 +5,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../style/theme.dart' as Theme;
 
 class ReviewsPage extends StatefulWidget {
-  ReviewsPage({Key key}) : super(key: key);
+  ReviewsPage({Key? key}) : super(key: key);
 
 
   @override

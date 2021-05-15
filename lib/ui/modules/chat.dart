@@ -1,13 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_tawk/flutter_tawk.dart';
+import '../common/tawk/flutter_tawk.dart';
 import '../../style/theme.dart' as Theme;
 import 'package:hive/hive.dart';
 import 'dart:async';
+import 'package:webview_flutter/webview_flutter.dart';
+
+WebViewController? _controller;
+
+void _closeChat() {
+  String javascriptString;
+
+  javascriptString = '''
+        Tawk_API = Tawk_API || {};
+        Tawk_API.endChat();
+        Tawk_API.onChatEnded = function(){
+          print('el chat ha acabado');
+        }
+      ''';
+
+  _controller!.evaluateJavascript(javascriptString);
+}
 
 class ChatPage extends StatefulWidget {
-  ChatPage({Key key}) : super(key: key);
+  ChatPage({Key? key}) : super(key: key);
   @override
   _ChatPageState createState() => new _ChatPageState();
 }
@@ -15,8 +32,8 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage>
   with SingleTickerProviderStateMixin {
 
-  String userName;
-  String userEmail;
+  String userName = '';
+  String userEmail = '';
   String exitLabel = '';
 
   Future getHive() async {
@@ -30,7 +47,6 @@ class _ChatPageState extends State<ChatPage>
     super.initState();
     getHive().then((response) {
       this.setState((){
-        print(response);
         userName = response['name'];
         userEmail = response['email'];
       },
@@ -51,14 +67,14 @@ class _ChatPageState extends State<ChatPage>
             onTap: () {
               showAlertDialog(context);
             },
-            child: new Text(exitLabel??'', style: TextStyle(
+            child: new Text(exitLabel, style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 15))
           )
         ),
         child: Scaffold(
-            backgroundColor: Colors.white,
+            //backgroundColor: Colors.white,
             body: SafeArea(
               child: Tawk(
                 directChatLink:
@@ -66,6 +82,7 @@ class _ChatPageState extends State<ChatPage>
                 visitor: TawkVisitor(
                   name: userName,
                   email: userEmail,
+                  hash: 'as1d8asd'
                 ),
                 onLoad: () {
                   Timer(Duration(seconds: 5), () {
@@ -77,6 +94,9 @@ class _ChatPageState extends State<ChatPage>
                 onLinkTap: (String url) {
                   print(url);
                 },
+                onChatEnd: (String url) {
+                  print(url);
+                },
                 placeholder: Center(
                   child: Text('Loading...'),
                 ),
@@ -86,7 +106,6 @@ class _ChatPageState extends State<ChatPage>
 }
 
 void showAlertDialog(BuildContext context) {
-
   showDialog(
       context: context,
       builder: (_) =>  CupertinoAlertDialog(
@@ -97,6 +116,7 @@ void showAlertDialog(BuildContext context) {
               isDefaultAction: true,
               onPressed: (){
                 Navigator.pop(context);
+                //_closeChat();
               },
               child: Text("Cancel")
           ),
@@ -105,7 +125,8 @@ void showAlertDialog(BuildContext context) {
               isDefaultAction: true,
               onPressed: () async {
                 //Navigator.pop(context);
-                Navigator.pushNamed(context, "/chat");
+                //Navigator.pushNamed(context, "/chat");
+                _closeChat();
               },
               child: Text("Close")
           ),

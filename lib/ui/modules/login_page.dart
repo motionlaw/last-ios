@@ -12,7 +12,7 @@ import '../../style/theme.dart' as Theme;
 import '../../utils/functions.dart' as tool;
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   checkStatus() async {
     var box = await Hive.openBox('app_data');
@@ -44,13 +44,13 @@ class _LoginPageState extends State<LoginPage>
   String submit = 'LOGIN';
   bool _obscureTextLogin = true;
 
-  PageController _pageController;
+  PageController? _pageController;
 
   Color left = Colors.black;
   Color right = Colors.white;
 
-  Map data;
-  Map info;
+  Map? data;
+  Map? info;
 
   Future<void> _handleClickMe(message) async {
     return showDialog<void>(
@@ -76,34 +76,34 @@ class _LoginPageState extends State<LoginPage>
   Future auth(String mail, String pass) async {
     if (tool.Functions.validateEmail(mail)) {
       http.Response response = await http.post(
-          'https://qqv.oex.mybluehost.me/api/login',
+          Uri.parse('https://qqv.oex.mybluehost.me/api/login'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(<String, String>{'email': mail, 'password': pass}));
       data = json.decode(response.body);
-      if (data['response'] == true) {
+      if (data!['response'] == true) {
         var box = await Hive.openBox('app_data');
-        box.put('token', data['token']);
+        box.put('token', data!['token']);
         /**/
         getUser();
         /**/
       }
-      return data['response'];
+      return data!['response'];
     }
   }
 
   Future getUser() async {
     var box = await Hive.openBox('app_data');
     http.Response response = await http.get(
-      'https://qqv.oex.mybluehost.me/api/user',
+      Uri.parse('https://qqv.oex.mybluehost.me/api/user'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ${box.get('token')}'
       },
     );
     info = json.decode(response.body);
-    box.put('user_data', info['data']);
+    box.put('user_data', info!['data']);
   }
 
   @override
@@ -231,7 +231,7 @@ class _LoginPageState extends State<LoginPage>
   void showInSnackBar(String value, String warn) {
     FocusScope.of(context).requestFocus(new FocusNode());
     _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+    _scaffoldKey.currentState!.showSnackBar(new SnackBar(
       content: new Text(
         value,
         textAlign: TextAlign.center,
@@ -343,11 +343,11 @@ class _LoginPageState extends State<LoginPage>
                     if (loginEmailController.text == "") {
                       _handleClickMe(
                           'Before continuing you must fill in the required fields!');
-                      return false;
+                      return;
                     }
                     if (loginPasswordController.text == "") {
                       _handleClickMe('Password field is required!');
-                      return false;
+                      return;
                     }
                     setState(() {
                       submit = 'LOADING...';

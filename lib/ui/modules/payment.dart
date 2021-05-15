@@ -12,7 +12,7 @@ import '../../style/theme.dart' as Theme;
 Future<http.Response> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
-      .get('https://qqv.oex.mybluehost.me/api/cases', headers: <String, String>{
+      .get(Uri.parse('https://qqv.oex.mybluehost.me/api/cases'), headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });

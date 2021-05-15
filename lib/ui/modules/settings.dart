@@ -13,7 +13,7 @@ class SettingsPage extends StatefulWidget {
 Future<http.Response> _userMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
-      .get('https://qqv.oex.mybluehost.me/api/user', headers: <String, String>{
+      .get(Uri.parse('https://qqv.oex.mybluehost.me/api/user'), headers: <String, String>{
     'Accept': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
@@ -22,15 +22,15 @@ Future<http.Response> _userMethod() async {
 
 class SettingSubPage extends State<SettingsPage> {
 
-  bool showvalue = false;
-  TextEditingController _controller;
-  TextEditingController nameController;
-  TextEditingController last_nameController;
-  TextEditingController id_numberController;
-  TextEditingController phoneController;
-  TextEditingController emailController;
-  TextEditingController birthdayController;
-  TextEditingController pushController;
+  bool? showvalue = false;
+  TextEditingController? _controller;
+  TextEditingController? nameController;
+  TextEditingController? last_nameController;
+  TextEditingController? id_numberController;
+  TextEditingController? phoneController;
+  TextEditingController? emailController;
+  TextEditingController? birthdayController;
+  TextEditingController? pushController;
 
   @override
   void initState() {
@@ -140,7 +140,7 @@ class SettingSubPage extends State<SettingsPage> {
                               Text('Enable Push notification on your mobile'),
                           trailing: Checkbox(
                             value: this.showvalue,
-                            onChanged: (bool value) {
+                            onChanged: (bool? value) {
                               setState(() {
                                 this.showvalue = value;
                               });

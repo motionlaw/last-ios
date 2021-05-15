@@ -6,44 +6,32 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import '../../style/theme.dart' as Theme;
 
-const List<String> colors = const <String>[
-  'Red',
-  'Yellow',
-  'Amber',
-  'Blue',
-  'Black',
-  'Pink',
-  'Purple',
-  'White',
-  'Grey',
-  'Green',
-];
-
-List<dynamic> staff;
+List<dynamic>? staff;
 
 Future<String> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
-      .get('https://qqv.oex.mybluehost.me/api/staff', headers: <String, String>{
+      .get(Uri.parse('https://qqv.oex.mybluehost.me/api/staff'), headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
   if ( _responseFuture.statusCode == 200 ) {
-    staff = json.decode(_responseFuture.body);
+    //staff = json.decode(_responseFuture.body);
+    return _responseFuture.body;
   } else {
     throw Exception('Failed to load post');
   }
 }
 
 class SupportPage extends StatefulWidget {
-  SupportPage({Key key}) : super(key: key);
+  SupportPage({Key? key}) : super(key: key);
   @override
   _SupportPageState createState() => new _SupportPageState();
 }
 
 class _SupportPageState extends State<SupportPage>
   with SingleTickerProviderStateMixin {
-  Map data;
+  Map? data;
   int _selectedIndex = 0;
   Color buttonColor = Theme.Colors.loginGradientButton;
   String submit = 'SUBMIT';
@@ -83,7 +71,7 @@ class _SupportPageState extends State<SupportPage>
     };
     var body = json.encode(datos);
     http.Response response = await http.post(
-        'https://qqv.oex.mybluehost.me/api/support',
+        Uri.parse('https://qqv.oex.mybluehost.me/api/support'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${box.get('token')}'
@@ -91,7 +79,7 @@ class _SupportPageState extends State<SupportPage>
         body: body
     );
     data = json.decode(response.body);
-    if( data['code'] == 200 ){
+    if( data?['code'] == 200 ){
       return showDialog<void>(
         context: context,
         barrierDismissible: false,
@@ -124,7 +112,11 @@ class _SupportPageState extends State<SupportPage>
   @override
   void initState() {
     super.initState();
-    _asyncMethod();
+    _asyncMethod().then((snapshot){
+      setState(() {
+        staff = json.decode(snapshot);
+      });
+    });
   }
 
   @override
@@ -162,11 +154,11 @@ class _SupportPageState extends State<SupportPage>
                                           itemExtent: 32.0,
                                           onSelectedItemChanged: (int index) {
                                             setState(() {
-                                              _staffController.text = staff[index]['name'];
+                                              _staffController.text = staff![index]['name'];
                                             });
                                           },
-                                        children: List.generate(staff.length, (index){
-                                          return Text(staff[index]['name'].toString());
+                                        children: List.generate(staff!.length, (index){
+                                          return Text(staff![index]['name'].toString());
                                         }),
                                       ),
                                     );
@@ -218,17 +210,17 @@ class _SupportPageState extends State<SupportPage>
                                   if (_staffController.text == "") {
                                     _handleClickMe(
                                         'Before continue, you must fill the required fields');
-                                    return false;
+                                    return;
                                   }
                                   if (_subjectController.text == "") {
                                     _handleClickMe(
                                         'Before continue, you must fill the required fields');
-                                    return false;
+                                    return;
                                   }
                                   if (_messageController.text == "") {
                                     _handleClickMe(
                                         'Before continue, you must fill the required fields');
-                                    return false;
+                                    return;
                                   }
                                   this.setState(
                                         () {

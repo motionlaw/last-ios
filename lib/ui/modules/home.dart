@@ -24,7 +24,7 @@ List statusCase = [
 ];
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
   @override
   _HomePageState createState() => new _HomePageState();
 }
@@ -32,7 +32,7 @@ class HomePage extends StatefulWidget {
 Future<http.Response> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
-      .get('https://qqv.oex.mybluehost.me/blog-list/1/en', headers: <String, String>{
+      .get(Uri.parse('https://qqv.oex.mybluehost.me/blog-list/1/en'), headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
@@ -42,7 +42,7 @@ Future<http.Response> _asyncMethod() async {
 Future<http.Response> _casesMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
-      .get('https://qqv.oex.mybluehost.me/api/cases', headers: <String, String>{
+      .get(Uri.parse('https://qqv.oex.mybluehost.me/api/cases'), headers: <String, String>{
     'Accept': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 class Example8 extends StatelessWidget {
-  const Example8({Key key}) : super(key: key);
+  const Example8({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -81,7 +81,9 @@ class _NewWidgetState extends State<NewWidget> {
   String url = 'https://raw.githubusercontent.com/Codelessly/FlutterLoadingGIFs/master/packages/cupertino_activity_indicator.gif';
   String title = 'Loading...';
   String content = 'Loading...';
-  int id_blog;
+  int? id_blog;
+
+  get loadingBuilder => null;
 
   @override
   void initState() {
@@ -200,13 +202,13 @@ class _NewWidgetState extends State<NewWidget> {
                         url,
                         fit: BoxFit.cover,
                         height: MediaQuery.of(context).size.width * 0.4,
-                        loadingBuilder: (BuildContext context, Widget child,
+                        /*loadingBuilder: (BuildContext context, Widget child,
                             ImageChunkEvent loadingProgress) {
                           if (loadingProgress == null) return child;
                           return Center(
                             child: CupertinoActivityIndicator()
                           );
-                        },
+                        },*/
                       ),
                       Container(
                         padding: EdgeInsets.all(10),
@@ -287,13 +289,13 @@ class caseArea extends StatelessWidget {
 
 class statusCases extends StatefulWidget {
   const statusCases({
-    Key key,
-    @required GlobalKey<State<StatefulWidget>> formKey,
+    Key? key,
     @required this.data,
+    @required GlobalKey<State<StatefulWidget>>? formKey,
   }) : _formKey = formKey, super(key: key);
 
-  final GlobalKey<State<StatefulWidget>> _formKey;
-  final List<dynamic> data;
+  final GlobalKey<State<StatefulWidget>>? _formKey;
+  final List<dynamic>? data;
 
   @override
   _statusCasesState createState() => _statusCasesState();
@@ -303,7 +305,7 @@ class _statusCasesState extends State<statusCases> {
 
   @override
   Widget build(BuildContext context) {
-    var query = statusCase.where((row) => (row["name"].contains(widget.data[0]['status'])));
+    var query = statusCase.where((row) => (row["name"].contains(widget.data![0]['status'])));
     var join = query.first;
     return CupertinoPageScaffold(
       child: Container(
@@ -358,8 +360,8 @@ class _statusCasesState extends State<statusCases> {
 
 class _Child extends StatelessWidget {
   const _Child({
-    Key key,
-    this.text,
+    Key? key,
+    required this.text,
     this.font = 'Roboto',
   }) : super(key: key);
   final String text;

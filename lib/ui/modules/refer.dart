@@ -8,17 +8,17 @@ import '../../utils/functions.dart' as tool;
 import '../../style/theme.dart' as Theme;
 
 class ReferPage extends StatefulWidget {
-  ReferPage({Key key}) : super(key: key);
+  ReferPage({Key? key}) : super(key: key);
   @override
   _ReferPageState createState() => new _ReferPageState();
 }
 
 class _ReferPageState extends State<ReferPage>
   with SingleTickerProviderStateMixin {
-  Map data;
+  Map? data;
   String submit = 'SUBMIT';
   Color buttonColor = Theme.Colors.loginGradientButton;
-  String userName;
+  String? userName;
   TextEditingController phoneController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController _recipientController = new TextEditingController();
@@ -34,7 +34,7 @@ class _ReferPageState extends State<ReferPage>
       };
       var body = json.encode(datos);
       http.Response response = await http.post(
-          'https://qqv.oex.mybluehost.me/api/refers',
+          Uri.parse('https://qqv.oex.mybluehost.me/api/refers'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer ${box.get('token')}'
@@ -42,7 +42,7 @@ class _ReferPageState extends State<ReferPage>
       body: body
       );
       data = json.decode(response.body);
-      if( data['code'] == 200 ){
+      if( data!['code'] == 200 ){
         return showDialog<void>(
           context: context,
           barrierDismissible: false,
@@ -215,12 +215,12 @@ class _ReferPageState extends State<ReferPage>
                                     if (_recipientController.text == "") {
                                       _handleClickMe(
                                           'Please provide either a phone number or an email address!');
-                                      return false;
+                                      return;
                                     }
                                     if (emailController.text == "") {
                                       _handleClickMe(
                                           'Please provide either a phone number or an email address!');
-                                      return false;
+                                      return;
                                     }
                                     this.setState(
                                           () {

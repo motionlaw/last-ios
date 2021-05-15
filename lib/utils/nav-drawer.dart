@@ -6,17 +6,17 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 class NavDrawer extends StatefulWidget {
-  NavDrawer({Key key}) : super(key: key);
+  NavDrawer({Key? key}) : super(key: key);
   @override
   _NavDrawerState createState() => new _NavDrawerState();
 }
 
 class _NavDrawerState extends State<NavDrawer> {
-  String userName;
+  String? userName;
   _logout(context) async {
     Navigator.pushNamed(context, '/loading');
     var box = await Hive.openBox('app_data');
-    await http.post("https://qqv.oex.mybluehost.me/api/logout",
+    await http.post(Uri.parse("https://qqv.oex.mybluehost.me/api/logout"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${box.get('token')}'

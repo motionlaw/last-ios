@@ -7,10 +7,10 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter_html/flutter_html.dart';
 
-Map arguments;
+Map? arguments;
 
 class BlogPage extends StatefulWidget {
-  BlogPage({Key key}) : super(key: key);
+  BlogPage({Key? key}) : super(key: key);
   @override
   _BlogPageState createState() => new _BlogPageState();
 }
@@ -18,9 +18,9 @@ class BlogPage extends StatefulWidget {
 Future<http.Response> _asyncMethod(context) async {
   var url;
   var box = await Hive.openBox('app_data');
-  arguments = await ModalRoute.of(context).settings.arguments as Map;
+  arguments = await ModalRoute.of(context)?.settings.arguments as Map;
   if ( arguments != null) {
-    url = 'https://qqv.oex.mybluehost.me/blog-id/${arguments['id_blog']}';
+    url = 'https://qqv.oex.mybluehost.me/blog-id/${arguments?['id_blog']}';
   } else {
     url = 'https://qqv.oex.mybluehost.me/blog-list/1/en';
   }
