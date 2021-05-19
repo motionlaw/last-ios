@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import '../../../../style/theme.dart' as Theme;
 import 'tawk_visitor.dart';
 
 /// [Tawk] Widget.
@@ -42,17 +42,6 @@ class _TawkState extends State<Tawk> {
   WebViewController? _controller;
   bool _isLoading = true;
 
-  void _endChat(){
-    String javascriptString;
-
-    javascriptString = '''
-        Tawk_API = Tawk_API || {};
-        Tawk_API.endChat();
-      ''';
-
-    _controller!.evaluateJavascript(javascriptString);
-  }
-
   void _setUser(TawkVisitor visitor) {
     final json = jsonEncode(visitor);
     String javascriptString;
@@ -60,13 +49,14 @@ class _TawkState extends State<Tawk> {
     if (Platform.isIOS) {
       javascriptString = '''
         Tawk_API = Tawk_API || {};
-        Tawk_API.setAttributes($json);
+        Tawk_API.setAttributes($json);        
       ''';
     } else {
       javascriptString = '''
         Tawk_API = Tawk_API || {};
         Tawk_API.onLoad = function() {
           Tawk_API.setAttributes($json);
+          print('listo');
         };
       ''';
     }
@@ -111,6 +101,25 @@ class _TawkState extends State<Tawk> {
               _isLoading = false;
             });
           },
+        ),
+        Positioned(
+            right: 5.0,
+            top: 0.0,
+            child: new Container(
+              width: 60.0,
+              height: 60.0,
+              decoration: new BoxDecoration(color: _isLoading ? Colors.white : Theme.Colors.loginGradientButton),
+              child: new GestureDetector(
+                onTap: () {
+                  //Navigator.pushNamed(context, "myRoute");
+                  //_controller.evaluateJavascript('Tawk_API.showWidget();');
+                  _controller!.evaluateJavascript('Tawk_API.endChat();');
+                },
+                child: Center(
+                  child: new Text("Close", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)
+                ),
+              )
+            )
         ),
         _isLoading
             ? widget.placeholder

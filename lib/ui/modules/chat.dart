@@ -5,23 +5,7 @@ import '../common/tawk/flutter_tawk.dart';
 import '../../style/theme.dart' as Theme;
 import 'package:hive/hive.dart';
 import 'dart:async';
-import 'package:webview_flutter/webview_flutter.dart';
 
-WebViewController? _controller;
-
-void _closeChat() {
-  String javascriptString;
-
-  javascriptString = '''
-        Tawk_API = Tawk_API || {};
-        Tawk_API.endChat();
-        Tawk_API.onChatEnded = function(){
-          print('el chat ha acabado');
-        }
-      ''';
-
-  _controller!.evaluateJavascript(javascriptString);
-}
 
 class ChatPage extends StatefulWidget {
   ChatPage({Key? key}) : super(key: key);
@@ -63,15 +47,6 @@ class _ChatPageState extends State<ChatPage>
           ),),
           backgroundColor: Theme.Colors.loginGradientButton,
           previousPageTitle: 'Back',
-          trailing: new GestureDetector(
-            onTap: () {
-              showAlertDialog(context);
-            },
-            child: new Text(exitLabel, style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 15))
-          )
         ),
         child: Scaffold(
             //backgroundColor: Colors.white,
@@ -103,33 +78,4 @@ class _ChatPageState extends State<ChatPage>
               ),
             )));
   }
-}
-
-void showAlertDialog(BuildContext context) {
-  showDialog(
-      context: context,
-      builder: (_) =>  CupertinoAlertDialog(
-        title: Text("Close Conversation?"),
-        content: Text( "Are you sure you want to close the current conversation with motion law staff?"),
-        actions: <Widget>[
-          CupertinoDialogAction(
-              isDefaultAction: true,
-              onPressed: (){
-                Navigator.pop(context);
-                //_closeChat();
-              },
-              child: Text("Cancel")
-          ),
-          CupertinoDialogAction(
-              textStyle: TextStyle(color: Colors.red),
-              isDefaultAction: true,
-              onPressed: () async {
-                //Navigator.pop(context);
-                //Navigator.pushNamed(context, "/chat");
-                _closeChat();
-              },
-              child: Text("Close")
-          ),
-        ],
-      ));
 }

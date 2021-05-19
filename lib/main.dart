@@ -17,6 +17,9 @@ import 'ui/modules/settings.dart';
 import 'ui/modules/support.dart';
 import 'ui/modules/blog.dart';
 
+/* Services. */
+import 'services/PushNotificationService.dart';
+
 LoginPage appAuth = new LoginPage();
 Widget defaultHome = new LoginPage();
 
@@ -24,6 +27,9 @@ void main(context) async {
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
+
+  await PushNotificationService.initializeApp();
+
   bool _result = await appAuth.checkStatus();
   if (_result == true) {
     defaultHome = new HomePage();

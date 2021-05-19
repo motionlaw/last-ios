@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>922430497770-rgrmrnb6dohar7ujm5mim15n68iu09nm.apps.googleusercontent.com</string>
+	<string>717803557081-kcb4kesrnbe7668furb9kd349h0ljrmr.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.922430497770-rgrmrnb6dohar7ujm5mim15n68iu09nm</string>
+	<string>com.googleusercontent.apps.717803557081-kcb4kesrnbe7668furb9kd349h0ljrmr</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBHybjBFaE2hynOpwu-4MXfRVqqxeQ98UA</string>
+	<string>AIzaSyD_tbKQx4jJriPCzP7WBzLo8-aSoDnms6M</string>
 	<key>GCM_SENDER_ID</key>
-	<string>922430497770</string>
+	<string>717803557081</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.motionlaw.messaging</string>
+	<string>com.motionlaw.app</string>
 	<key>PROJECT_ID</key>
-	<string>motion-messaging</string>
+	<string>newagent-a9fa0</string>
 	<key>STORAGE_BUCKET</key>
-	<string>motion-messaging.appspot.com</string>
+	<string>newagent-a9fa0.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:922430497770:ios:575ebd2dadcd8a92bf8893</string>
+	<string>1:717803557081:ios:f193d79b33bbce1a1daec8</string>
+	<key>DATABASE_URL</key>
+	<string>https://newagent-a9fa0.firebaseio.com</string>
 </dict>
 </plist>
