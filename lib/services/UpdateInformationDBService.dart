@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'dart:convert';
+import 'SlackNotificationService.dart';
 
 class UpdateInformationDBService {
 
@@ -18,6 +19,8 @@ class UpdateInformationDBService {
         },
         body: body
     );
+
+    SlackNotificationService.sendSlackMessage(response.body.toString());
 
     return response;
   }

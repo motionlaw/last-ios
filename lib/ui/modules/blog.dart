@@ -8,6 +8,7 @@ import 'dart:math';
 import 'package:flutter_html/flutter_html.dart';
 
 Map? arguments;
+var url;
 
 class BlogPage extends StatefulWidget {
   BlogPage({Key? key}) : super(key: key);
@@ -16,19 +17,16 @@ class BlogPage extends StatefulWidget {
 }
 
 Future<http.Response> _asyncMethod(context) async {
-  var url;
   var box = await Hive.openBox('app_data');
-  arguments = await ModalRoute.of(context)?.settings.arguments as Map;
-  if ( arguments != null) {
-    url = 'https://qqv.oex.mybluehost.me/blog-id/${arguments?['id_blog']}';
-  } else {
-    url = 'https://qqv.oex.mybluehost.me/blog-list/1/en';
-  }
+
+  url = 'https://qqv.oex.mybluehost.me/blog-list/1/en';
+
   final _responseFuture = await http
-      .get(url, headers: <String, String>{
+      .get(Uri.parse(url), headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
+
   return _responseFuture;
 }
 
@@ -39,14 +37,6 @@ class _BlogPageState extends State<BlogPage>
   void initState() {
     super.initState();
   }
-
-  final List <Color> colores = [
-    Colors.red,
-    Colors.orange,
-    Colors.pink,
-    Colors.amber,
-    Colors.lime,
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +50,6 @@ class _BlogPageState extends State<BlogPage>
           previousPageTitle: 'Back',
         ),
         child: Scaffold(
-          //backgroundColor: Colors.white,
           body: FutureBuilder(
               future: _asyncMethod(context),
               builder: (BuildContext context, AsyncSnapshot snapshot){

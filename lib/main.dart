@@ -16,9 +16,11 @@ import 'ui/modules/reviews.dart';
 import 'ui/modules/settings.dart';
 import 'ui/modules/support.dart';
 import 'ui/modules/blog.dart';
+import 'ui/modules/blog_id.dart';
 
 /* Services. */
 import 'services/PushNotificationService.dart';
+import 'services/SlackNotificationService.dart';
 
 LoginPage appAuth = new LoginPage();
 Widget defaultHome = new LoginPage();
@@ -34,6 +36,11 @@ void main(context) async {
   if (_result == true) {
     defaultHome = new HomePage();
   }
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+    SlackNotificationService.sendSlackMessage(details.toString());
+  };
+
   runApp(MyApp());
 }
 
@@ -62,7 +69,8 @@ class MyApp extends StatelessWidget {
           '/support': (context) => SupportPage(),
           '/refer': (context) => ReferPage(),
           '/reviews': (context) => ReviewsPage(),
-          '/blog': (context) => BlogPage()
+          '/blog': (context) => BlogPage(),
+          '/blog-id': (context) => BlogIdPage()
         });
   }
 }

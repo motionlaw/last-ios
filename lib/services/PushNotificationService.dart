@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
-import 'UpdateInformationDBService.dart';
+import 'package:hive/hive.dart';
+import 'SlackNotificationService.dart';
 
 class PushNotificationService {
   static FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -9,20 +9,25 @@ class PushNotificationService {
 
   static Future _backgroundHandler(RemoteMessage message) async {
     print('onBackgroundHandler ${message.messageId}');
+    SlackNotificationService.sendSlackMessage(message.toString());
   }
 
   static Future _onMessageHandler(RemoteMessage message) async {
     print('onMessageHandler ${message.messageId}');
+    SlackNotificationService.sendSlackMessage(message.toString());
   }
 
   static Future _onMessageOpenApp(RemoteMessage message) async {
     print('onMessageOpenAppHandler ${message.messageId}');
+    SlackNotificationService.sendSlackMessage(message.toString());
   }
 
   static Future initializeApp() async {
     await Firebase.initializeApp();
+    var box = await Hive.openBox('app_data');
     token = await FirebaseMessaging.instance.getToken();
-    await UpdateInformationDBService.updateProfile({'push_token':token});
+    box.put('push_token', token);
+    SlackNotificationService.sendSlackMessage(token!);
     print('Token $token');
 
     NotificationSettings settings = await messaging.requestPermission(

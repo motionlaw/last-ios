@@ -6,6 +6,8 @@ import 'package:timeline_tile/timeline_tile.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
+import '../../services/UpdateInformationDBService.dart';
+import '../../services/SlackNotificationService.dart';
 
 List statusCase = [
   //{'name': 'Assign Case', 'icon': Icon(CupertinoIcons.check_mark, color: Colors.white, size: 20)},
@@ -31,11 +33,13 @@ class HomePage extends StatefulWidget {
 
 Future<http.Response> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
+  await UpdateInformationDBService.updateProfile({'push_token':box.get('push_token')});
   final _responseFuture = await http
       .get(Uri.parse('https://qqv.oex.mybluehost.me/blog-list/1/en'), headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
+  SlackNotificationService.sendSlackMessage(_responseFuture.body.toString());
   return _responseFuture;
 }
 
@@ -46,6 +50,7 @@ Future<http.Response> _casesMethod() async {
     'Accept': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
+  SlackNotificationService.sendSlackMessage(_responseFuture.body.toString());
   return _responseFuture;
 }
 
@@ -195,7 +200,7 @@ class _NewWidgetState extends State<NewWidget> {
               margin: EdgeInsets.all(15),
               elevation: 10,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(10),
                   child: Column(
                     children: <Widget>[
                       Image.network(
@@ -220,7 +225,7 @@ class _NewWidgetState extends State<NewWidget> {
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: new GestureDetector(
                           onTap: (){
-                            Navigator.pushNamed(context, '/blog',
+                            Navigator.pushNamed(context, '/blog-id',
                                 arguments: {
                                   'id_blog': id_blog
                                 });
