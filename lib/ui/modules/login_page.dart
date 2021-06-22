@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 import '../../style/theme.dart' as Theme;
 import '../../utils/functions.dart' as tool;
+import '../../services/SlackNotificationService.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -75,19 +76,23 @@ class _LoginPageState extends State<LoginPage>
 
   Future auth(String mail, String pass) async {
     if (tool.Functions.validateEmail(mail)) {
-      http.Response response = await http.post(
-          Uri.parse('https://qqv.oex.mybluehost.me/api/login'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{'email': mail, 'password': pass}));
-      data = json.decode(response.body);
-      if (data!['response'] == true) {
-        var box = await Hive.openBox('app_data');
-        box.put('token', data!['token']);
-        /**/
-        getUser();
-        /**/
+      try {
+        http.Response response = await http.post(
+            Uri.parse('https://qqv.oex.mybluehost.me/api/login'),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String>{'email': mail, 'password': pass}));
+        data = json.decode(response.body);
+        if (data!['response'] == true) {
+          var box = await Hive.openBox('app_data');
+          box.put('token', data!['token']);
+          /**/
+          getUser();
+          /**/
+        }
+      } catch (e) {
+        SlackNotificationService.sendSlackMessage('Error - login_page.dart (auth) : ${e.toString()}');
       }
       return data!['response'];
     }

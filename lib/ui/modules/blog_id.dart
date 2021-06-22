@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter_html/flutter_html.dart';
+import '../../services/SlackNotificationService.dart';
 
 Map? arguments;
 var url;
@@ -17,19 +18,23 @@ class BlogIdPage extends StatefulWidget {
 }
 
 Future<http.Response> _asyncMethod(context) async {
-  var box = await Hive.openBox('app_data');
-  arguments = await ModalRoute.of(context)?.settings.arguments as Map;
+  var _responseFuture;
+  try{
+    var box = await Hive.openBox('app_data');
+    arguments = await ModalRoute.of(context)?.settings.arguments as Map;
 
-  if ( arguments != null) {
-    url = 'https://qqv.oex.mybluehost.me/blog-id/${arguments?['id_blog']}';
+    if ( arguments != null) {
+      url = 'https://qqv.oex.mybluehost.me/blog-id/${arguments?['id_blog']}';
+    }
+
+    _responseFuture = await http
+        .get(Uri.parse(url), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer ${box.get('token')}'
+    });
+  } catch (e){
+    SlackNotificationService.sendSlackMessage('blog_id.dart : _asyncMethod() - ${e.toString()}');
   }
-
-  final _responseFuture = await http
-      .get(Uri.parse(url), headers: <String, String>{
-    'Content-Type': 'application/json; charset=UTF-8',
-    'Authorization': 'Bearer ${box.get('token')}'
-  });
-
   return _responseFuture;
 }
 
@@ -67,12 +72,13 @@ class _BlogPageState extends State<BlogIdPage>
                         ));
                   } else {
                     Map<String, dynamic> map = json.decode(snapshot.data.body);
+                    print('Ejemplo : ${map['post_content']}');
                     final List<Widget> items = List.generate(1, (i) => Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Container(
                           width: double.infinity,
                           child: Html(
-                            data: (map['data'][0] == null) ? map['data']['post_content'] : map['data'][0]['post_content'],
+                            data: (map == null) ? map['post_content'] : map['post_content'],
                           )
                       ),
                     ));
@@ -85,7 +91,7 @@ class _BlogPageState extends State<BlogIdPage>
                                   pinned: true,
                                   expandedHeight: 200,
                                   flexibleSpace: Image.network(
-                                      (map['data'][0] == null) ? map['data']['post_thumbnail'] : map['data'][0]['post_thumbnail'],
+                                      (map == null) ? map['post_thumbnail'] : map['post_thumbnail'],
                                       fit: BoxFit.cover
                                   )
                               ),

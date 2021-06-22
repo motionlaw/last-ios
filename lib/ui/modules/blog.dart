@@ -69,7 +69,7 @@ class _BlogPageState extends State<BlogPage>
                     child: Container(
                         width: double.infinity,
                         child: Html(
-                          data: (map['data'][0] == null) ? map['data']['post_content'] : map['data'][0]['post_content'],
+                          data: (map == null) ? map['post_content'] : map['post_content'],
                         )
                     ),
                   ));
@@ -82,7 +82,7 @@ class _BlogPageState extends State<BlogPage>
                               pinned: true,
                               expandedHeight: 200,
                               flexibleSpace: Image.network(
-                                  (map['data'][0] == null) ? map['data']['post_thumbnail'] : map['data'][0]['post_thumbnail'],
+                                  (map == null) ? map['post_thumbnail'] : map['post_thumbnail'],
                                   fit: BoxFit.cover
                               )
                           ),

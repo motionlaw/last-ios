@@ -15,7 +15,6 @@ Future<http.Response> _asyncMethod() async {
     'Accept': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
-  print('Resultadoo :: ${_responseFuture.body}');
   return _responseFuture;
 }
 
@@ -57,7 +56,6 @@ class CommunicationPage extends StatelessWidget {
                       ));
                 }
                 List<dynamic> jsonList = json.decode(response.data.body);
-                print('Numero :: ${jsonList.length}');
                 if (  jsonList.length > 0 ){
                   return new MyExpansionTileList(jsonList);
                 } else {

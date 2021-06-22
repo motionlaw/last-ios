@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../common/tawk/flutter_tawk.dart';
 import '../../style/theme.dart' as Theme;
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:hive/hive.dart';
 import 'dart:async';
 
@@ -15,10 +16,12 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage>
   with SingleTickerProviderStateMixin {
+  WebViewController? _controller;
 
   String userName = '';
   String userEmail = '';
   String exitLabel = '';
+  bool exitButton = true;
 
   Future getHive() async {
     var box = await Hive.openBox('app_data');
@@ -47,34 +50,25 @@ class _ChatPageState extends State<ChatPage>
           ),),
           backgroundColor: Theme.Colors.loginGradientButton,
           previousPageTitle: 'Back',
+          trailing: Visibility(
+            child: new GestureDetector(
+              onTap: () {
+                _controller!.evaluateJavascript('Tawk_API.endChat();');
+              },
+              child: new Text("Close", style: TextStyle(color:Colors.white),),
+            ),
+            visible: true,
+          ),
         ),
         child: Scaffold(
-            //backgroundColor: Colors.white,
+            backgroundColor: Theme.Colors.loginGradientButton,
             body: SafeArea(
-              child: Tawk(
-                directChatLink:
-                    'https://tawk.to/chat/5ff64356c31c9117cb6c28b7/1ercve36t',
-                visitor: TawkVisitor(
-                  name: userName,
-                  email: userEmail,
-                  hash: 'as1d8asd'
-                ),
-                onLoad: () {
-                  Timer(Duration(seconds: 5), () {
-                    setState(() {
-                      exitLabel = 'Close';
-                    });
-                  });
+              child: new WebView(
+                initialUrl: 'https://tawk.to/chat/5ff64356c31c9117cb6c28b7/1ercve36t',
+                javascriptMode: JavascriptMode.unrestricted,
+                onWebViewCreated: (WebViewController webViewController) async {
+                  _controller = webViewController;
                 },
-                onLinkTap: (String url) {
-                  print(url);
-                },
-                onChatEnd: (String url) {
-                  print(url);
-                },
-                placeholder: Center(
-                  child: Text('Loading...'),
-                ),
               ),
             )));
   }

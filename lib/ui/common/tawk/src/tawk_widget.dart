@@ -104,10 +104,10 @@ class _TawkState extends State<Tawk> {
         ),
         Positioned(
             right: 5.0,
-            top: 0.0,
+            top: 10.0,
             child: new Container(
               width: 60.0,
-              height: 60.0,
+              height: 45.0,
               decoration: new BoxDecoration(color: _isLoading ? Colors.white : Theme.Colors.loginGradientButton),
               child: new GestureDetector(
                 onTap: () {

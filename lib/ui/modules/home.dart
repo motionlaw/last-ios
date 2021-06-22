@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../utils/nav-drawer.dart';
@@ -10,7 +11,6 @@ import '../../services/UpdateInformationDBService.dart';
 import '../../services/SlackNotificationService.dart';
 
 List statusCase = [
-  //{'name': 'Assign Case', 'icon': Icon(CupertinoIcons.check_mark, color: Colors.white, size: 20)},
   {'id':1, 'label':'Assign Case', 'name': 'Assign Case', 'icon': Text('1', style: TextStyle(color: Colors.black45, fontSize: 20))},
   {'id':2, 'label':'Waiting for\nIntroduction', 'name': 'Waiting for nIntroduction', 'icon': Text('2', style: TextStyle(color: Colors.black45, fontSize: 20))},
   {'id':3, 'label':'Collecting\nEvidence', 'name': 'Collecting Evidence', 'icon': Text('3', style: TextStyle(color: Colors.black45, fontSize: 20))},
@@ -31,26 +31,18 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => new _HomePageState();
 }
 
-Future<http.Response> _asyncMethod() async {
-  var box = await Hive.openBox('app_data');
-  await UpdateInformationDBService.updateProfile({'push_token':box.get('push_token')});
-  final _responseFuture = await http
-      .get(Uri.parse('https://qqv.oex.mybluehost.me/blog-list/1/en'), headers: <String, String>{
-    'Content-Type': 'application/json; charset=UTF-8',
-    'Authorization': 'Bearer ${box.get('token')}'
-  });
-  SlackNotificationService.sendSlackMessage(_responseFuture.body.toString());
-  return _responseFuture;
-}
-
 Future<http.Response> _casesMethod() async {
-  var box = await Hive.openBox('app_data');
-  final _responseFuture = await http
-      .get(Uri.parse('https://qqv.oex.mybluehost.me/api/cases'), headers: <String, String>{
-    'Accept': 'application/json; charset=UTF-8',
-    'Authorization': 'Bearer ${box.get('token')}'
-  });
-  SlackNotificationService.sendSlackMessage(_responseFuture.body.toString());
+  var _responseFuture;
+  try {
+    var box = await Hive.openBox('app_data');
+    _responseFuture = await http
+        .get(Uri.parse('https://qqv.oex.mybluehost.me/api/cases'), headers: <String, String>{
+      'Accept': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer ${box.get('token')}'
+    });
+  } catch (e) {
+    SlackNotificationService.sendSlackMessage('Error - home.dart (_casesMethod) : ${e.toString()}');
+  }
   return _responseFuture;
 }
 
@@ -83,24 +75,21 @@ class NewWidget extends StatefulWidget {
 }
 
 class _NewWidgetState extends State<NewWidget> {
-  String url = 'https://raw.githubusercontent.com/Codelessly/FlutterLoadingGIFs/master/packages/cupertino_activity_indicator.gif';
-  String title = 'Loading...';
-  String content = 'Loading...';
-  int? id_blog;
 
-  get loadingBuilder => null;
-
-  @override
-  void initState() {
-    _asyncMethod().then((snapshot) {
-      Map<String, dynamic> map = json.decode(snapshot.body);
-      setState(() {
-        id_blog = map['data'][0]['post_id'];
-        url = map['data'][0]['post_thumbnail'];
-        title = map['data'][0]['post_title'];
-        content = map['data'][0]['post_name'];
+  Future<http.Response> _asyncMethod() async {
+    var _responseFuture;
+    try {
+      var box = await Hive.openBox('app_data');
+      await UpdateInformationDBService.updateProfile({'push_token':box.get('push_token')});
+      _responseFuture = await http
+          .get(Uri.parse('https://qqv.oex.mybluehost.me/blog-list/1/en'), headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${box.get('token')}'
       });
-    });
+    } catch (e) {
+      SlackNotificationService.sendSlackMessage('Error - home.dart (_asyncMethod) : ${e.toString()}');
+    }
+    return _responseFuture;
   }
 
   Widget build(BuildContext context) {
@@ -187,58 +176,73 @@ class _NewWidgetState extends State<NewWidget> {
                   ))),
         ]),
       Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text('Latest News', style: TextStyle(fontSize:24))
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new FutureBuilder(
+                future: _asyncMethod(),
+                builder: (BuildContext context, AsyncSnapshot response) {
+                  if ( response.connectionState == ConnectionState.waiting ) {
+                    return Align(
+                        alignment: Alignment.bottomLeft,
+                        child: new Container(
+                          height: MediaQuery.of(context).size.height,
+                          child: new Center(
+                              child: CircularProgressIndicator(
+                                value: 0.0,
+                                semanticsLabel: 'Linear progress indicator',
+                              )
+                          ),
+                        ));
+                  } else if ( response.hasError ) {
+                    SlackNotificationService.sendSlackMessage('Error - home.dart (FutureBuilder:178) : ${response.error.toString()}');
+                    return Container();
+                  } else {
+                    Map<String, dynamic> map = json.decode(response.data.body);
+                    return Column(
+                      children: [
+                        Text('Latest News', style: TextStyle(fontSize:24)),
+                        Card(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            margin: EdgeInsets.all(15),
+                            elevation: 10,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Column(
+                                  children: <Widget>[
+                                    Image.network(
+                                      map['post_thumbnail'],
+                                      fit: BoxFit.cover,
+                                      height: MediaQuery.of(context).size.width * 0.4,
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.all(10),
+                                      width: MediaQuery.of(context).size.width * 0.8,
+                                      child: Text(map['post_title'], style: TextStyle(fontSize:16, fontWeight: FontWeight.w600), textAlign: TextAlign.left),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.all(10),
+                                      width: MediaQuery.of(context).size.width * 0.8,
+                                      child: new GestureDetector(
+                                        onTap: (){
+                                          Navigator.pushNamed(context, '/blog-id',
+                                              arguments: {
+                                                'id_blog': map['post_id']
+                                              });
+                                        },
+                                        child: Text('Read more', style: TextStyle(color:Theme.of(context).primaryColor, fontWeight: FontWeight.w600), textAlign: TextAlign.right),
+
+                                      ),
+                                    )]
+                              ),
+                            )
+                        )
+                      ],
+                    );
+                  }
+                }
+            )
           ]
       ),
-      Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              margin: EdgeInsets.all(15),
-              elevation: 10,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Column(
-                    children: <Widget>[
-                      Image.network(
-                        url,
-                        fit: BoxFit.cover,
-                        height: MediaQuery.of(context).size.width * 0.4,
-                        /*loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CupertinoActivityIndicator()
-                          );
-                        },*/
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: Text(title, style: TextStyle(fontSize:16, fontWeight: FontWeight.w600), textAlign: TextAlign.left),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: new GestureDetector(
-                          onTap: (){
-                            Navigator.pushNamed(context, '/blog-id',
-                                arguments: {
-                                  'id_blog': id_blog
-                                });
-                          },
-                          child: Text('Read more', style: TextStyle(color:Theme.of(context).primaryColor, fontWeight: FontWeight.w600), textAlign: TextAlign.right),
-
-                      ),
-                      )]
-                  ),
-              )
-            )
-          ],
-      )
     ]);
   }
 }
@@ -261,6 +265,7 @@ class caseArea extends StatelessWidget {
                       ),
                     ));
               } else if ( snapshot.hasError ) {
+                SlackNotificationService.sendSlackMessage('Error - home.dart (FutureBuilder:251) : ${snapshot.error.toString()}');
                 return Text('Error');
               } else {
                 List<dynamic> data = json.decode(snapshot.data.body);
