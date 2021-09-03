@@ -52,6 +52,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Motion Law.',
         theme: new ThemeData(
             primaryColor: Theme.Colors.motionTmBlue,

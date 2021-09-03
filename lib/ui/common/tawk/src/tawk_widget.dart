@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import '../../../../style/theme.dart' as Theme;
+
 import 'tawk_visitor.dart';
 
 /// [Tawk] Widget.
@@ -20,8 +20,6 @@ class Tawk extends StatefulWidget {
   /// Called when a link pressed.
   final Function(String url) onLinkTap;
 
-  final Function(String sw) onChatEnd;
-
   /// Render your own loading widget.
   final Widget placeholder;
 
@@ -30,8 +28,7 @@ class Tawk extends StatefulWidget {
     required this.visitor,
     required this.onLoad,
     required this.onLinkTap,
-    required this.onChatEnd,
-    required this.placeholder
+    required this.placeholder,
   });
 
   @override
@@ -39,7 +36,7 @@ class Tawk extends StatefulWidget {
 }
 
 class _TawkState extends State<Tawk> {
-  WebViewController? _controller;
+  late WebViewController _controller;
   bool _isLoading = true;
 
   void _setUser(TawkVisitor visitor) {
@@ -49,19 +46,18 @@ class _TawkState extends State<Tawk> {
     if (Platform.isIOS) {
       javascriptString = '''
         Tawk_API = Tawk_API || {};
-        Tawk_API.setAttributes($json);        
+        Tawk_API.setAttributes($json);
       ''';
     } else {
       javascriptString = '''
         Tawk_API = Tawk_API || {};
         Tawk_API.onLoad = function() {
           Tawk_API.setAttributes($json);
-          print('listo');
         };
       ''';
     }
 
-    _controller!.evaluateJavascript(javascriptString);
+    _controller.evaluateJavascript(javascriptString);
   }
 
   @override
@@ -102,31 +98,13 @@ class _TawkState extends State<Tawk> {
             });
           },
         ),
-        Positioned(
-            right: 5.0,
-            top: 10.0,
-            child: new Container(
-              width: 60.0,
-              height: 45.0,
-              decoration: new BoxDecoration(color: _isLoading ? Colors.white : Theme.Colors.loginGradientButton),
-              child: new GestureDetector(
-                onTap: () {
-                  //Navigator.pushNamed(context, "myRoute");
-                  //_controller.evaluateJavascript('Tawk_API.showWidget();');
-                  _controller!.evaluateJavascript('Tawk_API.endChat();');
-                },
-                child: Center(
-                  child: new Text("Close", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)
-                ),
-              )
+        ( _isLoading == true && widget.placeholder != '' )
+            ?
+            const Center(
+              child: CircularProgressIndicator(),
             )
-        ),
-        _isLoading
-            ? widget.placeholder
             : Container(),
       ],
     );
   }
-
 }
-
