@@ -5,7 +5,6 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
-import '../../utils/constants.dart' as constants;
 import 'package:flutter_html/flutter_html.dart';
 
 Map? arguments;
@@ -20,7 +19,7 @@ class BlogPage extends StatefulWidget {
 Future<http.Response> _asyncMethod(context) async {
   var box = await Hive.openBox('app_data');
 
-  url = '${constants.API_BACK_URL}/blog-list/1/en';
+  url = 'https://qqv.oex.mybluehost.me/blog-list/1/en';
 
   final _responseFuture = await http
       .get(Uri.parse(url), headers: <String, String>{

@@ -5,7 +5,6 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
-import '../../utils/constants.dart' as constants;
 import 'package:flutter_html/flutter_html.dart';
 import '../../services/SlackNotificationService.dart';
 
@@ -25,7 +24,7 @@ Future<http.Response> _asyncMethod(context) async {
     arguments = await ModalRoute.of(context)?.settings.arguments as Map;
 
     if ( arguments != null) {
-      url = '${constants.API_BACK_URL}/blog-id/${arguments?['id_blog']}';
+      url = 'https://qqv.oex.mybluehost.me/blog-id/${arguments?['id_blog']}';
     }
 
     _responseFuture = await http

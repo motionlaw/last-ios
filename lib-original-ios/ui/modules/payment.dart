@@ -8,12 +8,11 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import '../../style/theme.dart' as Theme;
-import '../../utils/constants.dart' as constants;
 
 Future<http.Response> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
-      .get(Uri.parse('${constants.API_BACK_URL}/api/cases'), headers: <String, String>{
+      .get(Uri.parse('https://qqv.oex.mybluehost.me/api/cases'), headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
@@ -59,21 +58,9 @@ class PaymentPage extends StatelessWidget {
                 } else if ( snapshot.hasError ) {
                   return Text('Error');
                 } else {
-                  final body = json.decode(snapshot.data.body);
-                  if ( body['cases'] != false ) {
-                    List<dynamic> jsonList = body['cases'];
-                    if ( jsonList.length > 0 ) {
-                      return new MyExpansionTileList(jsonList);
-                    } else {
-                      return ExpansionTile(
-                        leading: Icon(CupertinoIcons.drop_triangle),
-                        trailing: SizedBox.shrink(),
-                        title: Text(
-                          'There are not cases linked to your user',
-                          style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
-                        ),
-                      );
-                    }
+                  List<dynamic> jsonList = json.decode(snapshot.data.body);
+                  if ( jsonList.length > 0 ) {
+                    return new MyExpansionTileList(jsonList);
                   } else {
                     return ExpansionTile(
                       leading: Icon(CupertinoIcons.drop_triangle),
@@ -103,7 +90,7 @@ class MyExpansionTileList extends StatelessWidget {
     elementList.forEach((element) {
       if ( children.length < 3 ){
         children.add(
-          new MyExpansionTile(element['id'], element['name'], element['practice_area'], element['invoices']),
+          new MyExpansionTile(element['id'], element['name'], element['practice_area']),
         );
       }
     });
@@ -123,18 +110,16 @@ class MyExpansionTile extends StatefulWidget {
   String id;
   String name;
   String practice_area;
-  var invoices;
-  MyExpansionTile(this.id, this.name, this.practice_area, this.invoices);
+  MyExpansionTile(this.id, this.name, this.practice_area);
   @override
-  State createState() => new MyExpansionTileState(this.id, this.name, this.practice_area, this.invoices);
+  State createState() => new MyExpansionTileState(this.id, this.name, this.practice_area);
 }
 
 class MyExpansionTileState extends State<MyExpansionTile> {
   String id;
   String name;
   String practice_area;
-  var invoices;
-  MyExpansionTileState(this.id, this.name, this.practice_area, this.invoices);
+  MyExpansionTileState(this.id, this.name, this.practice_area);
 
   @override
   void initState() {
@@ -196,7 +181,6 @@ class MyExpansionTileState extends State<MyExpansionTile> {
               SizedBox(
                 width: 30,
               ),
-              (widget.invoices.length > 0) ?
               Padding(
                 padding: EdgeInsets.all(0.0),
                 child: Container(
@@ -222,36 +206,38 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                       )
                     ],
                     rows: [
-                      for(var item in widget.invoices )
-                        DataRow(cells: [
-                          DataCell(Text(item['number'])),
-                          DataCell(Text(item['total_amount'])),
-                          DataCell(
-                              Container(
-                                  width: 60,
-                                  height:40,
-                                  child: (item['paid'] == true ) ? Icon(CupertinoIcons.checkmark_square,
-                                      color: Colors.green)
-                                      : Icon(CupertinoIcons.creditcard,
-                                      color: Colors.red)
-                              )
+                      DataRow(cells: [
+                        DataCell(Text('00252')),
+                        DataCell(Text('\$2.000,00')),
+                        DataCell(
+                          Container(
+                            width: 60,
+                            height:40,
+                            child: Icon(CupertinoIcons.checkmark_square,
+                                color: Colors.green)
                           )
-                        ])
+                        )
+                      ]),
+                      DataRow(cells: [
+                        DataCell(Text('00113')),
+                        DataCell(Text('\$3.000,00')),
+                        DataCell(
+                          new GestureDetector(
+                            onTap: (){
+                              _launchURL();
+                            },
+                          child: Container(
+                              width: 60,
+                              height:40,
+                              child: Icon(CupertinoIcons.creditcard,
+                                  color: Colors.red)
+                          ))
+                        )
+                      ]),
                     ],
                   ),
                 ),
-              ) : Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 25,
-                      ),
-                      Text('No available billings',
-                      style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.bold)),
-                    ],
-                  ),
+              ),
             ],
           ),
         ),

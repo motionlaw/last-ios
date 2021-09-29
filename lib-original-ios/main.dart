@@ -9,8 +9,7 @@ import 'ui/modules/cases_detailed.dart';
 import 'ui/modules/chat.dart';
 import 'ui/modules/communications.dart';
 import 'ui/modules/home.dart';
-import 'ui/modules/Auth/login/login.dart';
-import 'ui/modules/Auth/login/register.dart';
+import 'ui/modules/login_page.dart';
 import 'ui/modules/payment.dart';
 import 'ui/modules/refer.dart';
 import 'ui/modules/reviews.dart';
@@ -23,8 +22,8 @@ import 'ui/modules/blog_id.dart';
 import 'services/PushNotificationService.dart';
 import 'services/SlackNotificationService.dart';
 
-LoginScreen appAuth = new LoginScreen();
-Widget defaultHome = new LoginScreen();
+LoginPage appAuth = new LoginPage();
+Widget defaultHome = new LoginPage();
 
 void main(context) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,8 +60,7 @@ class MyApp extends StatelessWidget {
         home: defaultHome,
         routes: {
           '/home': (context) => HomePage(),
-          '/login': (context) => LoginScreen(),
-          '/register': (context) => RegisterScreen(),
+          '/login': (context) => LoginPage(),
           '/loading': (context) => LoadingPage(),
           '/communication': (context) => CommunicationPage(),
           '/casesDetailed': (context) => CasesDetailed(),

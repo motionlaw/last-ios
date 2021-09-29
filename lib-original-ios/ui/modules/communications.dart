@@ -7,12 +7,11 @@ import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import '../../style/theme.dart' as Theme;
-import '../../utils/constants.dart' as constants;
 
 Future<http.Response> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
-      .get(Uri.parse('${constants.API_BACK_URL}/api/cases'), headers: <String, String>{
+      .get(Uri.parse('https://qqv.oex.mybluehost.me/api/cases'), headers: <String, String>{
     'Accept': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
@@ -56,21 +55,9 @@ class CommunicationPage extends StatelessWidget {
                         ),
                       ));
                 }
-                final body = json.decode(response.data.body);
-                if ( body['cases'] != false ) {
-                  List<dynamic> jsonList = body['cases'];
-                  if (  jsonList.length > 0 ){
-                    return new MyExpansionTileList(jsonList);
-                  } else {
-                    return ExpansionTile(
-                      leading: Icon(CupertinoIcons.drop_triangle),
-                      trailing: SizedBox.shrink(),
-                      title: Text(
-                        'There are not cases linked to your user',
-                        style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
-                      ),
-                    );
-                  }
+                List<dynamic> jsonList = json.decode(response.data.body);
+                if (  jsonList.length > 0 ){
+                  return new MyExpansionTileList(jsonList);
                 } else {
                   return ExpansionTile(
                     leading: Icon(CupertinoIcons.drop_triangle),
@@ -81,6 +68,7 @@ class CommunicationPage extends StatelessWidget {
                     ),
                   );
                 }
+
               })
         ])))));
   }
@@ -96,7 +84,7 @@ class MyExpansionTileList extends StatelessWidget {
     elementList.forEach((element) {
       if ( children.length < 3 ){
         children.add(
-          new MyExpansionTile(element['id'], element['name'], element['practice_area'], element['created_at'], element['attorney'], element['invoices']),
+          new MyExpansionTile(element['id'], element['name'], element['practice_area'], element['created_at'], element['attorney']),
         );
       }
     });
@@ -118,10 +106,9 @@ class MyExpansionTile extends StatefulWidget {
   String practice_area;
   String created_at;
   String attorney;
-  var invoices;
-  MyExpansionTile(this.id, this.name, this.practice_area, this.created_at, this.attorney, this.invoices);
+  MyExpansionTile(this.id, this.name, this.practice_area, this.created_at, this.attorney);
   @override
-  State createState() => new MyExpansionTileState(this.id, this.name, this.practice_area, this.created_at, this.attorney, this.invoices);
+  State createState() => new MyExpansionTileState(this.id, this.name, this.practice_area, this.created_at, this.attorney);
 }
 
 class MyExpansionTileState extends State<MyExpansionTile> {
@@ -130,8 +117,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
   String practice_area;
   String created_at;
   String attorney;
-  var invoices;
-  MyExpansionTileState(this.id, this.name, this.practice_area, this.created_at, this.attorney, this.invoices);
+  MyExpansionTileState(this.id, this.name, this.practice_area, this.created_at, this.attorney);
 
   @override
   void initState() {
@@ -193,8 +179,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                               'path': widget.name,
                               'practice_area': widget.practice_area,
                               'created_at': widget.created_at,
-                              'attorney': widget.attorney,
-                              'invoices': widget.invoices
+                              'attorney': widget.attorney
                           }
                         );
                       },

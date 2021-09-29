@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import '../../utils/constants.dart' as constants;
 
 class NavDrawer extends StatefulWidget {
   NavDrawer({Key? key}) : super(key: key);
@@ -15,38 +13,16 @@ class NavDrawer extends StatefulWidget {
 
 class _NavDrawerState extends State<NavDrawer> {
   String? userName;
-  bool _hasCases = false;
   _logout(context) async {
     Navigator.pushNamed(context, '/loading');
     var box = await Hive.openBox('app_data');
-    await http.post(Uri.parse("https://motionlaw.us/api/logout"),
+    await http.post(Uri.parse("https://qqv.oex.mybluehost.me/api/logout"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${box.get('token')}'
         });
     await box.delete('token');
     Timer(Duration(seconds: 2), () => {Navigator.pushNamed(context, '/login')});
-  }
-
-  Future<http.Response> _menu() async {
-    var _responseFuture;
-    try {
-      var box = await Hive.openBox('app_data');
-      _responseFuture = await http
-          .get(Uri.parse('${constants.API_BACK_URL}/api/menu'), headers: <String, String>{
-        'Accept': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ${box.get('token')}'
-      });
-      final body = json.decode(_responseFuture.body);
-      if ( body['response'] == true ) {
-        setState(() {
-          _hasCases = true;
-        });
-      }
-    } catch (e) {
-      print('Error - home.dart (_casesMethod) : ${e.toString()}');
-    }
-    return _responseFuture;
   }
 
   Future getHive() async {
@@ -58,7 +34,6 @@ class _NavDrawerState extends State<NavDrawer> {
   @override
   void initState() {
     super.initState();
-    _menu();
     getHive().then((response) {
       this.setState((){
         userName = response['name'];
@@ -74,37 +49,36 @@ class _NavDrawerState extends State<NavDrawer> {
         children: <Widget>[
           ListTile(
             title: Align(
-              heightFactor: 0.7,
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.center,
               child: SizedBox(
                   child: Image.asset('assets/img/Motionlaw-logogold.png',
-                      height: 100)),
+                      height: 120)),
             ),
           ),
           Divider(),
           ListTile(
             leading: SizedBox(
                 child: Image.asset('assets/img/avatar.png',
-                    height: 40)),
+                    height: 60)),
             title: Text(userName??''),
             subtitle: Text('Manager')
           ),
           Divider(),
-          ( _hasCases == true ) ? ListTile(
+          ListTile(
             leading: Icon(CupertinoIcons.briefcase_fill),
             title: Text('Your Cases'),
             onTap: () => {Navigator.pushNamed(context, '/communication')},
-          ) : Container(),
-          ( _hasCases == true ) ? ListTile(
+          ),
+          ListTile(
             leading: Icon(CupertinoIcons.chat_bubble_2),
             title: Text('Chat'),
             onTap: () => {Navigator.pushNamed(context, '/chat')},
-          ) : Container(),
-          ( _hasCases == true ) ? ListTile(
+          ),
+          ListTile(
             leading: Icon(CupertinoIcons.creditcard_fill),
             title: Text('Make a Payment'),
             onTap: () => {Navigator.pushNamed(context, '/payment')},
-          ) : Container(),
+          ),
           ListTile(
             leading: Icon(CupertinoIcons.mail_solid),
             title: Text('Contact Us'),
@@ -115,11 +89,11 @@ class _NavDrawerState extends State<NavDrawer> {
             title: Text('Refer a Friend'),
             onTap: () => {Navigator.pushNamed(context, '/refer')},
           ),
-          ( _hasCases == true ) ? ListTile(
+          ListTile(
             leading: Icon(CupertinoIcons.device_phone_portrait),
             title: Text('Leave a review'),
             onTap: () => {Navigator.pushNamed(context, '/reviews')},
-          ) : Container(),
+          ),
           ListTile(
             leading: Icon(CupertinoIcons.book),
             title: Text('Blog'),

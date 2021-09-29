@@ -9,11 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import '../../style/theme.dart' as Theme;
 import 'package:file_picker/file_picker.dart';
-import '../../utils/constants.dart' as constants;
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
-
-import 'blog.dart';
 
 Map data = {};
 bool fbVisible = false;
@@ -31,7 +28,6 @@ class _CasesDetailedState extends State<CasesDetailed> {
   Map? arguments;
   File? selectedfile;
   Response? response;
-  Response? _responseFuture;
   String? progress;
   String var_path = '';
   String practice_area = '';
@@ -43,7 +39,7 @@ class _CasesDetailedState extends State<CasesDetailed> {
     arguments = await ModalRoute.of(context)?.settings.arguments as Map;
     var box = await Hive.openBox('app_data');
     final _responseFuture = await http
-        .get(Uri.parse('${constants.API_BACK_URL}/api/cases/files/${arguments?['path']}'), headers: <String, String>{
+        .get(Uri.parse('https://qqv.oex.mybluehost.me/api/cases/files/${arguments?['path']}'), headers: <String, String>{
       'Accept': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${box.get('token')}'
     });
@@ -69,7 +65,7 @@ class _CasesDetailedState extends State<CasesDetailed> {
 
     dio.options.headers["Authorization"] = "Bearer ${box.get('token')}";
 
-    response = await dio.post('${constants.API_BACK_URL}/api/cases/files/upload',
+    response = await dio.post('https://qqv.oex.mybluehost.me/api/cases/files/upload',
       data: formdata,
       onSendProgress: (int sent, int total) {
         String percentage = (sent/total*100).toStringAsFixed(2);
@@ -175,7 +171,7 @@ class expansionTile extends StatefulWidget {
 
   final Map? arguments;
   final GlobalKey<State<StatefulWidget>>? _formKey;
-  final Map? map;
+  final Map<String, dynamic>? map;
 
   @override
   _expansionTileState createState() => _expansionTileState();
@@ -411,7 +407,7 @@ class _expansionTileState extends State<expansionTile> {
           ListTile(
             visualDensity: VisualDensity(horizontal: 0, vertical: -4),
             dense: true,
-            title: (widget.arguments?['invoices'].length > 0 ) ? Row(
+            title: Row(
               children: <Widget>[
                 SizedBox(
                   width: 30,
@@ -441,36 +437,38 @@ class _expansionTileState extends State<expansionTile> {
                         )
                       ],
                       rows: [
-                      for(var item in widget.arguments?['invoices'] )
                         DataRow(cells: [
-                          DataCell(Text(item['number'])),
-                          DataCell(Text(item['total_amount'])),
+                          DataCell(Text('00252')),
+                          DataCell(Text('\$2.000,00')),
                           DataCell(
                               Container(
                                   width: 60,
                                   height:40,
-                                  child: (item['paid'] == true ) ? Icon(CupertinoIcons.checkmark_square,
+                                  child: Icon(CupertinoIcons.checkmark_square,
                                       color: Colors.green)
-                                      : Icon(CupertinoIcons.creditcard,
-                                      color: Colors.red)
                               )
                           )
-                        ])
+                        ]),
+                        DataRow(cells: [
+                          DataCell(Text('00113')),
+                          DataCell(Text('\$3.000,00')),
+                          DataCell(
+                              new GestureDetector(
+                                  onTap: (){
+                                    _launchURL();
+                                  },
+                                  child: Container(
+                                      width: 60,
+                                      height:40,
+                                      child: Icon(CupertinoIcons.creditcard,
+                                          color: Colors.red)
+                                  ))
+                          )
+                        ]),
                       ],
                     ),
                   ),
                 ),
-              ],
-            ) : Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 55,
-                ),
-                Text('No available billings',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold)),
               ],
             ),
           ),

@@ -7,15 +7,12 @@ import 'package:timeline_tile/timeline_tile.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
-import '../../utils/constants.dart' as constants;
 import '../../services/UpdateInformationDBService.dart';
 import '../../services/SlackNotificationService.dart';
 
-bool _hasCases = false;
-
 List statusCase = [
   {'id':1, 'label':'Assign Case', 'name': 'Assign Case', 'icon': Text('1', style: TextStyle(color: Colors.black45, fontSize: 20))},
-  {'id':2, 'label':'Waiting for\nIntroduction', 'name': 'Waiting for Introduction', 'icon': Text('2', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':2, 'label':'Waiting for\nIntroduction', 'name': 'Waiting for nIntroduction', 'icon': Text('2', style: TextStyle(color: Colors.black45, fontSize: 20))},
   {'id':3, 'label':'Collecting\nEvidence', 'name': 'Collecting Evidence', 'icon': Text('3', style: TextStyle(color: Colors.black45, fontSize: 20))},
   {'id':4, 'label':'Preparing\nPacket', 'name': 'Preparing Packet', 'icon': Text('4', style: TextStyle(color: Colors.black45, fontSize: 20))},
   {'id':5, 'label':'Attorney\nReview', 'name': 'Attorney Review', 'icon': Text('5', style: TextStyle(color: Colors.black45, fontSize: 20))},
@@ -39,7 +36,7 @@ Future<http.Response> _casesMethod() async {
   try {
     var box = await Hive.openBox('app_data');
     _responseFuture = await http
-        .get(Uri.parse('${constants.API_BACK_URL}/api/cases'), headers: <String, String>{
+        .get(Uri.parse('https://qqv.oex.mybluehost.me/api/cases'), headers: <String, String>{
       'Accept': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${box.get('token')}'
     });
@@ -50,34 +47,6 @@ Future<http.Response> _casesMethod() async {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  Future<http.Response> _menu() async {
-    var _responseFuture;
-    try {
-      var box = await Hive.openBox('app_data');
-      _responseFuture = await http
-          .get(Uri.parse('${constants.API_BACK_URL}/api/cases'), headers: <String, String>{
-        'Accept': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ${box.get('token')}'
-      });
-      final body = json.decode(_responseFuture.body);
-      if ( body['cases'] != false ) {
-        setState(() {
-          _hasCases = true;
-        });
-      }
-    } catch (e) {
-      print('Error - home.dart (_casesMethod) : ${e.toString()}');
-    }
-    return _responseFuture;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _menu();
-  }
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -113,7 +82,7 @@ class _NewWidgetState extends State<NewWidget> {
       var box = await Hive.openBox('app_data');
       await UpdateInformationDBService.updateProfile({'push_token':box.get('push_token')});
       _responseFuture = await http
-          .get(Uri.parse('${constants.API_BACK_URL}/blog-list/1/en'), headers: <String, String>{
+          .get(Uri.parse('https://qqv.oex.mybluehost.me/blog-list/1/en'), headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ${box.get('token')}'
       });
@@ -139,7 +108,7 @@ class _NewWidgetState extends State<NewWidget> {
       caseArea(),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: <Widget>[
           Padding(
               padding: EdgeInsets.all(20.0),
               child: Container(
@@ -155,7 +124,7 @@ class _NewWidgetState extends State<NewWidget> {
                     ),
                     onPressed: () => {Navigator.pushNamed(context, '/chat')},
                   ))),
-          (_hasCases == true ) ? Padding(
+          Padding(
               padding: EdgeInsets.all(20.0),
               child: Container(
                   width: 150,
@@ -169,25 +138,13 @@ class _NewWidgetState extends State<NewWidget> {
                       ],
                     ),
                     onPressed: () => {Navigator.pushNamed(context, '/payment')},
-                  ))) : Container(
-              width: 150,
-              child: new CupertinoButton(
-                padding: EdgeInsets.all(10),
-                color: Theme.of(context).primaryColor,
-                child: Column(
-                  children: <Widget>[
-                    Icon(CupertinoIcons.person_2_alt, size: 50.0),
-                    Text("Refer a Friend")
-                  ],
-                ),
-                onPressed: () => {Navigator.pushNamed(context, '/refer')},
-              )),
+                  ))),
         ],
       ),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          ( _hasCases == true ) ? Padding(
+          Padding(
               padding: EdgeInsets.all(20.0),
               child: Container(
                   width: 150,
@@ -201,8 +158,8 @@ class _NewWidgetState extends State<NewWidget> {
                       ],
                     ),
                     onPressed: () => {Navigator.pushNamed(context, '/reviews')},
-                  ))) : SizedBox.shrink(),
-          (_hasCases == false ) ? Container() :  Padding(
+                  ))),
+          Padding(
               padding: EdgeInsets.all(20.0),
               child: Container(
                   width: 150,
@@ -311,9 +268,8 @@ class caseArea extends StatelessWidget {
                 SlackNotificationService.sendSlackMessage('Error - home.dart (FutureBuilder:251) : ${snapshot.error.toString()}');
                 return Text('Error');
               } else {
-                final body = json.decode(snapshot.data.body);
-                if ( body['cases'] != false ){
-                  List<dynamic> data = body['cases'];
+                List<dynamic> data = json.decode(snapshot.data.body);
+                if ( data.length > 0 ) {
                   return Column(children: <Widget>[
                     statusCases(data:data),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
@@ -332,10 +288,9 @@ class caseArea extends StatelessWidget {
                           ))
                     ])
                   ]);
-                } else{
+                } else {
                   return Container();
                 }
-
               }
             })
           );
@@ -357,6 +312,7 @@ class statusCases extends StatefulWidget {
 }
 
 class _statusCasesState extends State<statusCases> {
+
   @override
   Widget build(BuildContext context) {
     var query = statusCase.where((row) => (row["name"].contains(widget.data![0]['status'])));

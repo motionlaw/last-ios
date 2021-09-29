@@ -5,14 +5,13 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import '../../style/theme.dart' as Theme;
-import '../../utils/constants.dart' as constants;
 
 List<dynamic>? staff;
 
 Future<String> _asyncMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
-      .get(Uri.parse('${constants.API_BACK_URL}/api/staff'), headers: <String, String>{
+      .get(Uri.parse('https://qqv.oex.mybluehost.me/api/staff'), headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });
@@ -72,7 +71,7 @@ class _SupportPageState extends State<SupportPage>
     };
     var body = json.encode(datos);
     http.Response response = await http.post(
-        Uri.parse('${constants.API_BACK_URL}/api/support'),
+        Uri.parse('https://qqv.oex.mybluehost.me/api/support'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${box.get('token')}'

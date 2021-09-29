@@ -5,7 +5,6 @@ import '../../style/theme.dart' as Theme;
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'dart:convert';
-import '../../utils/constants.dart' as constants;
 
 class SettingsPage extends StatefulWidget {
   SettingSubPage createState() => SettingSubPage();
@@ -14,7 +13,7 @@ class SettingsPage extends StatefulWidget {
 Future<http.Response> _userMethod() async {
   var box = await Hive.openBox('app_data');
   final _responseFuture = await http
-      .get(Uri.parse('${constants.API_BACK_URL}/api/user'), headers: <String, String>{
+      .get(Uri.parse('https://qqv.oex.mybluehost.me/api/user'), headers: <String, String>{
     'Accept': 'application/json; charset=UTF-8',
     'Authorization': 'Bearer ${box.get('token')}'
   });

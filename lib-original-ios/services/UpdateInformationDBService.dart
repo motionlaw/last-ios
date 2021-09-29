@@ -2,7 +2,6 @@ import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'dart:convert';
 import 'SlackNotificationService.dart';
-import '../utils/constants.dart' as constants;
 
 class UpdateInformationDBService {
 
@@ -13,7 +12,7 @@ class UpdateInformationDBService {
     datos.addAll(data);
     var body = json.encode(datos);
     http.Response response = await http.post(
-        Uri.parse('${constants.API_BACK_URL}/api/profile/update'),
+        Uri.parse('https://qqv.oex.mybluehost.me/api/profile/update'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${box.get('token')}'

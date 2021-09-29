@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../style/theme.dart' as Theme;
-import '../../utils/constants.dart' as constants;
 
 class ReviewsPage extends StatefulWidget {
   ReviewsPage({Key? key}) : super(key: key);

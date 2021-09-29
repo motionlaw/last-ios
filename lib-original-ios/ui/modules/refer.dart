@@ -6,7 +6,6 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import '../../utils/functions.dart' as tool;
 import '../../style/theme.dart' as Theme;
-import '../../utils/constants.dart' as constants;
 
 class ReferPage extends StatefulWidget {
   ReferPage({Key? key}) : super(key: key);
@@ -35,7 +34,7 @@ class _ReferPageState extends State<ReferPage>
       };
       var body = json.encode(datos);
       http.Response response = await http.post(
-          Uri.parse('${constants.API_BACK_URL}/api/refers'),
+          Uri.parse('https://qqv.oex.mybluehost.me/api/refers'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer ${box.get('token')}'
