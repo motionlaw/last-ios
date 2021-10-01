@@ -34,11 +34,11 @@ class Background extends StatelessWidget {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   //color: Theme.AppTheme.buttonColor,
-                  height: 300,
+                  height: MediaQuery.of(context).size.height * 0.5,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage("assets/img/DC-Immigration-Law-Firm.png"),
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fitHeight,
                     ),
                   ),
                 ),
@@ -46,7 +46,7 @@ class Background extends StatelessWidget {
             )
           ),
           Padding(
-              padding: EdgeInsets.only(top:100),
+              padding: EdgeInsets.only(top:0.0),
               child: child
           ),
         ],

@@ -21,13 +21,22 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login>
   with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  TextEditingController loginEmailController = new TextEditingController();
-  TextEditingController loginPasswordController = new TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey2 = new GlobalKey<ScaffoldState>();
+  final loginEmailController = new TextEditingController();
+  final loginPasswordController = new TextEditingController();
   bool isEnabled = true;
   Map? info;
   Map? data;
 
+  @override
+  void dispose() {
+    loginEmailController.dispose();
+    loginPasswordController.dispose();
+    super.dispose();
+  }
+
   Future auth(String mail, String pass) async {
+    print('email enviado : ${mail}');
     if (tool.Functions.validateEmail(mail)) {
       try {
         setState(() {
@@ -57,6 +66,8 @@ class _LoginState extends State<Login>
         print('Error - login.dart (auth) : ${e.toString()}');
       }
       return data!['response'];
+    } else {
+      print('auth :: no email');
     }
   }
 
@@ -76,7 +87,13 @@ class _LoginState extends State<Login>
     });
     Navigator.pushNamed(context, '/loading');
     Timer(Duration(seconds: 3),
-            () => Navigator.pushNamed(context, '/home'));
+    () => {
+      if ( info!['data']['consultation'] == null ) {
+        Navigator.pushNamed(context, '/freeConsultation')
+      } else {
+        Navigator.pushNamed(context, '/home')
+      }
+    });
   }
 
   Future<void> _handleClickMe(title, message) async {
@@ -103,68 +120,88 @@ class _LoginState extends State<Login>
   @override
   Widget build(BuildContext context) {
     return Background(
-      child: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.70,
-          height: MediaQuery.of(context).size.height * 0.50,
-          padding: EdgeInsets.all(10.0),
-          alignment: Alignment.bottomCenter,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: new BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              //SizedBox(height: size.height * 0.03),
-              Positioned(
-                  top: 0,
-                  left: 0,
-                  child: Image.asset(
-                      'assets/img/Motionlaw-logogold-cr.png',
-                      width: 220
-                  )
-              ),
-              SizedBox(height: 15),
-              RoundedInputField(
-                icon: Icons.email,
-                hintText: 'Email Address',
-                controller: loginEmailController,
-                onChanged: (value) {
-                  loginEmailController.text = value.trim();
-                },
-              ),
-              RoundedPasswordField(
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.70,
+        //height: MediaQuery.of(context).size.height * 0.50,
+        height: 430,
+        padding: EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: new BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: <Widget>[
+            //SizedBox(height: size.height * 0.03),
+            Positioned(
+              top: 20,
+                child: Image.asset(
+                    'assets/img/Motionlaw-logogold-cr.png',
+                    width: 220
+                )
+            ),
+            SizedBox(height: 15),
+            Positioned(
+                top: 100,
+                left: 0,
+                right: 0,
+                child: RoundedInputField(
+                  icon: Icons.email,
+                  hintText: 'Email Address',
+                  controller: loginEmailController,
+                  onChanged: (value) {
+                    loginEmailController.text = value.trim();
+                  },
+                ),
+            ),
+            Positioned(
+              top: 160,
+              left: 0,
+              right: 0,
+              child: RoundedPasswordField(
                 controller: loginPasswordController,
                 onChanged: (value) {
                   loginPasswordController.text = value.trim();
                 },
                 hintText: 'Password',
               ),
-              RoundedButton(
+            ),
+            Positioned(
+              top: 220,
+              left: 0,
+              right: 0,
+              child: RoundedButton(
                 text: isEnabled ? 'Sign In' : 'Loading...',
                 press: ()=> isEnabled ? auth(loginEmailController.text, loginPasswordController.text) : null,
                 color: isEnabled ? Theme.Colors.loginGradientButton : Colors.grey,
                 key: _scaffoldKey,
               ),
-              SizedBox(height: 5),
-              new GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, "/register");
-                },
-                child: Text('Dont have account?'),
-              )
-              //SizedBox(height: size.height * 0.03),
-            ],
-          ),
+            ),
+            SizedBox(height: 5),
+            Positioned(
+              top: 300,
+              child: Text('Dont have an account?')
+            ),
+            Positioned(
+              top: 320,
+              left: 0,
+              right: 0,
+              child: RoundedButton(
+                text: 'Register',
+                press: ()=> Navigator.pushNamed(context, "/register"),
+                color: isEnabled ? Theme.Colors.loginGradientButton : Colors.grey,
+                key: _scaffoldKey2,
+              ),
+            ),
+          ],
         ),
       ),
     );

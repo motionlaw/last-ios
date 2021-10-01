@@ -83,11 +83,11 @@ class _NavDrawerState extends State<NavDrawer> {
           ),
           Divider(),
           ListTile(
-            leading: SizedBox(
-                child: Image.asset('assets/img/avatar.png',
-                    height: 40)),
-            title: Text(userName??''),
-            subtitle: Text('Manager')
+              leading: SizedBox(
+                  child: Image.asset('assets/img/avatar.png',
+                      height: 40)),
+              title: Text(userName??''),
+              subtitle: Text('Manager')
           ),
           Divider(),
           ( _hasCases == true ) ? ListTile(
@@ -136,6 +136,14 @@ class _NavDrawerState extends State<NavDrawer> {
             title: Text('Logout'),
             onTap: () => {_logout(context)},
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.25,
+            alignment: FractionalOffset.bottomCenter,
+            child: Text('V1.0.0', style: TextStyle(
+                fontSize: 12.0,
+                fontWeight: FontWeight.bold
+            ),),
+          )
         ],
       ),
     );

@@ -18,6 +18,7 @@ import 'ui/modules/settings.dart';
 import 'ui/modules/support.dart';
 import 'ui/modules/blog.dart';
 import 'ui/modules/blog_id.dart';
+import 'ui/modules/consultation.dart';
 
 /* Services. */
 import 'services/PushNotificationService.dart';
@@ -60,6 +61,7 @@ class MyApp extends StatelessWidget {
         ),
         home: defaultHome,
         routes: {
+          '/freeConsultation': (context) => ConsultationPage(),
           '/home': (context) => HomePage(),
           '/login': (context) => LoginScreen(),
           '/register': (context) => RegisterScreen(),
