@@ -119,6 +119,7 @@ class _LoginState extends State<Login>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Background(
       child: Container(
         width: MediaQuery.of(context).size.width * 0.70,
@@ -153,26 +154,68 @@ class _LoginState extends State<Login>
                 top: 100,
                 left: 0,
                 right: 0,
-                child: RoundedInputField(
-                  icon: Icons.email,
-                  hintText: 'Email Address',
-                  controller: loginEmailController,
-                  onChanged: (value) {
-                    loginEmailController.text = value.trim();
-                  },
-                ),
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  width: size.width * 0.8,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(29),
+                      border: Border.all(color: Colors.black12)
+                  ),
+                  child: TextField(
+                    cursorColor: Theme.Colors.loginGradientButton,
+                    controller: loginEmailController,
+                    decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(25.7),
+                      ),
+                      filled: false,
+                      fillColor: Colors.blue,
+                      icon: Icon(
+                          Icons.person,
+                          color: Theme.Colors.loginGradientButton
+                      ),
+                      hintText: 'Email Address',
+                      border: InputBorder.none,
+                    ),
+                  ),
+                )
             ),
             Positioned(
               top: 160,
               left: 0,
               right: 0,
-              child: RoundedPasswordField(
-                controller: loginPasswordController,
-                onChanged: (value) {
-                  loginPasswordController.text = value.trim();
-                },
-                hintText: 'Password',
-              ),
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                width: size.width * 0.8,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(29),
+                    border: Border.all(color: Colors.black12)
+                ),
+                child: TextField(
+                  cursorColor: Theme.Colors.loginGradientButton,
+                  controller: loginPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(25.7),
+                    ),
+                    filled: false,
+                    fillColor: Colors.blue,
+                    icon: Icon(
+                        Icons.lock,
+                        color: Theme.Colors.loginGradientButton
+                    ),
+                    hintText: 'Password',
+                    border: InputBorder.none,
+                  ),
+                ),
+              )
             ),
             Positioned(
               top: 220,

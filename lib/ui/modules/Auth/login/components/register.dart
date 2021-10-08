@@ -52,7 +52,6 @@ class _LoginState extends State<Register>
               },
               body: jsonEncode(<String, String>{'username': username, 'email': mail, 'password': pass}));
           data = json.decode(response.body);
-          print('Respuesta de registro :: ${data}');
           if (data!['response'] == true) {
             _handleClickMe('User created successfully', 'A confirmation message has been sent to email registered, please validate your account before continue');
             setState(() {
@@ -97,6 +96,7 @@ class _LoginState extends State<Register>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Background(
       child: SingleChildScrollView(
         child: Container(
@@ -132,39 +132,101 @@ class _LoginState extends State<Register>
                   top: 100,
                   left: 0,
                   right: 0,
-                  child: RoundedInputField(
-                    icon: Icons.person,
-                    hintText: 'Full Name',
-                    controller: loginNameController,
-                    onChanged: (value) {
-                      loginNameController.text = value.trim();
-                    },
-                  ),
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                    width: size.width * 0.8,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(29),
+                        border: Border.all(color: Colors.black12)
+                    ),
+                    child: TextField(
+                      cursorColor: Theme.Colors.loginGradientButton,
+                      controller: loginNameController,
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(25.7),
+                        ),
+                        filled: false,
+                        fillColor: Colors.blue,
+                        icon: Icon(
+                            Icons.person,
+                            color: Theme.Colors.loginGradientButton
+                        ),
+                        hintText: 'Full Name',
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  )
               ),
               Positioned(
                 top: 160,
                 left: 0,
                 right: 0,
-                child: RoundedInputField(
-                  icon: Icons.email,
-                  hintText: 'Email Address',
-                  controller: loginEmailController,
-                  onChanged: (value) {
-                    loginEmailController.text = value.trim();
-                  },
-                ),
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  width: size.width * 0.8,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(29),
+                      border: Border.all(color: Colors.black12)
+                  ),
+                  child: TextField(
+                    cursorColor: Theme.Colors.loginGradientButton,
+                    controller: loginEmailController,
+                    decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(25.7),
+                      ),
+                      filled: false,
+                      fillColor: Colors.blue,
+                      icon: Icon(
+                          Icons.email,
+                          color: Theme.Colors.loginGradientButton
+                      ),
+                      hintText: 'Email Address',
+                      border: InputBorder.none,
+                    ),
+                  ),
+                )
               ),
               Positioned(
                 top: 220,
                 left: 0,
                 right: 0,
-                child: RoundedPasswordField(
-                  controller: loginPasswordController,
-                  onChanged: (value) {
-                    loginPasswordController.text = value.trim();
-                  },
-                  hintText: 'Password',
-                ),
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  width: size.width * 0.8,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(29),
+                      border: Border.all(color: Colors.black12)
+                  ),
+                  child: TextField(
+                    cursorColor: Theme.Colors.loginGradientButton,
+                    controller: loginPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(25.7),
+                      ),
+                      filled: false,
+                      fillColor: Colors.blue,
+                      icon: Icon(
+                          Icons.lock,
+                          color: Theme.Colors.loginGradientButton
+                      ),
+                      hintText: 'Password',
+                      border: InputBorder.none,
+                    ),
+                  ),
+                )
               ),
               Positioned(
                 top: 280,

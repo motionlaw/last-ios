@@ -18,7 +18,7 @@ class Background extends StatelessWidget {
         alignment: Alignment.center,
         children: <Widget>[
           Positioned(
-            bottom: 5,
+            bottom: 20,
             child: Container(
               child: Center(
                   child:Text(
