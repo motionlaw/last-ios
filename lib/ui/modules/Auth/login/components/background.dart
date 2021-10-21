@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:motionlaw/generated/l10n.dart';
 import '../../../../../style/theme.dart' as Theme;
 
 class Background extends StatelessWidget {
@@ -22,7 +23,7 @@ class Background extends StatelessWidget {
             child: Container(
               child: Center(
                   child:Text(
-                      'Terms of use & Privacy policy',
+                      Translate.of(context).label_terms_conditions,
                   style: TextStyle(fontSize:10))
               )
             )

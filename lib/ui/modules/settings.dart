@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:motionlaw/generated/l10n.dart';
 import '../../style/theme.dart' as Theme;
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
@@ -51,7 +52,7 @@ class SettingSubPage extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-            middle: Text('Settings', style: TextStyle(
+            middle: Text(Translate.of(context).settings, style: TextStyle(
               color: Colors.white,
             ),),
             backgroundColor: Theme.Colors.loginGradientButton,
@@ -69,7 +70,7 @@ class SettingSubPage extends State<SettingsPage> {
                             padding: EdgeInsets.all(8.0),
                             child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: Text('Profile Information',
+                                child: Text(Translate.of(context).label_profile_information,
                                     style: new TextStyle(fontSize: 18)))),
                         Divider(),
                         new ListTile(
@@ -77,7 +78,7 @@ class SettingSubPage extends State<SettingsPage> {
                           title: new TextField(
                             controller: nameController,
                             decoration: new InputDecoration(
-                              hintText: 'Name',
+                              hintText: Translate.of(context).input_first_name,
                             ),
                           ),
                         ),
@@ -86,7 +87,7 @@ class SettingSubPage extends State<SettingsPage> {
                           title: new TextField(
                             controller: last_nameController,
                             decoration: new InputDecoration(
-                              hintText: "Lastname",
+                              hintText: Translate.of(context).input_lastname,
                             ),
                           ),
                         ),
@@ -95,7 +96,7 @@ class SettingSubPage extends State<SettingsPage> {
                           title: new TextField(
                             controller: id_numberController,
                             decoration: new InputDecoration(
-                              hintText: "ID Number",
+                              hintText: Translate.of(context).input_id_number,
                             ),
                           ),
                         ),
@@ -104,7 +105,7 @@ class SettingSubPage extends State<SettingsPage> {
                           title: new TextField(
                             controller: phoneController,
                             decoration: new InputDecoration(
-                              hintText: "Phone Number",
+                              hintText: Translate.of(context).input_phone_number,
                             ),
                           ),
                         ),
@@ -113,7 +114,7 @@ class SettingSubPage extends State<SettingsPage> {
                           title: new TextField(
                             controller: emailController,
                             decoration: new InputDecoration(
-                              hintText: "Email Address",
+                              hintText: Translate.of(context).input_email,
                             ),
                           ),
                         ),
@@ -122,7 +123,7 @@ class SettingSubPage extends State<SettingsPage> {
                           title: new TextField(
                             controller: birthdayController,
                             decoration: new InputDecoration(
-                              hintText: "Birthday",
+                              hintText: Translate.of(context).input_birthday,
                             ),
                           ),
                         ),
@@ -131,14 +132,14 @@ class SettingSubPage extends State<SettingsPage> {
                             padding: EdgeInsets.all(8.0),
                             child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: Text('Notification Center',
+                                child: Text(Translate.of(context).label_notification_center,
                                     style: new TextStyle(fontSize: 18)))),
                         Divider(),
                         new ListTile(
                           leading: const Icon(Icons.mark_chat_unread_outlined),
-                          title: Text('Push Notification'),
+                          title: Text(Translate.of(context).push_notification),
                           subtitle:
-                              Text('Enable Push notification on your mobile'),
+                              Text(Translate.of(context).advertise_push_notification),
                           trailing: Checkbox(
                             value: this.showvalue,
                             onChanged: (bool? value) {
@@ -157,7 +158,7 @@ class SettingSubPage extends State<SettingsPage> {
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             child: CupertinoButton(
-                                child: Text('SAVE',
+                                child: Text(Translate.of(context).button_save,
                                     style: new TextStyle(
                                         color: Colors.white, fontSize: 15)),
                                 onPressed: () {

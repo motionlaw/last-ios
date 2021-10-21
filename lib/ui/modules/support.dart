@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:motionlaw/generated/l10n.dart';
 import '../../style/theme.dart' as Theme;
 import '../../utils/constants.dart' as constants;
 
@@ -46,7 +47,7 @@ class _SupportPageState extends State<SupportPage>
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('Required Fields!'),
+          title: Text(Translate.of(context).required_fields),
           content: Text(message),
           actions: <Widget>[
             CupertinoDialogAction(
@@ -86,8 +87,8 @@ class _SupportPageState extends State<SupportPage>
         barrierDismissible: false,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
-            title: Text('Support message sent successfully.'),
-            content: Text('Our team will reply as soon as possible!'),
+            title: Text(Translate.of(context).sent_succesfully_title),
+            content: Text(Translate.of(context).sent_succesfully),
             actions: <Widget>[
               CupertinoDialogAction(
                 child: Text('Close'),
@@ -97,7 +98,7 @@ class _SupportPageState extends State<SupportPage>
                   _messageController.clear();
                   this.setState(
                         () {
-                      submit = 'SUBMIT';
+                      submit = Translate.of(context).button_submit;
                       buttonColor = Theme.Colors.loginGradientButton;
                     },
                   );
@@ -124,11 +125,11 @@ class _SupportPageState extends State<SupportPage>
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-            middle: Text('Contact Us', style: TextStyle(
+            middle: Text(Translate.of(context).contact_us, style: TextStyle(
               color: Colors.white,
             ),),
             backgroundColor: Theme.Colors.loginGradientButton,
-            previousPageTitle: 'Back'
+            previousPageTitle: Translate.of(context).back
         ),
         child: Scaffold(
           body: SafeArea(
@@ -141,7 +142,7 @@ class _SupportPageState extends State<SupportPage>
                         Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                                'Fill the form fields, then submit and our team will be with you as soon as possible!')),
+                                Translate.of(context).contact_us_header)),
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: TextField(
@@ -170,7 +171,7 @@ class _SupportPageState extends State<SupportPage>
                               readOnly: true,
                               decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Staff Member'
+                              labelText: Translate.of(context).input_staff_member
                             ),
                           ),
                         ),
@@ -180,7 +181,7 @@ class _SupportPageState extends State<SupportPage>
                             controller: _subjectController,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Subject',
+                              labelText: Translate.of(context).input_subject,
                             ),
                           ),
                         ),
@@ -188,10 +189,12 @@ class _SupportPageState extends State<SupportPage>
                           padding: EdgeInsets.all(8.0),
                           child: TextField(
                             controller: _messageController,
+                            //textAlignVertical: TextAlignVertical.top,
+                            expands: false,
                             maxLines: 8,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Message',
+                              hintText: Translate.of(context).input_message,
                             ),
                           ),
                         ),
@@ -204,28 +207,28 @@ class _SupportPageState extends State<SupportPage>
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             child: CupertinoButton(
-                                child: Text(submit,
+                                child: Text(Translate.of(context).button_submit,
                                     style: new TextStyle(
                                         color: Colors.white, fontSize: 15)),
                                 onPressed: () {
                                   if (_staffController.text == "") {
                                     _handleClickMe(
-                                        'Before continue, you must fill the required fields');
+                                        Translate.of(context).validation_submit);
                                     return;
                                   }
                                   if (_subjectController.text == "") {
                                     _handleClickMe(
-                                        'Before continue, you must fill the required fields');
+                                        Translate.of(context).validation_submit);
                                     return;
                                   }
                                   if (_messageController.text == "") {
                                     _handleClickMe(
-                                        'Before continue, you must fill the required fields');
+                                        Translate.of(context).validation_submit);
                                     return;
                                   }
                                   this.setState(
                                         () {
-                                      submit = 'LOADING...';
+                                      submit = Translate.of(context).loading;
                                       buttonColor = Colors.black12;
                                     },
                                   );

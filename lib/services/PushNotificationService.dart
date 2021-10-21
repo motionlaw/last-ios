@@ -1,59 +1,47 @@
-import 'package:firebase_core/firebase_core.dart';
+import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:hive/hive.dart';
-import 'SlackNotificationService.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+
+
+String? selectedNotificationPayload;
 
 class PushNotificationService {
   static FirebaseMessaging messaging = FirebaseMessaging.instance;
   static String? token;
+  static StreamController<String> _messageStream = new StreamController.broadcast();
+  static Stream<String> get messagesStream => _messageStream.stream;
 
   static Future _backgroundHandler(RemoteMessage message) async {
-    print('onBackgroundHandler ${message.messageId}');
-    SlackNotificationService.sendSlackMessage(message.toString());
+    print('onBackground Hanlder : ${message.messageId}');
+    _messageStream.add(message.notification?.title ?? 'No title');
   }
 
-  static Future _onMessageHandler(RemoteMessage message) async {
-    print('onMessageHandler ${message.messageId}');
-    SlackNotificationService.sendSlackMessage(message.toString());
+  static Future _onMessageHanlder(RemoteMessage message) async {
+    print('onMessage Hanlder : ${message.messageId}');
+    _messageStream.add(message.notification?.title ?? 'No title');
   }
 
   static Future _onMessageOpenApp(RemoteMessage message) async {
-    print('onMessageOpenAppHandler ${message.messageId}');
-    SlackNotificationService.sendSlackMessage(message.toString());
+    print('onMessageOpenApp Hanlder : ${message.messageId}');
+    _messageStream.add(message.notification?.title ?? 'No title');
   }
 
   static Future initializeApp() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    //var box = await Hive.openBox('app_data');
     token = await FirebaseMessaging.instance.getToken();
-    //box.put('push_token', token);
-    //SlackNotificationService.sendSlackMessage(token!);
-    print('Token $token');
+    print('token : ${token}');
 
-    /*NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-      print('User granted provisional permission');
-    } else {
-      print('User declined or has not accepted permission');
-    } */
-
-    FirebaseMessaging.onBackgroundMessage( _backgroundHandler );
-    FirebaseMessaging.onMessage.listen( _onMessageHandler );
-    FirebaseMessaging.onMessageOpenedApp.listen( _onMessageOpenApp );
+    /* Handlers */
+    FirebaseMessaging.onBackgroundMessage(_backgroundHandler);
+    FirebaseMessaging.onMessage.listen(_onMessageHanlder);
+    FirebaseMessaging.onMessageOpenedApp.listen(_onMessageOpenApp);
 
   }
 
+  static closeStreams() {
+    _messageStream.close();
+  }
 }

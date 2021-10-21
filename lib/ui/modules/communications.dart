@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:motionlaw/generated/l10n.dart';
 import '../../style/theme.dart' as Theme;
 import '../../utils/constants.dart' as constants;
 
@@ -34,11 +35,11 @@ class CommunicationPage extends StatelessWidget {
         ),
         body : CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-            middle: Text('Your Cases', style: TextStyle(
+            middle: Text(Translate.of(context).you_cases, style: TextStyle(
               color: Colors.white,
             ),),
             backgroundColor: Theme.Colors.loginGradientButton,
-            previousPageTitle: 'Back'
+            previousPageTitle: Translate.of(context).back
         ),
         child: Scaffold(
             body: SafeArea(
@@ -66,7 +67,7 @@ class CommunicationPage extends StatelessWidget {
                       leading: Icon(CupertinoIcons.drop_triangle),
                       trailing: SizedBox.shrink(),
                       title: Text(
-                        'There are not cases linked to your user',
+                        Translate.of(context).no_cases,
                         style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
                       ),
                     );
@@ -76,7 +77,7 @@ class CommunicationPage extends StatelessWidget {
                     leading: Icon(CupertinoIcons.drop_triangle),
                     trailing: SizedBox.shrink(),
                     title: Text(
-                      'There are not cases linked to your user',
+                      Translate.of(context).no_cases,
                       style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
                     ),
                   );
@@ -161,7 +162,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
               SizedBox(
                 width: 55,
               ),
-              Text('ADDED:',
+              Text(Translate.of(context).added,
                   style:
                       TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold)),
               Padding(
@@ -198,7 +199,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                           }
                         );
                       },
-                      child: new Text("See more",
+                      child: new Text(Translate.of(context).label_read_more,
                           style: TextStyle(
                               fontSize: 10.0,
                               fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -19,6 +20,7 @@ import 'ui/modules/support.dart';
 import 'ui/modules/blog.dart';
 import 'ui/modules/blog_id.dart';
 import 'ui/modules/consultation.dart';
+import '/generated/l10n.dart';
 
 /* Services. */
 import 'services/PushNotificationService.dart';
@@ -32,7 +34,7 @@ void main(context) async {
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
 
-  await PushNotificationService.initializeApp();
+  //await PushNotificationService.initializeApp();
 
   bool _result = await appAuth.checkStatus();
   if (_result == true) {
@@ -57,8 +59,15 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Motion Law.',
         theme: new ThemeData(
-            primaryColor: Theme.Colors.motionTmBlue,
+          primaryColor: Theme.Colors.motionTmBlue,
         ),
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          Translate.delegate,
+        ],
+        supportedLocales: Translate.delegate.supportedLocales,
         home: defaultHome,
         routes: {
           '/freeConsultation': (context) => ConsultationPage(),

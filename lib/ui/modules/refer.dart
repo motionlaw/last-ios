@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:motionlaw/generated/l10n.dart';
 import '../../utils/functions.dart' as tool;
 import '../../style/theme.dart' as Theme;
 import '../../utils/constants.dart' as constants;
@@ -105,7 +106,7 @@ class _ReferPageState extends State<ReferPage>
     super.initState();
     getHive().then((response) {
       this.setState((){
-        userName = response['name'];
+        userName = response['name'] + ' ' +response['last_name'];
         },
       );
     });
@@ -125,11 +126,11 @@ class _ReferPageState extends State<ReferPage>
         ),
         body : CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-            middle: Text('Refer a Friend or Relative', style: TextStyle(
+            middle: Text(Translate.of(context).refer_friend, style: TextStyle(
               color: Colors.white,
             ),),
             backgroundColor: Theme.Colors.loginGradientButton,
-            previousPageTitle: 'Back'
+            previousPageTitle: Translate.of(context).back
         ),
         child: Scaffold(
             body: SafeArea(
@@ -142,14 +143,14 @@ class _ReferPageState extends State<ReferPage>
                           Padding(
                               padding: EdgeInsets.all(8.0),
                               child: Text(
-                                  'Type the full Name and Phone number / email address of the person you would like to introduce to Motion Law.')),
+                                  Translate.of(context).refer_friend_header, textAlign: TextAlign.justify)),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextField(
                               controller: _recipientController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'Full Name of Friend or Relative',
+                                labelText: Translate.of(context).input_fullname,
                               ),
                             ),
                           ),
@@ -159,7 +160,7 @@ class _ReferPageState extends State<ReferPage>
                               alignment: Alignment.centerLeft,
                               child: Container(
                                 child: Text(
-                                  "Provide at least one phone number or email address",
+                                    Translate.of(context).provide_at_least,
                                   style: new TextStyle(
                                       color: Colors.black45, fontSize: 14)
                                 ),
@@ -172,7 +173,7 @@ class _ReferPageState extends State<ReferPage>
                               controller: emailController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'Email Address',
+                                labelText: Translate.of(context).input_email,
                               ),
                             ),
                           ),
@@ -182,7 +183,21 @@ class _ReferPageState extends State<ReferPage>
                               controller: phoneController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: '# Phone',
+                                labelText: Translate.of(context).input_phone_number,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(7.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                child: Text(
+                                    Translate.of(context).below_is_the_message,
+                                    textAlign: TextAlign.justify,
+                                    style: new TextStyle(
+                                        color: Colors.black45, fontSize: 14)
+                                ),
                               ),
                             ),
                           ),
@@ -190,11 +205,12 @@ class _ReferPageState extends State<ReferPage>
                             padding: EdgeInsets.all(8.0),
                             child: TextField(
                               //controller: _subjectController,
-                              maxLines: 8,
+                              textAlign: TextAlign.justify,
+                              maxLines: 6,
                               readOnly: true,
                               decoration: InputDecoration(
                                 hintText:
-                                    "${userName} has introduced you to Motion Law.\nA Team member will be in touch with you soon - please reply to this email to book your initial free consultation right now or call (202) 918-1799",
+                                    "${userName} ${Translate.of(context).refered_message}",
                                 border: OutlineInputBorder(),
                                 //labelText: 'has introduced you to Motion Law... A Team member will be in touch with you soon - please reply to this email to book your initial free consultation right now or call (202) 918-1799',
                               ),
@@ -209,7 +225,7 @@ class _ReferPageState extends State<ReferPage>
                                 borderRadius: BorderRadius.circular(5.0),
                               ),
                               child: CupertinoButton(
-                                  child: Text(submit,
+                                  child: Text(Translate.of(context).button_submit,
                                       style: new TextStyle(
                                           color: Colors.white, fontSize: 15)),
                                   onPressed: (){
@@ -225,7 +241,7 @@ class _ReferPageState extends State<ReferPage>
                                     }
                                     this.setState(
                                           () {
-                                        submit = 'LOADING...';
+                                        submit = Translate.of(context).loading+'...';
                                         buttonColor = Colors.black12;
                                       },
                                     );
