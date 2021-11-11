@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:motionlaw/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
@@ -12,8 +13,6 @@ import 'package:file_picker/file_picker.dart';
 import '../../utils/constants.dart' as constants;
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
-
-import 'blog.dart';
 
 Map data = {};
 bool fbVisible = false;
@@ -31,7 +30,6 @@ class _CasesDetailedState extends State<CasesDetailed> {
   Map? arguments;
   File? selectedfile;
   Response? response;
-  Response? _responseFuture;
   String? progress;
   String var_path = '';
   String practice_area = '';
@@ -77,6 +75,8 @@ class _CasesDetailedState extends State<CasesDetailed> {
           progress = "$sent" + " Bytes of " "$total Bytes - " +  percentage + " % uploaded";
         });
       },);
+    box.close();
+    box.clear();
     if(response!.statusCode == 200){
       //print(response.toString());
       Navigator.pushNamed(context, '/casesDetailed',
@@ -88,7 +88,7 @@ class _CasesDetailedState extends State<CasesDetailed> {
             'success': true
           });
       final snackBar = SnackBar(
-        content: Text('File Uploaded succesfully!'),
+        content: Text(Translate.of(context).file_upload),
         action: SnackBarAction(
           label: 'Got It!',
           onPressed: () {
@@ -113,14 +113,24 @@ class _CasesDetailedState extends State<CasesDetailed> {
   }
 
   @override
+  void dispose() {
+    selectedfile!.delete();
+    arguments!.clear();
+    arg!.clear();
+    data.clear();
+    dio.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('Your Cases', style: TextStyle(
+        middle: Text(Translate.of(context).you_cases, style: TextStyle(
           color: Colors.white,
         ),),
         backgroundColor: Theme.Colors.loginGradientButton,
-        previousPageTitle: 'Back',
+        previousPageTitle: Translate.of(context).back,
       ),
       child: Scaffold(
           floatingActionButton: Visibility(
@@ -131,7 +141,7 @@ class _CasesDetailedState extends State<CasesDetailed> {
               },
               backgroundColor: Theme.Colors.loginGradientButton,
               label: Row(
-                children: <Widget>[Text("Upload Document  "), Icon(CupertinoIcons.cloud_upload)],
+                children: <Widget>[Text("${Translate.of(context).upload_document_button}  "), Icon(CupertinoIcons.cloud_upload)],
               ),
               icon: Container(),
             )
@@ -218,7 +228,7 @@ class _expansionTileState extends State<expansionTile> {
                 SizedBox(
                   width: 55,
                 ),
-                Text('ADDED:',
+                Text(Translate.of(context).added,
                     style: TextStyle(
                         color: Colors.blue,
                         fontSize: 12.0,
@@ -250,7 +260,7 @@ class _expansionTileState extends State<expansionTile> {
                           showCupertinoDialog(
                               context: context,
                               builder: (context) => CupertinoAlertDialog(
-                                title: Text("CASE UPDATE",
+                                title: Text(Translate.of(context).case_update,
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w700)),
@@ -259,7 +269,7 @@ class _expansionTileState extends State<expansionTile> {
                                     padding: EdgeInsets.fromLTRB(
                                         10, 10, 10, 20),
                                     child: Text(
-                                        'Please type the complete message of new update in this case.',
+                                        Translate.of(context).message_update_modal,
                                         style: TextStyle(
                                           fontSize: 12.0,
                                         )),
@@ -276,7 +286,7 @@ class _expansionTileState extends State<expansionTile> {
                                                 keyboardType:
                                                 TextInputType
                                                     .multiline,
-                                                placeholder: "Message",
+                                                placeholder: Translate.of(context).input_message,
                                                 onChanged: (value) {
                                                   /*if (value.isEmpty) {
                                                     return 'Please enter a valid message';
@@ -288,17 +298,17 @@ class _expansionTileState extends State<expansionTile> {
                                 ]),
                                 actions: [
                                   CupertinoDialogAction(
-                                      child: Text('Close'),
+                                      child: Text(Translate.of(context).close),
                                       onPressed: () =>
                                           Navigator.pop(context)),
                                   CupertinoDialogAction(
-                                      child: Text('Save'),
+                                      child: Text(Translate.of(context).button_save),
                                       onPressed: () =>
                                           Navigator.pop(context)),
                                 ],
                               ));
                         },
-                        child: new Text("Add new update",
+                        child: new Text(Translate.of(context).add_new_update,
                             style: TextStyle(
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.bold,
@@ -317,7 +327,7 @@ class _expansionTileState extends State<expansionTile> {
                 SizedBox(
                   width: 55,
                 ),
-                Text('CALENDAR',
+                Text(Translate.of(context).calendar,
                     style: TextStyle(
                         color: Colors.blue,
                         fontSize: 12.0,
@@ -341,11 +351,11 @@ class _expansionTileState extends State<expansionTile> {
                     child: DataTable(
                       columnSpacing: 30,
                       columns: [
-                        DataColumn(label: Text('Date')),
+                        DataColumn(label: Text(Translate.of(context).date)),
                         DataColumn(
                             label: Expanded(
                                 child: Text(
-                                  'Time',
+                                  Translate.of(context).time,
                                   textAlign: TextAlign.center,
                                 )
                             )
@@ -353,7 +363,7 @@ class _expansionTileState extends State<expansionTile> {
                         DataColumn(
                             label: Expanded(
                                 child: Text(
-                                  'Title',
+                                  Translate.of(context).title,
                                   textAlign: TextAlign.center,
                                 ))
                         )
@@ -385,7 +395,7 @@ class _expansionTileState extends State<expansionTile> {
                 SizedBox(
                   width: 55,
                 ),
-                Text('CASE BILLING INFORMATION',
+                Text(Translate.of(context).case_billing_information,
                     style: TextStyle(
                         color: Colors.blue,
                         fontSize: 12.0,
@@ -401,7 +411,7 @@ class _expansionTileState extends State<expansionTile> {
                     SizedBox(
                       width: 55,
                     ),
-                    Text('Select an Invoice to Pay:',
+                    Text(Translate.of(context).select_invoice,
                         style: TextStyle(
                             color: Colors.black45,
                             fontSize: 13.0,
@@ -423,11 +433,11 @@ class _expansionTileState extends State<expansionTile> {
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: DataTable(
                       columns: [
-                        DataColumn(label: Text('Number')),
+                        DataColumn(label: Text(Translate.of(context).number)),
                         DataColumn(
                             label: Expanded(
                                 child: Text(
-                                  'Total',
+                                  Translate.of(context).total,
                                   textAlign: TextAlign.center,
                                 )
                             )
@@ -466,7 +476,7 @@ class _expansionTileState extends State<expansionTile> {
                 SizedBox(
                   width: 55,
                 ),
-                Text('No available billings',
+                Text(Translate.of(context).no_available_billings,
                     style: TextStyle(
                         color: Colors.blue,
                         fontSize: 12.0,
@@ -482,7 +492,7 @@ class _expansionTileState extends State<expansionTile> {
                 SizedBox(
                   width: 55,
                 ),
-                Text('DOCUMENTS',
+                Text(Translate.of(context).documents,
                     style: TextStyle(
                         color: Colors.blue,
                         fontSize: 12.0,
@@ -505,8 +515,8 @@ class _expansionTileState extends State<expansionTile> {
                         width: MediaQuery.of(context).size.width * 0.80,
                         child: DataTable(
                             columns: [
-                              DataColumn(label: Text('Name')),
-                              DataColumn(label: Text('Action'))
+                              DataColumn(label: Text(Translate.of(context).name)),
+                              DataColumn(label: Text(Translate.of(context).action))
                             ],
                             rows: [
                               if ( widget.map!.length > 1 )
@@ -534,7 +544,7 @@ class _expansionTileState extends State<expansionTile> {
                               else
                                 DataRow(cells: [
                                   DataCell(
-                                      Text('The folder of this case is empty.')
+                                      Text(Translate.of(context).folder_empty)
                                   ),
                                   DataCell(SizedBox(width: 0.0, height: 0.0))
                                 ]),
@@ -555,7 +565,7 @@ class _expansionTileState extends State<expansionTile> {
                 ),
                 Visibility(
                   visible: allFiles,
-                  child: Text('Please login to your MyCase portal to view all of your \ndocuments.',
+                  child: Text(Translate.of(context).login_mycase,
                     style: TextStyle(
                         color: Colors.blue,
                         fontSize: 12.0

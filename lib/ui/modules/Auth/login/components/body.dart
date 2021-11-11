@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:motionlaw/generated/l10n.dart';
 import '../../../components/rounded_button.dart';
 import '../../../components/rounded_input_field.dart';
 import '../../../components/rounded_password_field.dart';
@@ -57,7 +58,7 @@ class _LoginState extends State<Login>
           getUser();
           /**/
         } else {
-          _handleClickMe('Data Invalid', 'Incorrect Username or Password');
+          _handleClickMe(Translate.of(context).wrong_data, Translate.of(context).incorrect_username);
           setState(() {
             isEnabled = true;
           });
@@ -67,6 +68,7 @@ class _LoginState extends State<Login>
       }
       return data!['response'];
     } else {
+      _handleClickMe(Translate.of(context).wrong_data, Translate.of(context).email_match);
       print('auth :: no email');
     }
   }
@@ -106,7 +108,7 @@ class _LoginState extends State<Login>
           content: Text(message),
           actions: <Widget>[
             CupertinoDialogAction(
-              child: Text('Close'),
+              child: Text(Translate.of(context).close),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -143,7 +145,7 @@ class _LoginState extends State<Login>
           children: <Widget>[
             //SizedBox(height: size.height * 0.03),
             Positioned(
-              top: 20,
+                top: 20,
                 child: Image.asset(
                     'assets/img/Motionlaw-logogold-cr.png',
                     width: 220
@@ -177,52 +179,52 @@ class _LoginState extends State<Login>
                           Icons.person,
                           color: Theme.Colors.loginGradientButton
                       ),
-                      hintText: 'Email Address',
+                      hintText: Translate.of(context).input_email,
                       border: InputBorder.none,
                     ),
                   ),
                 )
             ),
             Positioned(
-              top: 160,
-              left: 0,
-              right: 0,
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                width: size.width * 0.8,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(29),
-                    border: Border.all(color: Colors.black12)
-                ),
-                child: TextField(
-                  cursorColor: Theme.Colors.loginGradientButton,
-                  controller: loginPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                      borderRadius: BorderRadius.circular(25.7),
-                    ),
-                    filled: false,
-                    fillColor: Colors.blue,
-                    icon: Icon(
-                        Icons.lock,
-                        color: Theme.Colors.loginGradientButton
-                    ),
-                    hintText: 'Password',
-                    border: InputBorder.none,
+                top: 160,
+                left: 0,
+                right: 0,
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  width: size.width * 0.8,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(29),
+                      border: Border.all(color: Colors.black12)
                   ),
-                ),
-              )
+                  child: TextField(
+                    cursorColor: Theme.Colors.loginGradientButton,
+                    controller: loginPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(25.7),
+                      ),
+                      filled: false,
+                      fillColor: Colors.blue,
+                      icon: Icon(
+                          Icons.lock,
+                          color: Theme.Colors.loginGradientButton
+                      ),
+                      hintText: Translate.of(context).input_password,
+                      border: InputBorder.none,
+                    ),
+                  ),
+                )
             ),
             Positioned(
               top: 220,
               left: 0,
               right: 0,
               child: RoundedButton(
-                text: isEnabled ? 'Sign In' : 'Loading...',
+                text: isEnabled ? Translate.of(context).button_signin : Translate.of(context).loading,
                 press: ()=> isEnabled ? auth(loginEmailController.text, loginPasswordController.text) : null,
                 color: isEnabled ? Theme.Colors.loginGradientButton : Colors.grey,
                 key: _scaffoldKey,
@@ -230,15 +232,15 @@ class _LoginState extends State<Login>
             ),
             SizedBox(height: 5),
             Positioned(
-              top: 300,
-              child: Text('Dont have an account?')
+                top: 300,
+                child: Text(Translate.of(context).label_dont_have_account)
             ),
             Positioned(
               top: 320,
               left: 0,
               right: 0,
               child: RoundedButton(
-                text: 'Register',
+                text: Translate.of(context).button_register,
                 press: ()=> Navigator.pushNamed(context, "/register"),
                 color: isEnabled ? Theme.Colors.loginGradientButton : Colors.grey,
                 key: _scaffoldKey2,

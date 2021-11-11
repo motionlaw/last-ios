@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:motionlaw/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../style/theme.dart' as Theme;
 import '../../utils/constants.dart' as constants;
@@ -35,11 +36,11 @@ class PaymentPage extends StatelessWidget {
       ),
       body : CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('Make a payment', style: TextStyle(
+        middle: Text(Translate.of(context).make_payment, style: TextStyle(
           color: Colors.white,
         ),),
         backgroundColor: Theme.Colors.loginGradientButton,
-        previousPageTitle: 'Back'
+        previousPageTitle: Translate.of(context).back
       ),
       child: Scaffold(
         body: SafeArea(
@@ -69,7 +70,7 @@ class PaymentPage extends StatelessWidget {
                         leading: Icon(CupertinoIcons.drop_triangle),
                         trailing: SizedBox.shrink(),
                         title: Text(
-                          'There are not cases linked to your user',
+                          Translate.of(context).no_cases,
                           style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
                         ),
                       );
@@ -79,7 +80,7 @@ class PaymentPage extends StatelessWidget {
                       leading: Icon(CupertinoIcons.drop_triangle),
                       trailing: SizedBox.shrink(),
                       title: Text(
-                        'There are not cases linked to your user',
+                        Translate.of(context).no_cases,
                         style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
                       ),
                     );
@@ -165,7 +166,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
               SizedBox(
                 width: 55,
               ),
-              Text('CASE BILLING INFORMATION',
+              Text(Translate.of(context).case_billing_information,
                   style: TextStyle(
                       color: Colors.blue,
                       fontSize: 12.0,
@@ -181,7 +182,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
             SizedBox(
               width: 55,
             ),
-            Text('Select an Invoice to Pay:',
+            Text(Translate.of(context).select_invoice,
                 style: TextStyle(
                     color: Colors.black45,
                     fontSize: 13.0,
@@ -204,11 +205,11 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                   width: MediaQuery.of(context).size.width * 0.80,
                   child: DataTable(
                     columns: [
-                      DataColumn(label: Text('Number')),
+                      DataColumn(label: Text(Translate.of(context).number)),
                       DataColumn(
                           label: Expanded(
                             child: Text(
-                              'Total',
+                              Translate.of(context).total,
                               textAlign: TextAlign.center,
                             )
                           )
@@ -216,7 +217,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                       DataColumn(
                         label: Expanded(
                         child: Text(
-                          'Status',
+                          Translate.of(context).status,
                           textAlign: TextAlign.center,
                         ))
                       )
@@ -245,7 +246,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                       SizedBox(
                         width: 25,
                       ),
-                      Text('No available billings',
+                      Text(Translate.of(context).no_available_billings,
                       style: TextStyle(
                       color: Colors.blue,
                       fontSize: 12.0,

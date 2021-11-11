@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:motionlaw/generated/l10n.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../style/theme.dart' as Theme;
 import '../../utils/constants.dart' as constants;
@@ -31,7 +32,7 @@ class _ReviewsPageState extends State<ReviewsPage>
         ),
         body : CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-            middle: Text('Reviews', style: TextStyle(
+            middle: Text(Translate.of(context).leave_review, style: TextStyle(
               color: Colors.white,
             ),),
             backgroundColor: Theme.Colors.loginGradientButton,

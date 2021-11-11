@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:motionlaw/generated/l10n.dart';
 import '../../utils/constants.dart' as constants;
 
 class NavDrawer extends StatefulWidget {
@@ -61,7 +62,7 @@ class _NavDrawerState extends State<NavDrawer> {
     _menu();
     getHive().then((response) {
       this.setState((){
-        userName = response['name'];
+        userName = response['name'] + ' ' + response['last_name'];
       },
       );
     });
@@ -86,60 +87,62 @@ class _NavDrawerState extends State<NavDrawer> {
               leading: SizedBox(
                   child: Image.asset('assets/img/avatar.png',
                       height: 40)),
-              title: Text(userName??''),
-              subtitle: Text('Manager')
+              title: Text(userName??'', style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold
+              ))
           ),
           Divider(),
           ( _hasCases == true ) ? ListTile(
             leading: Icon(CupertinoIcons.briefcase_fill),
-            title: Text('Your Cases'),
+            title: Text(Translate.of(context).you_cases),
             onTap: () => {Navigator.pushNamed(context, '/communication')},
           ) : Container(),
           ( _hasCases == true ) ? ListTile(
             leading: Icon(CupertinoIcons.chat_bubble_2),
-            title: Text('Chat'),
+            title: Text(Translate.of(context).chat),
             onTap: () => {Navigator.pushNamed(context, '/chat')},
           ) : Container(),
           ( _hasCases == true ) ? ListTile(
             leading: Icon(CupertinoIcons.creditcard_fill),
-            title: Text('Make a Payment'),
+            title: Text(Translate.of(context).make_payment),
             onTap: () => {Navigator.pushNamed(context, '/payment')},
           ) : Container(),
           ListTile(
             leading: Icon(CupertinoIcons.mail_solid),
-            title: Text('Contact Us'),
+            title: Text(Translate.of(context).contact_us),
             onTap: () => {Navigator.pushNamed(context, '/support')},
           ),
           ListTile(
             leading: Icon(CupertinoIcons.person_2_alt),
-            title: Text('Refer a Friend'),
+            title: Text(Translate.of(context).refer_friend),
             onTap: () => {Navigator.pushNamed(context, '/refer')},
           ),
           ( _hasCases == true ) ? ListTile(
             leading: Icon(CupertinoIcons.device_phone_portrait),
-            title: Text('Leave a review'),
+            title: Text(Translate.of(context).leave_review),
             onTap: () => {Navigator.pushNamed(context, '/reviews')},
           ) : Container(),
           ListTile(
             leading: Icon(CupertinoIcons.book),
-            title: Text('Blog'),
+            title: Text(Translate.of(context).blog),
             onTap: () => {Navigator.pushNamed(context, '/blog')},
           ),
           Divider(),
           ListTile(
             leading: Icon(CupertinoIcons.gear_solid),
-            title: Text('Settings'),
+            title: Text(Translate.of(context).settings),
             onTap: () => {Navigator.pushNamed(context, '/settings')},
           ),
           ListTile(
             leading: Icon(CupertinoIcons.delete_left),
-            title: Text('Logout'),
+            title: Text(Translate.of(context).logout),
             onTap: () => {_logout(context)},
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.25,
+            height: MediaQuery.of(context).size.height * 0.15,
             alignment: FractionalOffset.bottomCenter,
-            child: Text('V1.0.0', style: TextStyle(
+            child: Text('V1.1.8', style: TextStyle(
                 fontSize: 12.0,
                 fontWeight: FontWeight.bold
             ),),

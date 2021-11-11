@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:motionlaw/generated/l10n.dart';
 import '../../utils/nav-drawer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -12,9 +13,11 @@ import '../../services/UpdateInformationDBService.dart';
 import '../../services/SlackNotificationService.dart';
 
 bool _hasCases = false;
+var responseFuture;
+var responseMenu;
 
 List statusCase = [
-  {'id':1, 'label':'Assign Case', 'name': 'Assign Case', 'icon': Text('1', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':1, 'label':'Assign Cases', 'name': 'Assign Case', 'icon': Text('1', style: TextStyle(color: Colors.black45, fontSize: 20))},
   {'id':2, 'label':'Waiting for\nIntroduction', 'name': 'Waiting for Introduction', 'icon': Text('2', style: TextStyle(color: Colors.black45, fontSize: 20))},
   {'id':3, 'label':'Collecting\nEvidence', 'name': 'Collecting Evidence', 'icon': Text('3', style: TextStyle(color: Colors.black45, fontSize: 20))},
   {'id':4, 'label':'Preparing\nPacket', 'name': 'Preparing Packet', 'icon': Text('4', style: TextStyle(color: Colors.black45, fontSize: 20))},
@@ -28,6 +31,21 @@ List statusCase = [
   {'id':12, 'label':'Upcoming\nTrial', 'name': 'Upcoming Trial', 'icon': Text('12', style: TextStyle(color: Colors.black45, fontSize: 20))},
 ];
 
+List statusCaseSpanish = [
+  {'id':1, 'label':'Asignación de\nCaso', 'name': 'Assign Case', 'icon': Text('1', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':2, 'label':'Esperando\nPresentación', 'name': 'Waiting for Introduction', 'icon': Text('2', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':3, 'label':'Recolectando\nEvidencia', 'name': 'Collecting Evidence', 'icon': Text('3', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':4, 'label':'Preparando\nPaquete', 'name': 'Preparing Packet', 'icon': Text('4', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':5, 'label':'En revision de\nAbogado', 'name': 'Attorney Review', 'icon': Text('5', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':6, 'label':'Revision y\nfirmas', 'name': 'Review and Signatures', 'icon': Text('6', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':7, 'label':'Radicado', 'name': 'Filed', 'icon': Text('7', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':8, 'label':'Pendiente', 'name': 'Pending', 'icon': Text('8', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':9, 'label':'En Espera', 'name': 'On Hold', 'icon': Text('9', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':10, 'label':'Pendiente de\nPago', 'name': 'Pending Payment', 'icon': Text('10', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':11, 'label':'Próximo a\nAudiencia', 'name': 'Upcoming Hearing', 'icon': Text('11', style: TextStyle(color: Colors.black45, fontSize: 20))},
+  {'id':12, 'label':'Próximo a\nJuicio', 'name': 'Upcoming Trial', 'icon': Text('12', style: TextStyle(color: Colors.black45, fontSize: 20))},
+];
+
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
   @override
@@ -35,10 +53,9 @@ class HomePage extends StatefulWidget {
 }
 
 Future<http.Response> _casesMethod() async {
-  var _responseFuture;
   try {
     var box = await Hive.openBox('app_data');
-    _responseFuture = await http
+    responseFuture = await http
         .get(Uri.parse('${constants.API_BACK_URL}/api/cases'), headers: <String, String>{
       'Accept': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${box.get('token')}'
@@ -46,21 +63,20 @@ Future<http.Response> _casesMethod() async {
   } catch (e) {
     SlackNotificationService.sendSlackMessage('Error - home.dart (_casesMethod) : ${e.toString()}');
   }
-  return _responseFuture;
+  return responseFuture;
 }
 
 class _HomePageState extends State<HomePage> {
 
   Future<http.Response> _menu() async {
-    var _responseFuture;
     try {
       var box = await Hive.openBox('app_data');
-      _responseFuture = await http
+      responseMenu = await http
           .get(Uri.parse('${constants.API_BACK_URL}/api/cases'), headers: <String, String>{
         'Accept': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ${box.get('token')}'
       });
-      final body = json.decode(_responseFuture.body);
+      final body = json.decode(responseMenu.body);
       if ( body['cases'] != false ) {
         setState(() {
           _hasCases = true;
@@ -69,7 +85,7 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       print('Error - home.dart (_casesMethod) : ${e.toString()}');
     }
-    return _responseFuture;
+    return responseMenu;
   }
 
   @override
@@ -79,11 +95,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    statusCaseSpanish.clear();
+    statusCase.clear();
+    responseFuture = null;
+    responseMenu = null;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
         drawer: NavDrawer(),
         appBar: AppBar(
           title: Text('Motion Law'),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         body: Example8());
   }
@@ -150,7 +176,7 @@ class _NewWidgetState extends State<NewWidget> {
                     child: Column(
                       children: <Widget>[
                         Icon(CupertinoIcons.chat_bubble_2, size: 50.0),
-                        Text("Contact us")
+                        Text(Translate.of(context).contact_us)
                       ],
                     ),
                     onPressed: () => {Navigator.pushNamed(context, '/chat')},
@@ -165,7 +191,7 @@ class _NewWidgetState extends State<NewWidget> {
                     child: Column(
                       children: <Widget>[
                         Icon(CupertinoIcons.creditcard, size: 50.0),
-                        Text("Pay Bill")
+                        Text(Translate.of(context).make_payment)
                       ],
                     ),
                     onPressed: () => {Navigator.pushNamed(context, '/payment')},
@@ -177,7 +203,7 @@ class _NewWidgetState extends State<NewWidget> {
                 child: Column(
                   children: <Widget>[
                     Icon(CupertinoIcons.person_2_alt, size: 50.0),
-                    Text("Refer a Friend")
+                    Text(Translate.of(context).refer_friend)
                   ],
                 ),
                 onPressed: () => {Navigator.pushNamed(context, '/refer')},
@@ -197,7 +223,7 @@ class _NewWidgetState extends State<NewWidget> {
                     child: Column(
                       children: <Widget>[
                         Icon(CupertinoIcons.t_bubble, size: 50.0),
-                        Text("Leave a Review")
+                        Text(Translate.of(context).leave_review)
                       ],
                     ),
                     onPressed: () => {Navigator.pushNamed(context, '/reviews')},
@@ -212,7 +238,7 @@ class _NewWidgetState extends State<NewWidget> {
                     child: Column(
                       children: <Widget>[
                         Icon(CupertinoIcons.person_2_alt, size: 50.0),
-                        Text("Refer a Friend")
+                        Text(Translate.of(context).refer_friend)
                       ],
                     ),
                     onPressed: () => {Navigator.pushNamed(context, '/refer')},
@@ -243,7 +269,7 @@ class _NewWidgetState extends State<NewWidget> {
                     Map<String, dynamic> map = json.decode(response.data.body);
                     return Column(
                       children: [
-                        Text('Latest News', style: TextStyle(fontSize:24)),
+                        Text(Translate.of(context).label_latest_news, style: TextStyle(fontSize:24)),
                         Card(
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                             margin: EdgeInsets.all(15),
@@ -272,7 +298,7 @@ class _NewWidgetState extends State<NewWidget> {
                                                 'id_blog': map['post_id']
                                               });
                                         },
-                                        child: Text('Read more', style: TextStyle(color:Theme.of(context).primaryColor, fontWeight: FontWeight.w600), textAlign: TextAlign.right),
+                                        child: Text(Translate.of(context).label_read_more, style: TextStyle(color:Theme.of(context).primaryColor, fontWeight: FontWeight.w600), textAlign: TextAlign.right),
 
                                       ),
                                     )]
@@ -325,7 +351,7 @@ class caseArea extends StatelessWidget {
                             },
                             color: Color(0xff9e7e46),
                             child: new Text(
-                              "Case Detail",
+                              Translate.of(context).button_case_detail,
                               textAlign: TextAlign.center,
                               style: new TextStyle(color: Colors.white),
                             ),
@@ -357,9 +383,11 @@ class statusCases extends StatefulWidget {
 }
 
 class _statusCasesState extends State<statusCases> {
+  final String defaultLocale = Platform.localeName;
   @override
   Widget build(BuildContext context) {
     var query = statusCase.where((row) => (row["name"].contains(widget.data![0]['status'])));
+    var swt = defaultLocale.contains('es') ? statusCaseSpanish : statusCase;
     var join = query.first;
     return CupertinoPageScaffold(
       child: Container(
@@ -368,7 +396,7 @@ class _statusCasesState extends State<statusCases> {
         child: ListView(
             scrollDirection: Axis.horizontal,
             children: <Widget>[
-              for(var item in statusCase )
+              for(var item in swt )
                 TimelineTile(
                 axis: TimelineAxis.horizontal,
                 alignment: TimelineAlign.end,

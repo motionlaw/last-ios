@@ -15,26 +15,25 @@ class RoundedInputField extends StatelessWidget {
     required TextEditingController controller,
   }) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       key: _scaffoldKey,
       child: TextField(
-        //onChanged: onChanged,
+        onChanged: onChanged,
         //cursorColor: Theme.AppTheme.primaryColor,
         decoration: InputDecoration(
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
             borderRadius: BorderRadius.circular(25.7),
           ),
-          //filled: false,
+          filled: false,
           fillColor: Colors.blue,
-          /*icon: Icon(
+          icon: Icon(
             icon,
             color: Theme.Colors.loginGradientButton
-          ),*/
-          //hintText: hintText,
+          ),
+          hintText: hintText,
           border: InputBorder.none,
         ),
       ),

@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:motionlaw/generated/l10n.dart';
 import '../../../components/rounded_button.dart';
-import '../../../components/rounded_input_field.dart';
-import '../../../components/rounded_password_field.dart';
 import '../../../../../utils/Functions.dart' as tool;
 import '../../../../../style/theme.dart' as Theme;
 import 'background.dart';
 import '../../../../../utils/constants.dart' as constants;
-import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 class Register extends StatefulWidget {
@@ -23,6 +21,7 @@ class _LoginState extends State<Register>
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final loginNameController = new TextEditingController();
   final loginEmailController = new TextEditingController();
+  final loginConfirmationController = new TextEditingController();
   final loginPasswordController = new TextEditingController();
   bool isEnabled = true;
   Map? info;
@@ -32,43 +31,49 @@ class _LoginState extends State<Register>
   void dispose() {
     loginNameController.dispose();
     loginEmailController.dispose();
+    loginConfirmationController.dispose();
     loginPasswordController.dispose();
     super.dispose();
   }
 
-  Future register(String username, String mail, String pass) async {
+  Future register(String username, String mail, String confirmation, String pass) async {
     if( username == '' || mail == '' || pass == '' ){
-      _handleClickMe('Fields required', 'Please complete information');
+      _handleClickMe(Translate.of(context).required_fields, Translate.of(context).incomplete_information);
     } else {
       if (tool.Functions.validateEmail(mail)) {
-        try {
-          setState(() {
-            isEnabled = false;
-          });
-          http.Response response = await http.post(
-              Uri.parse('${constants.API_BACK_URL}/api/register'),
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-              },
-              body: jsonEncode(<String, String>{'username': username, 'email': mail, 'password': pass}));
-          data = json.decode(response.body);
-          if (data!['response'] == true) {
-            _handleClickMe('User created successfully', 'A confirmation message has been sent to email registered, please validate your account before continue');
+        if( mail != confirmation ){
+          _handleClickMe(Translate.of(context).wrong_data, Translate.of(context).email_match);
+        } else {
+          try {
             setState(() {
-              isEnabled = true;
+              isEnabled = false;
             });
-          } else {
-            _handleClickMe('Data Invalid', 'The user is already created');
-            setState(() {
-              isEnabled = true;
-            });
+            http.Response response = await http.post(
+                Uri.parse('${constants.API_BACK_URL}/api/register'),
+                headers: <String, String>{
+                  'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: jsonEncode(<String, String>{'username': username, 'email': mail, 'password': pass}));
+            data = json.decode(response.body);
+            print('Respuesta de registro :: ${data}');
+            if (data!['response'] == true) {
+              _handleClickMe('User created successfully', Translate.of(context).registered_msg);
+              setState(() {
+                isEnabled = true;
+              });
+            } else {
+              _handleClickMe(Translate.of(context).wrong_data, Translate.of(context).user_already_created);
+              setState(() {
+                isEnabled = true;
+              });
+            }
+          } catch (e) {
+            print('Error - register.dart (auth) : ${e.toString()}');
           }
-        } catch (e) {
-          print('Error - register.dart (auth) : ${e.toString()}');
+          return data!['response'];
         }
-        return data!['response'];
       } else {
-        _handleClickMe('Email incorrect', 'Email is invalid');
+        _handleClickMe(Translate.of(context).wrong_data, Translate.of(context).email_match);
       }
     }
   }
@@ -102,7 +107,7 @@ class _LoginState extends State<Register>
         child: Container(
           width: MediaQuery.of(context).size.width * 0.70,
           //height: MediaQuery.of(context).size.height * 0.65,
-          height: 400,
+          height: 470,
           padding: EdgeInsets.all(5.0),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -155,99 +160,132 @@ class _LoginState extends State<Register>
                             Icons.person,
                             color: Theme.Colors.loginGradientButton
                         ),
-                        hintText: 'Full Name',
+                        hintText: Translate.of(context).input_fullname,
                         border: InputBorder.none,
                       ),
                     ),
                   )
               ),
               Positioned(
-                top: 160,
-                left: 0,
-                right: 0,
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                  width: size.width * 0.8,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(29),
-                      border: Border.all(color: Colors.black12)
-                  ),
-                  child: TextField(
-                    cursorColor: Theme.Colors.loginGradientButton,
-                    controller: loginEmailController,
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.circular(25.7),
-                      ),
-                      filled: false,
-                      fillColor: Colors.blue,
-                      icon: Icon(
-                          Icons.email,
-                          color: Theme.Colors.loginGradientButton
-                      ),
-                      hintText: 'Email Address',
-                      border: InputBorder.none,
+                  top: 160,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                    width: size.width * 0.8,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(29),
+                        border: Border.all(color: Colors.black12)
                     ),
-                  ),
-                )
+                    child: TextField(
+                      cursorColor: Theme.Colors.loginGradientButton,
+                      controller: loginEmailController,
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(25.7),
+                        ),
+                        filled: false,
+                        fillColor: Colors.blue,
+                        icon: Icon(
+                            Icons.email,
+                            color: Theme.Colors.loginGradientButton
+                        ),
+                        hintText: Translate.of(context).input_email,
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  )
               ),
               Positioned(
-                top: 220,
-                left: 0,
-                right: 0,
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                  width: size.width * 0.8,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(29),
-                      border: Border.all(color: Colors.black12)
-                  ),
-                  child: TextField(
-                    cursorColor: Theme.Colors.loginGradientButton,
-                    controller: loginPasswordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.circular(25.7),
-                      ),
-                      filled: false,
-                      fillColor: Colors.blue,
-                      icon: Icon(
-                          Icons.lock,
-                          color: Theme.Colors.loginGradientButton
-                      ),
-                      hintText: 'Password',
-                      border: InputBorder.none,
+                  top: 220,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                    width: size.width * 0.8,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(29),
+                        border: Border.all(color: Colors.black12)
                     ),
-                  ),
-                )
+                    child: TextField(
+                      cursorColor: Theme.Colors.loginGradientButton,
+                      controller: loginConfirmationController,
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(25.7),
+                        ),
+                        filled: false,
+                        fillColor: Colors.blue,
+                        icon: Icon(
+                            Icons.email,
+                            color: Theme.Colors.loginGradientButton
+                        ),
+                        hintText: Translate.of(context).input_confirm_email,
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  )
               ),
               Positioned(
-                top: 280,
+                  top: 280,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                    width: size.width * 0.8,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(29),
+                        border: Border.all(color: Colors.black12)
+                    ),
+                    child: TextField(
+                      cursorColor: Theme.Colors.loginGradientButton,
+                      controller: loginPasswordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(25.7),
+                        ),
+                        filled: false,
+                        fillColor: Colors.blue,
+                        icon: Icon(
+                            Icons.lock,
+                            color: Theme.Colors.loginGradientButton
+                        ),
+                        hintText: Translate.of(context).input_password,
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  )
+              ),
+              Positioned(
+                top: 340,
                 left: 0,
                 right: 0,
                 child: RoundedButton(
-                  text: isEnabled ? 'Register' : 'Loading...',
-                  press: ()=> isEnabled ? register(loginNameController.text, loginEmailController.text, loginPasswordController.text) : null,
+                  text: isEnabled ? Translate.of(context).button_register : Translate.of(context).loading,
+                  press: ()=> isEnabled ? register(loginNameController.text, loginEmailController.text, loginConfirmationController.text, loginPasswordController.text) : null,
                   color: isEnabled ? Theme.Colors.loginGradientButton : Colors.grey,
                   key: _scaffoldKey,
                 ),
               ),
               SizedBox(height: 15),
               Positioned(
-                top: 360,
-                child: new GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, "/login");
-                  },
-                  child: Text('Back to Sign in'),
-                )
+                  top: 420,
+                  child: new GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/login");
+                    },
+                    child: Text(Translate.of(context).label_back_sign_in),
+                  )
               ),
               //SizedBox(height: size.height * 0.03),
             ],

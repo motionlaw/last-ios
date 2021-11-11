@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../style/theme.dart' as Theme;
+import 'package:motionlaw/generated/l10n.dart';
 
 class Background extends StatelessWidget {
   final Widget child;
@@ -18,32 +18,32 @@ class Background extends StatelessWidget {
         alignment: Alignment.center,
         children: <Widget>[
           Positioned(
-            bottom: 20,
-            child: Container(
-              child: Center(
-                  child:Text(
-                      'Terms of use & Privacy policy',
-                  style: TextStyle(fontSize:10))
+              bottom: 20,
+              child: Container(
+                  child: Center(
+                      child:Text(
+                          Translate.of(context).label_terms_conditions,
+                          style: TextStyle(fontSize:10)
+                      )
+                  )
               )
-            )
           ),
           Positioned(
-            top: 0,
-            child: Stack(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  //color: Theme.AppTheme.buttonColor,
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/img/DC-Immigration-Law-Firm.png"),
-                      fit: BoxFit.fitHeight,
+              top: 0,
+              child: Stack(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/img/DC-Immigration-Law-Firm.png"),
+                        fit: BoxFit.fitHeight,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            )
+                ],
+              )
           ),
           Padding(
               padding: EdgeInsets.only(top:0.0),
