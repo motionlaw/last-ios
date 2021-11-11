@@ -160,6 +160,16 @@ class Translate {
     );
   }
 
+  /// `Información del Caso`
+  String get case_information {
+    return Intl.message(
+      'Información del Caso',
+      name: 'case_information',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Mis casos`
   String get you_cases {
     return Intl.message(
@@ -415,6 +425,16 @@ class Translate {
     return Intl.message(
       '-------Estos son los valores para las demas vistas------',
       name: 'content_view_translations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tipo de Caso`
+  String get practice_area {
+    return Intl.message(
+      'Tipo de Caso',
+      name: 'practice_area',
       desc: '',
       args: [],
     );

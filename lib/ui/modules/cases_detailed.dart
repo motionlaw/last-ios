@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:motionlaw/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
@@ -75,10 +76,9 @@ class _CasesDetailedState extends State<CasesDetailed> {
           progress = "$sent" + " Bytes of " "$total Bytes - " +  percentage + " % uploaded";
         });
       },);
-    box.close();
-    box.clear();
+    //box.close();
+    //box.clear();
     if(response!.statusCode == 200){
-      //print(response.toString());
       Navigator.pushNamed(context, '/casesDetailed',
           arguments: {
             'path': var_path,
@@ -131,21 +131,17 @@ class _CasesDetailedState extends State<CasesDetailed> {
         ),),
         backgroundColor: Theme.Colors.loginGradientButton,
         previousPageTitle: Translate.of(context).back,
+          trailing: GestureDetector(
+            onTap: () {
+              selectFile(context);
+            },
+            child: new Text('Upload', style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),),
+          ),
       ),
       child: Scaffold(
-          floatingActionButton: Visibility(
-            visible: true,
-            child: FloatingActionButton.extended(
-              onPressed: () {
-                selectFile(context);
-              },
-              backgroundColor: Theme.Colors.loginGradientButton,
-              label: Row(
-                children: <Widget>[Text("${Translate.of(context).upload_document_button}  "), Icon(CupertinoIcons.cloud_upload)],
-              ),
-              icon: Container(),
-            )
-          ),
           body: FutureBuilder(
             future: _asyncMethod(context),
             builder: (BuildContext context, AsyncSnapshot snapshot){
@@ -165,6 +161,7 @@ class _CasesDetailedState extends State<CasesDetailed> {
                 );
               } else {
                 Map<String, dynamic> map = json.decode(snapshot.data.body);
+                print(arguments);
                 return SingleChildScrollView(
                   child: expansionTile(arguments: arguments, formKey: _formKey, map: map)
                 );
@@ -205,376 +202,258 @@ class _expansionTileState extends State<expansionTile> {
   }
 
   Widget build(BuildContext context) {
-    return ExpansionTile(
-        initiallyExpanded: true,
-        trailing: SizedBox.shrink(),
-        leading: Icon(CupertinoIcons.archivebox_fill),
-        title: Text(
-          widget.arguments!['path'],
-          style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(
-          widget.arguments!['practice_area'],
-          style: TextStyle(
-            fontSize: 12.0,
-          ),
-        ),
-        children: <Widget>[
-          ListTile(
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-            dense: true,
-            title: Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 55,
+    DateFormat dateFormat = DateFormat("MMM d, yyyy");
+    print('Diego Fernando :: ${widget.map}');
+    return Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+              color: Colors.black12,
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 15
                 ),
-                Text(Translate.of(context).added,
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold)),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: Text('${widget.arguments!['created_at']} by ${widget.arguments!['attorney']}',
-                      style: TextStyle(
-                        fontSize: 13.0,
+                child: Text(Translate.of(context).case_information, style: TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold
+                ),),
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 30,
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.only(
+                top: 10,
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: 15,
+                ),
+                child: RichText(
+                  text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: <TextSpan>[
+                        TextSpan(text: '${Translate.of(context).name}: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: widget.arguments!['path'], style: TextStyle(
+                            color: Colors.black54
+                        ),)
+                      ])),
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 20,
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: 15
+                ),
+                child: RichText(
+                  text: TextSpan(
+                    style: DefaultTextStyle.of(context).style,
+                    children: <TextSpan>[
+                      TextSpan(text: '${Translate.of(context).added}: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: dateFormat.format(DateTime.parse(widget.arguments!['created_at'])) + ' by ' + widget.arguments!['attorney'], style: TextStyle(
+                          color: Colors.black54
                       )),
-                ),
-              ],
+                    ],
+                  ),
+                )
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 20,
             ),
-          ),
-          ListTile(
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-            dense: true,
-            title: Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 55,
-                ),
-                Padding(
-                  padding: EdgeInsets.all(0.0),
-                  child: Container(
-                      width: MediaQuery.of(context).size.width * 0.70,
-                      child: new GestureDetector(
-                        onTap: () {
-                          showCupertinoDialog(
-                              context: context,
-                              builder: (context) => CupertinoAlertDialog(
-                                title: Text(Translate.of(context).case_update,
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w700)),
-                                content: Column(children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        10, 10, 10, 20),
-                                    child: Text(
-                                        Translate.of(context).message_update_modal,
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                        )),
-                                  ),
-                                  Builder(
-                                    builder: (context) => Form(
-                                        key: widget._formKey,
-                                        child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment
-                                                .stretch,
-                                            children: [
-                                              CupertinoTextField(
-                                                keyboardType:
-                                                TextInputType
-                                                    .multiline,
-                                                placeholder: Translate.of(context).input_message,
-                                                onChanged: (value) {
-                                                  /*if (value.isEmpty) {
-                                                    return 'Please enter a valid message';
-                                                  }*/
-                                                },
-                                              ),
-                                            ])),
-                                  )
-                                ]),
-                                actions: [
-                                  CupertinoDialogAction(
-                                      child: Text(Translate.of(context).close),
-                                      onPressed: () =>
-                                          Navigator.pop(context)),
-                                  CupertinoDialogAction(
-                                      child: Text(Translate.of(context).button_save),
-                                      onPressed: () =>
-                                          Navigator.pop(context)),
-                                ],
-                              ));
-                        },
-                        child: new Text(Translate.of(context).add_new_update,
-                            style: TextStyle(
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue),
-                            textAlign: TextAlign.right),
-                      )),
-                ),
-              ],
-            ),
-          ),
-          ListTile(
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-            dense: true,
-            title: Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 55,
-                ),
-                Text(Translate.of(context).calendar,
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-          ListTile(
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-            dense: true,
-            title: Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 30,
-                ),
-                Padding(
-                  padding: EdgeInsets.all(0.0),
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: DataTable(
-                      columnSpacing: 30,
-                      columns: [
-                        DataColumn(label: Text(Translate.of(context).date)),
-                        DataColumn(
-                            label: Expanded(
-                                child: Text(
-                                  Translate.of(context).time,
-                                  textAlign: TextAlign.center,
-                                )
-                            )
-                        ),
-                        DataColumn(
-                            label: Expanded(
-                                child: Text(
-                                  Translate.of(context).title,
-                                  textAlign: TextAlign.center,
-                                ))
-                        )
-                      ],
-                      rows: [
-                        DataRow(cells: [
-                          DataCell(Container(
-                              width: 45, //SET width
-                              child: Text('June 6'))),
-                          DataCell(Container(
-                              width: 75, //SET width
-                              child: Text('7AM - 8AM'))),
-                          DataCell(Container(
-                              width: 150, //SET width
-                              child: Text('Individual Hearing')))
-                        ]),
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                  padding: EdgeInsets.only(
+                      left: 15
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: <TextSpan>[
+                        TextSpan(text: '${Translate.of(context).practice_area}: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: widget.arguments!['practice_area'], style: TextStyle(
+                            color: Colors.black54
+                        )),
                       ],
                     ),
+                  )
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 20,
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 10,
+              ),
+              color: Colors.black12,
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: 15
+                ),
+                child: Text(Translate.of(context).calendar, style: TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold
+                ),),
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 30,
+            ),
+            Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Icon(
+                    CupertinoIcons.calendar,
+                    color: Theme.Colors.loginGradientButton,
+                    size: 25.0,
                   ),
                 ),
-              ],
-            ),
-          ),
-          ListTile(
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-            dense: true,
-            title: Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 55,
-                ),
-                Text(Translate.of(context).case_billing_information,
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-          ListTile(
-              visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-              dense: true,
-              title: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 55,
-                    ),
-                    Text(Translate.of(context).select_invoice,
-                        style: TextStyle(
-                            color: Colors.black45,
-                            fontSize: 13.0,
-                            fontWeight: FontWeight.bold)),
-                  ])
-          ),
-          ListTile(
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-            dense: true,
-            title: (widget.arguments?['invoices'].length > 0 ) ? Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 30,
-                ),
-                Padding(
-                  padding: EdgeInsets.all(0.0),
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: DataTable(
-                      columns: [
-                        DataColumn(label: Text(Translate.of(context).number)),
-                        DataColumn(
-                            label: Expanded(
-                                child: Text(
-                                  Translate.of(context).total,
-                                  textAlign: TextAlign.center,
-                                )
-                            )
-                        ),
-                        DataColumn(
-                            label: Expanded(
-                                child: Text(
-                                  'Status',
-                                  textAlign: TextAlign.center,
-                                ))
-                        )
-                      ],
-                      rows: [
-                      for(var item in widget.arguments?['invoices'] )
-                        DataRow(cells: [
-                          DataCell(Text(item['number'])),
-                          DataCell(Text(item['total_amount'])),
-                          DataCell(
-                              Container(
-                                  width: 60,
-                                  height:40,
-                                  child: (item['paid'] == true ) ? Icon(CupertinoIcons.checkmark_square,
-                                      color: Colors.green)
-                                      : Icon(CupertinoIcons.creditcard,
-                                      color: Colors.red)
-                              )
-                          )
-                        ])
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ) : Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 55,
-                ),
-                Text(Translate.of(context).no_available_billings,
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-          ListTile(
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-            dense: true,
-            title: Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 55,
-                ),
-                Text(Translate.of(context).documents,
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-          ListTile(
-              visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-              dense: true,
-              title: Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(0.0),
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        width: MediaQuery.of(context).size.width * 0.80,
-                        child: DataTable(
-                            columns: [
-                              DataColumn(label: Text(Translate.of(context).name)),
-                              DataColumn(label: Text(Translate.of(context).action))
-                            ],
-                            rows: [
-                              if ( widget.map!.length > 1 )
-                                  for (int i = 0; i < 2; i++)
-                                      DataRow(cells: [
-                                        DataCell(
-                                            Container(
-                                                width: 185,
-                                                child: new Text(widget.map!['data']['files'][i]['name'])
-                                            )),
-                                        DataCell(
-                                            new GestureDetector(
-                                                onTap: (){
-                                                  launch(widget.map!['data']['files'][i]['url']);
-                                                },
-                                                child: Container(
-                                                    width: 60,
-                                                    height: 40,
-                                                    child: Icon(CupertinoIcons.cloud_download_fill,
-                                                        color: Colors.blue)
-                                                ))
-                                        )
-                                      ])
-
-                              else
-                                DataRow(cells: [
-                                  DataCell(
-                                      Text(Translate.of(context).folder_empty)
-                                  ),
-                                  DataCell(SizedBox(width: 0.0, height: 0.0))
-                                ]),
-                            ]
+                    Text('Dec 6, 2021 - 7AM - 8AM', style: TextStyle(fontWeight: FontWeight.bold),),
+                    Text('Individual Hearing')
+                  ],
+                )
+              ]
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 5,
+              ),
+              color: Colors.black12,
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: 15
+                ),
+                child: Text(Translate.of(context).case_billing_information, style: TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold
+                ),),
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 30,
+            ),
+            (widget.arguments?['invoices'].length > 0 ) ?
+            Column(
+                children: <Widget>[
+                  for(var item in widget.arguments?['invoices'] )
+                  Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Icon(
+                          (item['paid'] != '') ? CupertinoIcons.check_mark_circled : CupertinoIcons.clear_circled,
+                          color: (item['paid'] == '') ? Colors.red : Colors.green,
+                          size: 25.0,
                         ),
                       ),
-                    )
-                  ]
-              )
-          ),
-          ListTile(
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-            dense: true,
-            title: Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Invoice # ${item['number']} ${(item['paid'] != '') ? ': \$' + item['total_amount'] :''}', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Text((item['status'] != '') ? '${item['status']} - ${item['paid_date']}' : 'Pending')
+                        ],
+                      ),
+                      ( item['paid'] == '' ) ? Expanded(
+                          child: Container(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  right: 15
+                              ),
+                              child: TextButton.icon(
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(Theme.Colors.loginGradientButton),
+                                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                ),
+                                label: Text(Translate.of(context).make_payment),
+                                icon: Icon(CupertinoIcons.money_dollar_circle),
+                                onPressed: () {},
+                              )
+                            ),
+                          )
+                      ) : Container(),
+                    ],
+                  )
+                ]
+            ) : Row(
               children: <Widget>[
-                SizedBox(
-                  width: 55,
-                ),
-                Visibility(
-                  visible: allFiles,
-                  child: Text(Translate.of(context).login_mycase,
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 12.0
-                    )),
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Text(Translate.of(context).no_available_billings,
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold)
+                  ),
                 ),
               ],
             ),
-          ),
-        ]
+            Container(
+              margin: EdgeInsets.only(
+                top: 5,
+              ),
+              color: Colors.black12,
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: 15
+                ),
+                child: Text(Translate.of(context).documents, style: TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold
+                ),),
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 30,
+            ),
+            ( widget.map!.length > 1 ) ?
+            Row(
+                children: <Widget>[
+                  for (int i = 0; i < 2; i++)
+                    Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Icon(
+                            CupertinoIcons.doc_on_doc,
+                            color: Theme.Colors.loginGradientButton,
+                            size: 25.0,
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(widget.map!['data']['files'][i]['name'], style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text('Individual Hearing')
+                          ],
+                        )
+                      ],
+                    )
+                ]
+            ) : Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Text(Translate.of(context).folder_empty,
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold)
+                  ),
+                ),
+              ],
+            ),
+          ]
+        )
     );
   }
 }

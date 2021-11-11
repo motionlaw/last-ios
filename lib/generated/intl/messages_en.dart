@@ -43,6 +43,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "calendar": MessageLookupByLibrary.simpleMessage("Calendar"),
         "case_billing_information":
             MessageLookupByLibrary.simpleMessage("Billing Information"),
+        "case_information":
+            MessageLookupByLibrary.simpleMessage("Case Information"),
         "case_update": MessageLookupByLibrary.simpleMessage("Case Update"),
         "chat": MessageLookupByLibrary.simpleMessage("Chat"),
         "close": MessageLookupByLibrary.simpleMessage("Close"),
@@ -120,6 +122,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pending": MessageLookupByLibrary.simpleMessage("Pending"),
         "pending_payment":
             MessageLookupByLibrary.simpleMessage("Pending Payment"),
+        "practice_area": MessageLookupByLibrary.simpleMessage("Practice Area"),
         "preparing_packet":
             MessageLookupByLibrary.simpleMessage("Preparing Packet"),
         "provide_at_least": MessageLookupByLibrary.simpleMessage(

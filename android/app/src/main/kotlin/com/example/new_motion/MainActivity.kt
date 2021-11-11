@@ -1,4 +1,4 @@
-package com.example.new_motion
+package com.motionlaw.inmigration
 
 import io.flutter.embedding.android.FlutterActivity
 
