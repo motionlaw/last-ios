@@ -1,4 +1,4 @@
-package com.motionlaw.inmigration
+package com.motionlaw.immigration
 
 import io.flutter.embedding.android.FlutterActivity
 
