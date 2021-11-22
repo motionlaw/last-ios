@@ -20,7 +20,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login>
-  with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<ScaffoldState> _scaffoldKey2 = new GlobalKey<ScaffoldState>();
   final loginEmailController = new TextEditingController();
@@ -89,13 +89,13 @@ class _LoginState extends State<Login>
     });
     Navigator.pushNamed(context, '/loading');
     Timer(Duration(seconds: 3),
-    () => {
-      if ( info!['data']['consultation'] == null ) {
-        Navigator.pushNamed(context, '/freeConsultation')
-      } else {
-        Navigator.pushNamed(context, '/home')
-      }
-    });
+            () => {
+          if ( info!['data']['consultation'] == null ) {
+            Navigator.pushNamed(context, '/freeConsultation')
+          } else {
+            Navigator.pushNamed(context, '/home')
+          }
+        });
   }
 
   Future<void> _handleClickMe(title, message) async {

@@ -38,13 +38,13 @@ dependencies:
   url_launcher: ^6.0.3
   timeline_tile: ^2.0.0
   google_fonts: ^2.0.0
-  file_picker: ^4.1.4
+  file_picker: ^4.2.2+1
   dio: ^4.0.0
   path: ^1.8.0
   intl: ^0.17.0
   flutter_html: ^2.0.0
-  firebase_messaging: ^10.0.5
-  firebase_core: ^1.5.0
+  firebase_messaging: ^11.1.0
+  firebase_core: ^1.10.0
 
 dev_dependencies:
   flutter_test:
@@ -95,4 +95,4 @@ module:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+  # see https://flutter.dev/custom-fonts/#from-packagessdsdsd

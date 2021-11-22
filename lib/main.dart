@@ -34,7 +34,7 @@ void main(context) async {
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
 
-  await PushNotificationService.initializeApp();
+  //await PushNotificationService.initializeApp();
 
   bool _result = await appAuth.checkStatus();
   if (_result == true) {
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Motion Law.',
         theme: new ThemeData(
-            primaryColor: Theme.Colors.motionTmBlue,
+          primaryColor: Theme.Colors.motionTmBlue,
         ),
         localizationsDelegates: [
           GlobalMaterialLocalizations.delegate,

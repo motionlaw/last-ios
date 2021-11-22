@@ -17,7 +17,7 @@ class Register extends StatefulWidget {
 }
 
 class _LoginState extends State<Register>
-  with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final loginNameController = new TextEditingController();
   final loginEmailController = new TextEditingController();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motionlaw/generated/l10n.dart';
+import '../../../../../style/theme.dart' as Theme;
 
 class Background extends StatelessWidget {
   final Widget child;
@@ -23,8 +24,7 @@ class Background extends StatelessWidget {
                   child: Center(
                       child:Text(
                           Translate.of(context).label_terms_conditions,
-                          style: TextStyle(fontSize:10)
-                      )
+                          style: TextStyle(fontSize:10))
                   )
               )
           ),
@@ -34,6 +34,7 @@ class Background extends StatelessWidget {
                 children: [
                   Container(
                     width: MediaQuery.of(context).size.width,
+                    //color: Theme.AppTheme.buttonColor,
                     height: MediaQuery.of(context).size.height * 0.5,
                     decoration: BoxDecoration(
                       image: DecorationImage(
