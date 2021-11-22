@@ -32,7 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Attorney Review"),
         "back": MessageLookupByLibrary.simpleMessage("Back"),
         "below_is_the_message": MessageLookupByLibrary.simpleMessage(
-            "Below is the message your friend or relative will receive from Motion Law when you click SUBMIT"),
+            "Below is the message your friend or relative will receive from Motion Law when you click Send"),
         "blog": MessageLookupByLibrary.simpleMessage("Blog"),
         "button_case_detail":
             MessageLookupByLibrary.simpleMessage("Case Detail"),

@@ -33,7 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("En revision de Abogado"),
         "back": MessageLookupByLibrary.simpleMessage("Atrás"),
         "below_is_the_message": MessageLookupByLibrary.simpleMessage(
-            "A continuación se muestra el mensaje que recibirá tu referido una vez presiones el botón ENVIAR"),
+            "A continuación se muestra el mensaje que recibirá tu referido una vez presiones el botón Enviar"),
         "blog": MessageLookupByLibrary.simpleMessage("Blog"),
         "button_case_detail":
             MessageLookupByLibrary.simpleMessage("Detalle del Caso"),

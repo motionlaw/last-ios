@@ -93,21 +93,21 @@ class _NavDrawerState extends State<NavDrawer> {
               ))
           ),
           Divider(),
-          ( _hasCases == true ) ? ListTile(
+          ListTile(
             leading: Icon(CupertinoIcons.briefcase_fill),
             title: Text(Translate.of(context).you_cases),
             onTap: () => {Navigator.pushNamed(context, '/communication')},
-          ) : Container(),
-          ( _hasCases == true ) ? ListTile(
+          ),
+          ListTile(
             leading: Icon(CupertinoIcons.chat_bubble_2),
             title: Text(Translate.of(context).chat),
             onTap: () => {Navigator.pushNamed(context, '/chat')},
-          ) : Container(),
-          ( _hasCases == true ) ? ListTile(
+          ),
+          ListTile(
             leading: Icon(CupertinoIcons.creditcard_fill),
             title: Text(Translate.of(context).make_payment),
             onTap: () => {Navigator.pushNamed(context, '/payment')},
-          ) : Container(),
+          ),
           ListTile(
             leading: Icon(CupertinoIcons.mail_solid),
             title: Text(Translate.of(context).contact_us),
@@ -118,11 +118,11 @@ class _NavDrawerState extends State<NavDrawer> {
             title: Text(Translate.of(context).refer_friend),
             onTap: () => {Navigator.pushNamed(context, '/refer')},
           ),
-          ( _hasCases == true ) ? ListTile(
+          ListTile(
             leading: Icon(CupertinoIcons.device_phone_portrait),
             title: Text(Translate.of(context).leave_review),
             onTap: () => {Navigator.pushNamed(context, '/reviews')},
-          ) : Container(),
+          ),
           ListTile(
             leading: Icon(CupertinoIcons.book),
             title: Text(Translate.of(context).blog),
@@ -142,7 +142,7 @@ class _NavDrawerState extends State<NavDrawer> {
           Container(
             height: MediaQuery.of(context).size.height * 0.15,
             alignment: FractionalOffset.bottomCenter,
-            child: Text('V1.1.8', style: TextStyle(
+            child: Text('V1.1.12', style: TextStyle(
                 fontSize: 12.0,
                 fontWeight: FontWeight.bold
             ),),

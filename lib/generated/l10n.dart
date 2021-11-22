@@ -850,10 +850,10 @@ class Translate {
     );
   }
 
-  /// `A continuación se muestra el mensaje que recibirá tu referido una vez presiones el botón ENVIAR`
+  /// `A continuación se muestra el mensaje que recibirá tu referido una vez presiones el botón Enviar`
   String get below_is_the_message {
     return Intl.message(
-      'A continuación se muestra el mensaje que recibirá tu referido una vez presiones el botón ENVIAR',
+      'A continuación se muestra el mensaje que recibirá tu referido una vez presiones el botón Enviar',
       name: 'below_is_the_message',
       desc: '',
       args: [],

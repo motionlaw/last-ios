@@ -79,7 +79,7 @@
   "total" : "Total",
   "status" : "Status",
   "provide_at_least" : "Provide at least one phone number or email address",
-  "below_is_the_message" : "Below is the message your friend or relative will receive from Motion Law when you click SUBMIT",
+  "below_is_the_message" : "Below is the message your friend or relative will receive from Motion Law when you click Send",
   "messages_translations" : "-------Traduccion de mensajes informativos-------",
   "validation_submit" : "Before continue, you must fill the required fields",
   "sent_succesfully" : "Our team will reply as soon as possible",

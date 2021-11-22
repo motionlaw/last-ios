@@ -79,7 +79,7 @@
   "total" : "Total",
   "status" : "Estado",
   "provide_at_least" : "Indica por lo menos un correo o número de teléfono",
-  "below_is_the_message" : "A continuación se muestra el mensaje que recibirá tu referido una vez presiones el botón ENVIAR",
+  "below_is_the_message" : "A continuación se muestra el mensaje que recibirá tu referido una vez presiones el botón Enviar",
   "messages_translations" : "-------Traduccion de mensajes informativos-------",
   "validation_submit" : "Debes diligenciar los campos antes de continuar",
   "sent_succesfully" : "Nuestro equipo se pondra en contacto a la brevedad",
