@@ -204,7 +204,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                       },
                       child: new Text(Translate.of(context).label_read_more,
                           style: TextStyle(
-                              fontSize: 10.0,
+                              fontSize: 12.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.blue),
                           textAlign: TextAlign.right),
