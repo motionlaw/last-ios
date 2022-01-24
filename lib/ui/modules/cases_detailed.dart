@@ -29,7 +29,6 @@ class _CasesDetailedState extends State<CasesDetailed> {
   final _formKey = GlobalKey();
   Map? arg;
   Map? arguments;
-  File? selectedfile;
   Response? response;
   String? progress;
   String var_path = '';
@@ -50,58 +49,6 @@ class _CasesDetailedState extends State<CasesDetailed> {
     return _responseFuture;
   }
 
-  void selectFile(context) async {
-    var box = await Hive.openBox('app_data');
-    FilePickerResult result = (await FilePicker.platform.pickFiles(type: FileType.media))!;
-    selectedfile = File(result.files.first.path!);
-
-    Navigator.pushNamed(context, '/loading');
-
-    FormData formdata = FormData.fromMap({
-      "user_id": 2,
-      "path": arguments?['path'],
-      "file": await MultipartFile.fromFile(
-          selectedfile!.path,
-          filename: basename(selectedfile!.path)
-      ),
-    });
-
-    dio.options.headers["Authorization"] = "Bearer ${box.get('token')}";
-
-    response = await dio.post('${constants.API_BACK_URL}/api/cases/files/upload',
-      data: formdata,
-      onSendProgress: (int sent, int total) {
-        String percentage = (sent/total*100).toStringAsFixed(2);
-        setState(() {
-          progress = "$sent" + " Bytes of " "$total Bytes - " +  percentage + " % uploaded";
-        });
-      },);
-    //box.close();
-    //box.clear();
-    if(response!.statusCode == 200){
-      Navigator.pushNamed(context, '/casesDetailed',
-          arguments: {
-            'path': var_path,
-            'practice_area': practice_area,
-            'created_at': created_at,
-            'attorney': attorney,
-            'success': true
-          });
-      final snackBar = SnackBar(
-        content: Text(Translate.of(context).file_upload),
-        action: SnackBarAction(
-          label: 'Got It!',
-          onPressed: () {
-            // Some code to undo the change.
-          },
-        ),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    } else {
-      print("Error during connection to server.");
-    }
-  }
-
   void stateParams(context) async {
     arguments = await ModalRoute.of(context)?.settings.arguments as Map;
     setState(() {
@@ -114,7 +61,7 @@ class _CasesDetailedState extends State<CasesDetailed> {
 
   @override
   void dispose() {
-    selectedfile!.delete();
+    //selectedfile!.delete();
     arguments!.clear();
     arg!.clear();
     data.clear();
@@ -131,15 +78,6 @@ class _CasesDetailedState extends State<CasesDetailed> {
           ),),
           backgroundColor: Theme.Colors.loginGradientButton,
           previousPageTitle: Translate.of(context).back,
-          trailing: GestureDetector(
-            onTap: () {
-              selectFile(context);
-            },
-            child: new Text('Upload', style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),),
-          ),
         ),
         child: Scaffold(
             body: FutureBuilder(
@@ -161,9 +99,8 @@ class _CasesDetailedState extends State<CasesDetailed> {
                     );
                   } else {
                     Map<String, dynamic> map = json.decode(snapshot.data.body);
-                    print(arguments);
                     return SingleChildScrollView(
-                        child: expansionTile(arguments: arguments, formKey: _formKey, map: map)
+                        child: expansionTile(arguments: arguments, formKey: _formKey, map: map, cont: context)
                     );
                   }
                 })
@@ -178,17 +115,87 @@ class expansionTile extends StatefulWidget {
     @required this.arguments,
     @required GlobalKey<State<StatefulWidget>>? formKey,
     @required this.map,
+    @required this.cont
   }) : _formKey = formKey, super(key: key);
 
   final Map? arguments;
   final GlobalKey<State<StatefulWidget>>? _formKey;
   final Map? map;
+  final cont;
 
   @override
   _expansionTileState createState() => _expansionTileState();
 }
 
 class _expansionTileState extends State<expansionTile> {
+  Response? response;
+  File? selectedfile;
+  Dio dio = new Dio();
+
+  void selectFile() async {
+    if (mounted) {
+      var box = await Hive.openBox('app_data');
+      FilePickerResult result = (await FilePicker.platform.pickFiles(type: FileType.media))!;
+      selectedfile = File(result.files.first.path!);
+
+      Navigator.pushNamed(this.context, '/loading');
+
+      FormData formdata = FormData.fromMap({
+        "user_id": 2,
+        "path": widget.arguments?['path'],
+        "file": await MultipartFile.fromFile(
+            selectedfile!.path,
+            filename: basename(selectedfile!.path)
+        ),
+      });
+
+      response = await dio.post('${constants.API_BACK_URL}/api/cases/files/upload',
+        options: Options(
+          headers: {
+            HttpHeaders.authorizationHeader:
+            "Bearer ${box.get('token')}",
+            HttpHeaders.contentTypeHeader: 'application/json',
+          },
+        ),
+        data: formdata,
+        onSendProgress: (int sent, int total) {
+
+        },);
+      if(response!.statusCode == 200){
+
+        Navigator.pushNamed(this.context, '/casesDetailed',
+            arguments: {
+              'path': widget.arguments!['path'],
+              'practice_area': widget.arguments!['practice_area'],
+              'created_at': widget.arguments!['created_at'],
+              'attorney': widget.arguments!['attorney'],
+              'success': true
+            });
+        final snackBar = SnackBar(
+          content: Text(Translate.of(this.context).file_upload),
+          action: SnackBarAction(
+            label: 'Got It!',
+            onPressed: () {
+              // Some code to undo the change.
+            },
+          ),
+        );
+        ScaffoldMessenger.of(this.context).showSnackBar(snackBar);
+      } else {
+        print("Error during connection to server.");
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    selectedfile!.delete();
+    widget.arguments!.clear();
+    data.clear();
+    dio.close();
+    super.dispose();
+  }
+
   @override
   void initState() {
     if ( widget.map!.length > 0 ) {
@@ -203,7 +210,6 @@ class _expansionTileState extends State<expansionTile> {
 
   Widget build(BuildContext context) {
     DateFormat dateFormat = DateFormat("MMM d, yyyy");
-    print('Diego Fernando :: ${widget.map}');
     return Container(
         child: Column(
             children: <Widget>[
@@ -304,24 +310,45 @@ class _expansionTileState extends State<expansionTile> {
                 width: MediaQuery.of(context).size.width,
                 height: 30,
               ),
-              Row(
+              (widget.arguments?['calendar'] != null ) ?
+              (widget.arguments?['calendar'].length > 0 ) ?
+              Column(
                   children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Icon(
-                        CupertinoIcons.calendar,
-                        color: Theme.Colors.loginGradientButton,
-                        size: 25.0,
-                      ),
+                    for(var item in widget.arguments?['calendar'] )
+                      Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.all(15),
+                              child: Icon(
+                                CupertinoIcons.calendar,
+                                color: Theme.Colors.loginGradientButton,
+                                size: 25.0,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(item['start'], style: TextStyle(fontWeight: FontWeight.bold),),
+                                  Text(item['name'])
+                                ],
+                              )
+                            ),
+                          ]
+                      )
+              ]) : Container() : Row(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Text('No events',
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold)
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Dec 6, 2021 - 7AM - 8AM', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text('Individual Hearing')
-                      ],
-                    )
-                  ]
+                  ),
+                ],
               ),
               Container(
                 margin: EdgeInsets.only(
@@ -341,6 +368,7 @@ class _expansionTileState extends State<expansionTile> {
                 width: MediaQuery.of(context).size.width,
                 height: 30,
               ),
+              (widget.arguments?['invoices'] != null ) ?
               (widget.arguments?['invoices'].length > 0 ) ?
               Column(
                   children: <Widget>[
@@ -396,7 +424,7 @@ class _expansionTileState extends State<expansionTile> {
                     ),
                   ),
                 ],
-              ),
+              ) : Container(),
               Container(
                 margin: EdgeInsets.only(
                   top: 5,
@@ -407,18 +435,38 @@ class _expansionTileState extends State<expansionTile> {
                   padding: EdgeInsets.only(
                       left: 15
                   ),
-                  child: Text(Translate.of(context).documents, style: TextStyle(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.bold
-                  ),),
+                  child: Row(
+                    children: [
+                      Text(Translate.of(context).documents, style: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold
+                      ),),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 15.0),
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                              onTap: () {
+                                //_CasesDetailedState().triggerSelectFile();
+                                selectFile();
+                              },
+                              child: new Text(Translate.of(context).upload_document_button, style: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold,
+                              ),)
+                          ),
+                        ),
+                      )
+                    ],
+                  )
                 ),
                 width: MediaQuery.of(context).size.width,
                 height: 30,
               ),
-              ( widget.map!.length > 1 ) ?
-              Row(
+              ( widget.map?['data']['files'].length > 0 ) ?
+              Column(
                   children: <Widget>[
-                    for (int i = 0; i < 2; i++)
+                    for (int i = 0; i < widget.map?['data']['files'].length; i++)
                       Row(
                         children: [
                           Padding(
@@ -432,8 +480,13 @@ class _expansionTileState extends State<expansionTile> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(widget.map!['data']['files'][i]['name'], style: TextStyle(fontWeight: FontWeight.bold),),
-                              Text('Individual Hearing')
+                              GestureDetector(
+                                onTap: () async {
+                                  await launch(widget.map?['data']['files'][i]['url']);
+                                },
+                                child: new Text(widget.map?['data']['files'][i]['name'], style: TextStyle(fontWeight: FontWeight.bold),)
+                              )
+                              //Text('Individual Hearing')
                             ],
                           )
                         ],

@@ -54,7 +54,7 @@
   "action" : "Action",
   "folder_empty" : "The Folder of this Case is Empty",
   "login_mycase" : "Please Login to your MyCase portal to view all of your\ndocuments",
-  "upload_document_button" : "Upload Document",
+  "upload_document_button" : "Click here to Upload",
   "back" : "Back",
   "contact_us_header" : "Please fill out the form below and we will get back to you as soon as possible.",
   "input_staff_member" : "Staff Member",

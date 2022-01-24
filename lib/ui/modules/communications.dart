@@ -97,7 +97,7 @@ class MyExpansionTileList extends StatelessWidget {
     elementList.forEach((element) {
       if ( children.length < 3 ){
         children.add(
-          new MyExpansionTile(element['id'], element['name'], element['practice_area'], element['created_at'], element['attorney'], element['invoices']),
+          new MyExpansionTile(element['id'], element['name'], element['practice_area'], element['created_at'], element['attorney'], element['invoices'], element['calendar']),
         );
       }
     });
@@ -120,9 +120,10 @@ class MyExpansionTile extends StatefulWidget {
   String created_at;
   String attorney;
   var invoices;
-  MyExpansionTile(this.id, this.name, this.practice_area, this.created_at, this.attorney, this.invoices);
+  var calendar;
+  MyExpansionTile(this.id, this.name, this.practice_area, this.created_at, this.attorney, this.invoices, this.calendar);
   @override
-  State createState() => new MyExpansionTileState(this.id, this.name, this.practice_area, this.created_at, this.attorney, this.invoices);
+  State createState() => new MyExpansionTileState(this.id, this.name, this.practice_area, this.created_at, this.attorney, this.invoices, this.calendar);
 }
 
 class MyExpansionTileState extends State<MyExpansionTile> {
@@ -132,7 +133,8 @@ class MyExpansionTileState extends State<MyExpansionTile> {
   String created_at;
   String attorney;
   var invoices;
-  MyExpansionTileState(this.id, this.name, this.practice_area, this.created_at, this.attorney, this.invoices);
+  var calendar;
+  MyExpansionTileState(this.id, this.name, this.practice_area, this.created_at, this.attorney, this.invoices, this.calendar);
 
   @override
   void initState() {
@@ -195,7 +197,8 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                               'practice_area': widget.practice_area,
                               'created_at': widget.created_at,
                               'attorney': widget.attorney,
-                              'invoices': widget.invoices
+                              'invoices': widget.invoices,
+                              'calendar': widget.calendar
                           }
                         );
                       },

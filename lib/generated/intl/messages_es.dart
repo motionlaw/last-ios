@@ -166,7 +166,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upcoming_trial":
             MessageLookupByLibrary.simpleMessage("Próximo a Juicio"),
         "upload_document_button":
-            MessageLookupByLibrary.simpleMessage("Subir Documento"),
+            MessageLookupByLibrary.simpleMessage("Presiona aqui para Subir"),
         "user_already_created":
             MessageLookupByLibrary.simpleMessage("El usuario ya fue creado"),
         "validation_submit": MessageLookupByLibrary.simpleMessage(

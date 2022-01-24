@@ -600,10 +600,10 @@ class Translate {
     );
   }
 
-  /// `Subir Documento`
+  /// `Presiona aqui para Subir`
   String get upload_document_button {
     return Intl.message(
-      'Subir Documento',
+      'Presiona aqui para Subir',
       name: 'upload_document_button',
       desc: '',
       args: [],
