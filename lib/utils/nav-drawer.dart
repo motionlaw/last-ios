@@ -142,7 +142,7 @@ class _NavDrawerState extends State<NavDrawer> {
           Container(
             height: MediaQuery.of(context).size.height * 0.15,
             alignment: FractionalOffset.bottomCenter,
-            child: Text('V1.1.12', style: TextStyle(
+            child: Text('V1.1.14', style: TextStyle(
                 fontSize: 12.0,
                 fontWeight: FontWeight.bold
             ),),

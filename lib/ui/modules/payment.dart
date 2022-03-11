@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:motionlaw/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../style/theme.dart' as Theme;
@@ -102,9 +103,10 @@ class MyExpansionTileList extends StatelessWidget {
   List<Widget> _getChildren() {
     List<Widget> children = [];
     elementList.forEach((element) {
+      print('JD : ${element}');
       if ( children.length < 3 ){
         children.add(
-          new MyExpansionTile(element['id'], element['name'], element['practice_area'], element['invoices']),
+          new MyExpansionTile(elementList),
         );
       }
     });
@@ -121,21 +123,15 @@ class MyExpansionTileList extends StatelessWidget {
 }
 
 class MyExpansionTile extends StatefulWidget {
-  String id;
-  String name;
-  String practice_area;
-  var invoices;
-  MyExpansionTile(this.id, this.name, this.practice_area, this.invoices);
+  final List<dynamic> elementList;
+  MyExpansionTile(this.elementList);
   @override
-  State createState() => new MyExpansionTileState(this.id, this.name, this.practice_area, this.invoices);
+  State createState() => new MyExpansionTileState(elementList);
 }
 
 class MyExpansionTileState extends State<MyExpansionTile> {
-  String id;
-  String name;
-  String practice_area;
-  var invoices;
-  MyExpansionTileState(this.id, this.name, this.practice_area, this.invoices);
+  final List<dynamic> elementList;
+  MyExpansionTileState(this.elementList);
 
   @override
   void initState() {
@@ -144,125 +140,174 @@ class MyExpansionTileState extends State<MyExpansionTile> {
 
   @override
   Widget build(BuildContext context) {
-    return new ExpansionTile(
-      initiallyExpanded: true,
-      leading: Icon(CupertinoIcons.bag),
-      title: Text(
-        widget.name,
-        style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
-      ),
-      subtitle: Text(
-        widget.practice_area,
-        style: TextStyle(
-          fontSize: 12.0,
-        ),
-      ),
-      children: <Widget>[
-        ListTile(
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-          dense: true,
-          title: Row(
+    print('Diego ${elementList}');
+    DateFormat dateFormat = DateFormat("MMM d, yyyy");
+    return Container(
+        child: Column(
             children: <Widget>[
-              SizedBox(
-                width: 55,
-              ),
-              Text(Translate.of(context).case_billing_information,
-                  style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
-        ListTile(
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-          dense: true,
-          title: Row(
-          children: <Widget>[
-            SizedBox(
-              width: 55,
-            ),
-            Text(Translate.of(context).select_invoice,
-                style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 13.0,
-                    fontWeight: FontWeight.bold)),
-          ])
-        ),
-        ListTile(
-          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-          dense: true,
-          title: Row(
-            children: <Widget>[
-              SizedBox(
-                width: 30,
-              ),
-              (widget.invoices.length > 0) ?
-              Padding(
-                padding: EdgeInsets.all(0.0),
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  width: MediaQuery.of(context).size.width * 0.80,
-                  child: DataTable(
-                    columns: [
-                      DataColumn(label: Text(Translate.of(context).number)),
-                      DataColumn(
-                          label: Expanded(
-                            child: Text(
-                              Translate.of(context).total,
-                              textAlign: TextAlign.center,
-                            )
-                          )
-                      ),
-                      DataColumn(
-                        label: Expanded(
-                        child: Text(
-                          Translate.of(context).status,
-                          textAlign: TextAlign.center,
-                        ))
-                      )
-                    ],
-                    rows: [
-                      for(var item in widget.invoices )
-                        DataRow(cells: [
-                          DataCell(Text(item['number'])),
-                          DataCell(Text(item['total_amount'])),
-                          DataCell(
-                              Container(
-                                  width: 60,
-                                  height:40,
-                                  child: (item['paid'] == true ) ? Icon(CupertinoIcons.checkmark_square,
-                                      color: Colors.green)
-                                      : Icon(CupertinoIcons.creditcard,
-                                      color: Colors.red)
-                              )
-                          )
-                        ])
-                    ],
+              Container(
+                color: Colors.black12,
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: 15
                   ),
+                  child: Text(Translate.of(context).case_information, style: TextStyle(
+                      color: Colors.black54,
+                      fontWeight: FontWeight.bold
+                  ),),
                 ),
-              ) : Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 25,
-                      ),
-                      Text(Translate.of(context).no_available_billings,
-                      style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.bold)),
-                    ],
+                width: MediaQuery.of(context).size.width,
+                height: 30,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: EdgeInsets.only(
+                  top: 10,
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 15,
                   ),
-            ],
-          ),
-        ),
-      ],
+                  child: RichText(
+                      text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: <TextSpan>[
+                            TextSpan(text: '${Translate.of(context).name}: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: elementList[0]['name'], style: TextStyle(
+                                color: Colors.black54
+                            ),)
+                          ])),
+                ),
+                width: MediaQuery.of(context).size.width,
+                height: 20,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                    padding: EdgeInsets.only(
+                        left: 15
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(text: '${Translate.of(context).added}: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(text: dateFormat.format(DateTime.parse(elementList[0]['created_at'])) + ' by ' + elementList[0]['attorney'], style: TextStyle(
+                              color: Colors.black54
+                          )),
+                        ],
+                      ),
+                    )
+                ),
+                width: MediaQuery.of(context).size.width,
+                height: 20,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                    padding: EdgeInsets.only(
+                        left: 15
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(text: '${Translate.of(context).practice_area}: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(text: elementList[0]['practice_area'], style: TextStyle(
+                              color: Colors.black54
+                          )),
+                        ],
+                      ),
+                    )
+                ),
+                width: MediaQuery.of(context).size.width,
+                height: 20,
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                  top: 5,
+                ),
+                color: Colors.black12,
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: 15
+                  ),
+                  child: Text(Translate.of(context).case_billing_information, style: TextStyle(
+                      color: Colors.black54,
+                      fontWeight: FontWeight.bold
+                  ),),
+                ),
+                width: MediaQuery.of(context).size.width,
+                height: 30,
+              ),
+              (elementList[0]['invoices'] != null ) ?
+              (elementList[0]['invoices'].length > 0 ) ?
+              Column(
+                  children: <Widget>[
+                    for(var item in elementList[0]['invoices'] )
+                      Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Icon(
+                              (item['paid'] != '') ? CupertinoIcons.check_mark_circled : CupertinoIcons.clear_circled,
+                              color: (item['paid'] == '') ? Colors.red : Colors.green,
+                              size: 25.0,
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Invoice # ${item['number']} ${(item['paid'] != '') ? ': \$' + item['total_amount'] :''}', style: TextStyle(fontWeight: FontWeight.bold),),
+                              Text((item['status'] != '') ? '${item['status']} - ${item['paid_date']}' : 'Pending')
+                            ],
+                          ),
+                          ( item['paid'] == '' ) ? Expanded(
+                              child: Container(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        right: 15
+                                    ),
+                                    child: TextButton.icon(
+                                      style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<Color>(Theme.Colors.loginGradientButton),
+                                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                      ),
+                                      label: Text(Translate.of(context).make_payment),
+                                      icon: Icon(CupertinoIcons.money_dollar_circle),
+                                      onPressed: () {
+                                        _launchURL();
+                                      },
+                                    )
+                                ),
+                              )
+                          ) : Container(),
+                        ],
+                      )
+                  ]
+              ) : Row(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Text(Translate.of(context).no_available_billings,
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold)
+                    ),
+                  ),
+                ],
+              ) : Container(),
+        ])
     );
   }
 }
 
 _launchURL() async {
-  const url = 'https://motion-law.mycase.com/xa7n7str';
+  const url = 'http://motion-law.mycase.com/paypage/guZfHDWgyxZT7izVjsnZsu4z';
   if (await canLaunch(url)) {
     await launch(url);
   } else {

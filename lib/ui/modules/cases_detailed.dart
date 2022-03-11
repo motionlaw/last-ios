@@ -404,7 +404,9 @@ class _expansionTileState extends State<expansionTile> {
                                       ),
                                       label: Text(Translate.of(context).make_payment),
                                       icon: Icon(CupertinoIcons.money_dollar_circle),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        _launchURL();
+                                      },
                                     )
                                 ),
                               )
@@ -512,7 +514,7 @@ class _expansionTileState extends State<expansionTile> {
 }
 
 _launchURL() async {
-  const url = 'https://motion-law.mycase.com/xa7n7str';
+  const url = 'http://motion-law.mycase.com/paypage/guZfHDWgyxZT7izVjsnZsu4z';
   if (await canLaunch(url)) {
     await launch(url);
   } else {
