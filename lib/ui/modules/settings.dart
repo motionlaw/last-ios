@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'dart:convert';
 import '../../utils/constants.dart' as constants;
 import 'package:flutter/services.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 
 class SettingsPage extends StatefulWidget {
@@ -95,7 +96,7 @@ class SettingSubPage extends State<SettingsPage> {
                         ),
                         new ListTile(
                           leading: const Icon(Icons.phone),
-                          title: new TextField(
+                          /*title: new TextField(
                             controller: phoneController,
                             keyboardType: TextInputType.number,
                             decoration: new InputDecoration(
@@ -104,6 +105,27 @@ class SettingSubPage extends State<SettingsPage> {
                             inputFormatters: [
                               LengthLimitingTextInputFormatter(11),
                             ]
+                          ),*/
+                          title: InternationalPhoneNumberInput(
+                            onInputChanged: (PhoneNumber number) {
+                              print(number.phoneNumber);
+                            },
+                            onInputValidated: (bool value) {
+                              print(value);
+                            },
+                            selectorConfig: SelectorConfig(
+                              selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                              useEmoji: true,
+                            ),
+                            autoValidateMode: AutovalidateMode.disabled,
+                            selectorTextStyle: TextStyle(color: Colors.black),
+                            textFieldController: phoneController,
+                            maxLength: 11,
+                            keyboardType:
+                            TextInputType.numberWithOptions(signed: true, decimal: true),
+                            onSaved: (PhoneNumber number) {
+                              print('On Saved: $number');
+                            },
                           ),
                         ),
                         new ListTile(
