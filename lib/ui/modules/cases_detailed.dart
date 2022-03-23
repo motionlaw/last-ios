@@ -386,8 +386,8 @@ class _expansionTileState extends State<expansionTile> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Invoice # ${item['number']} ${(item['paid'] != '') ? ': \$' + item['total_amount'] :''}', style: TextStyle(fontWeight: FontWeight.bold),),
-                              Text((item['status'] != '') ? '${item['status']} - ${item['paid_date']}' : 'Pending')
+                              Text('Invoice # ${item['number']}', style: TextStyle(fontWeight: FontWeight.bold),),
+                              Text((item['status'] != '') ? '${(item['status'] == 'overdue') ? 'Pending' : item['status']} - ${'\$' + item['total_amount']}' : '')
                             ],
                           ),
                           ( item['paid'] == '' ) ? Expanded(
@@ -406,6 +406,7 @@ class _expansionTileState extends State<expansionTile> {
                                       icon: Icon(CupertinoIcons.money_dollar_circle),
                                       onPressed: () {
                                         _launchURL();
+                                        //print(item);
                                       },
                                     )
                                 ),

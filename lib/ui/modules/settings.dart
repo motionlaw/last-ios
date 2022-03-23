@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'dart:convert';
 import '../../utils/constants.dart' as constants;
+import 'package:flutter/services.dart';
+
 
 class SettingsPage extends StatefulWidget {
   SettingSubPage createState() => SettingSubPage();
@@ -92,21 +94,16 @@ class SettingSubPage extends State<SettingsPage> {
                           ),
                         ),
                         new ListTile(
-                          leading: const Icon(Icons.account_box),
-                          title: new TextField(
-                            controller: id_numberController,
-                            decoration: new InputDecoration(
-                              hintText: Translate.of(context).input_id_number,
-                            ),
-                          ),
-                        ),
-                        new ListTile(
                           leading: const Icon(Icons.phone),
                           title: new TextField(
                             controller: phoneController,
+                            keyboardType: TextInputType.number,
                             decoration: new InputDecoration(
                               hintText: Translate.of(context).input_phone_number,
                             ),
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(11),
+                            ]
                           ),
                         ),
                         new ListTile(
@@ -115,15 +112,6 @@ class SettingSubPage extends State<SettingsPage> {
                             controller: emailController,
                             decoration: new InputDecoration(
                               hintText: Translate.of(context).input_email,
-                            ),
-                          ),
-                        ),
-                        new ListTile(
-                          leading: const Icon(Icons.card_giftcard),
-                          title: new TextField(
-                            controller: birthdayController,
-                            decoration: new InputDecoration(
-                              hintText: Translate.of(context).input_birthday,
                             ),
                           ),
                         ),
@@ -154,7 +142,7 @@ class SettingSubPage extends State<SettingsPage> {
                                 top: 10.0, left: 8.0, right: 8.0),
                             width: double.infinity,
                             decoration: new BoxDecoration(
-                              color: Colors.grey,
+                              color: Theme.Colors.loginGradientButton,
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             child: CupertinoButton(
