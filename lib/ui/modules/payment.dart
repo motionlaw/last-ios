@@ -261,7 +261,7 @@ class MyExpansionTileState extends State<MyExpansionTile> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('Invoice # ${item['number']}', style: TextStyle(fontWeight: FontWeight.bold),),
-                              Text((item['status'] != '') ? '${(item['status'] == 'overdue') ? 'Pending' : item['status']} - ${'\$' + item['total_amount']}' : '')
+                              Text((item['status'] != '') ? '${(item['status'] == 'overdue') ? 'Pending' : item['status']} - ${'\$' + item['total_amount'].substring(0, item['total_amount'].indexOf('.'))}' : '')
                             ],
                           ),
                           ( item['paid'] == '' ) ? Expanded(

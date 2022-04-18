@@ -9,6 +9,7 @@ import 'dart:convert';
 import '../../utils/constants.dart' as constants;
 import 'package:flutter/services.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import '../../services/UpdateInformationDBService.dart';
 
 
 class SettingsPage extends StatefulWidget {
@@ -28,26 +29,85 @@ Future<http.Response> _userMethod() async {
 class SettingSubPage extends State<SettingsPage> {
 
   bool? showvalue = false;
-  TextEditingController? _controller;
-  TextEditingController? nameController;
-  TextEditingController? last_nameController;
-  TextEditingController? id_numberController;
-  TextEditingController? phoneController;
-  TextEditingController? emailController;
-  TextEditingController? birthdayController;
-  TextEditingController? pushController;
+  bool isEnabled = false;
+  final nameController = new TextEditingController();
+  final last_nameController = new TextEditingController();
+  final id_numberController = new TextEditingController();
+  final phoneController = new TextEditingController();
+  final emailController = new TextEditingController();
+  final pushController = new TextEditingController();
+  PhoneNumber number = PhoneNumber(isoCode: 'US');
+
+  Future updateFields() async {
+    try {
+      checkFields();
+      if ( isEnabled == true ) {
+        await UpdateInformationDBService.updateProfile(
+            {
+              'name': nameController.text,
+              'last_name': last_nameController.text,
+              'phone_number': phoneController.text,
+              'email': emailController.text,
+              'push_auth': (showvalue == true) ? 'yes' : 'no'
+            }
+        ).whenComplete(() =>
+        {
+          setState(() {
+            isEnabled = false;
+            _handleClickMe('Update Successful', 'Your settings have been updated!');
+          })
+        });
+      }
+    } catch (e) {
+      print('error :: ${e}');
+    }
+  }
+
+  Future<void> _handleClickMe(title, message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text(Translate.of(context).close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void checkFields () {
+    if ( nameController.text != "" && last_nameController.text != "" && phoneController.text != "" && emailController.text != "" ) {
+      setState(() {
+        isEnabled = true;
+      });
+    } else {
+      setState(() {
+        isEnabled = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     _userMethod().then((snapshot) {
       Map<String, dynamic> map = json.decode(snapshot.body);
-      nameController = new TextEditingController(text: "${map['data']['name']}");
-      last_nameController = new TextEditingController(text: "${map['data']['last_name']}");
-      id_numberController = new TextEditingController(text: "${map['data']['id_number']}");
-      phoneController = new TextEditingController(text: "${map['data']['phone_number']}");
-      emailController = new TextEditingController(text: "${map['data']['email']}");
-      birthdayController = new TextEditingController(text: "${map['data']['birthday']}");
-      pushController = new TextEditingController(text: "${map['data']['push_auth']}");
+      print('Soba :: ${map['data']['push_auth']}');
+      nameController.text = map['data']['name'];
+      last_nameController.text = map['data']['last_name'];
+      id_numberController.text = map['data']['id_number'];
+      phoneController.text = map['data']['phone_number'];
+      emailController.text = map['data']['email'];
+      showvalue = ( map['data']['push_auth'] == 'yes' ) ? true : false;
+      setState(() {});
     });
   }
 
@@ -80,6 +140,9 @@ class SettingSubPage extends State<SettingsPage> {
                           leading: const Icon(Icons.person),
                           title: new TextField(
                             controller: nameController,
+                            onChanged: (text) {
+                              checkFields();
+                            },
                             decoration: new InputDecoration(
                               hintText: Translate.of(context).input_first_name,
                             ),
@@ -89,6 +152,9 @@ class SettingSubPage extends State<SettingsPage> {
                           leading: const Icon(Icons.art_track_sharp),
                           title: new TextField(
                             controller: last_nameController,
+                            onChanged: (text) {
+                              checkFields();
+                            },
                             decoration: new InputDecoration(
                               hintText: Translate.of(context).input_lastname,
                             ),
@@ -108,11 +174,9 @@ class SettingSubPage extends State<SettingsPage> {
                           ),*/
                           title: InternationalPhoneNumberInput(
                             onInputChanged: (PhoneNumber number) {
-                              print(number.phoneNumber);
+                              checkFields();
                             },
-                            onInputValidated: (bool value) {
-                              print(value);
-                            },
+                            initialValue: number,
                             selectorConfig: SelectorConfig(
                               selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
                               useEmoji: true,
@@ -120,7 +184,7 @@ class SettingSubPage extends State<SettingsPage> {
                             autoValidateMode: AutovalidateMode.disabled,
                             selectorTextStyle: TextStyle(color: Colors.black),
                             textFieldController: phoneController,
-                            maxLength: 11,
+                            maxLength: 12,
                             keyboardType:
                             TextInputType.numberWithOptions(signed: true, decimal: true),
                             onSaved: (PhoneNumber number) {
@@ -132,6 +196,9 @@ class SettingSubPage extends State<SettingsPage> {
                           leading: const Icon(Icons.email_outlined),
                           title: new TextField(
                             controller: emailController,
+                            onChanged: (text) {
+                              checkFields();
+                            },
                             decoration: new InputDecoration(
                               hintText: Translate.of(context).input_email,
                             ),
@@ -151,11 +218,13 @@ class SettingSubPage extends State<SettingsPage> {
                           subtitle:
                               Text(Translate.of(context).advertise_push_notification),
                           trailing: Checkbox(
+                            activeColor: Theme.Colors.loginGradientButton,
                             value: this.showvalue,
                             onChanged: (bool? value) {
                               setState(() {
                                 this.showvalue = value;
                               });
+                              checkFields();
                             },
                           ),
                         ),
@@ -164,16 +233,16 @@ class SettingSubPage extends State<SettingsPage> {
                                 top: 10.0, left: 8.0, right: 8.0),
                             width: double.infinity,
                             decoration: new BoxDecoration(
-                              color: Theme.Colors.loginGradientButton,
+                              color: (isEnabled == false) ? Colors.black26 : Theme.Colors.loginGradientButton,
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             child: CupertinoButton(
+                                disabledColor: Colors.black26,
                                 child: Text(Translate.of(context).button_save,
                                     style: new TextStyle(
                                         color: Colors.white, fontSize: 15)),
-                                onPressed: () {
-                                  print('Button pressed');
-                                }))
+                                onPressed: (isEnabled == false) ? null : updateFields,
+                            ))
                       ]))),
         ));
   }
